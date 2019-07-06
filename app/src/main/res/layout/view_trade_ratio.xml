@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_marginTop="5dp"
+              android:gravity="center_vertical"
+              android:orientation="horizontal">
+
+    <TextView
+            android:id="@+id/full"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:maxLines="1"
+            android:text="@string/trade_full_available"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
+            android:textColor="@color/trade_black"
+            android:background="@drawable/trade_gray_corner_border"
+            android:textSize="13dp"/>
+
+    <View
+            android:layout_width="10dp"
+            android:layout_height="1dp"/>
+
+    <TextView
+            android:id="@+id/half"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:maxLines="1"
+            android:text="@string/trade_half_available"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
+            android:background="@drawable/trade_gray_corner_border"
+            android:textColor="@color/trade_black"
+            android:textSize="13dp"/>
+
+    <View
+            android:layout_width="10dp"
+            android:layout_height="1dp"/>
+
+    <TextView
+            android:id="@+id/one_three"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:maxLines="1"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
+            android:background="@drawable/trade_gray_corner_border"
+            android:text="@string/trade_one_third_available"
+            android:textColor="@color/trade_black"
+            android:textSize="13dp"/>
+
+    <View
+            android:layout_width="10dp"
+            android:layout_height="1dp"/>
+
+    <TextView
+            android:id="@+id/one_fourth"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
+            android:gravity="center"
+            android:maxLines="1"
+            android:background="@drawable/trade_gray_corner_border"
+            android:text="@string/trade_one_fourth_available"
+            android:textColor="@color/trade_black"
+            android:textSize="13dp"/>
+
+</LinearLayout>

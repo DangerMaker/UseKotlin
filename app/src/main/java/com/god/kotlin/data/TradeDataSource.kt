@@ -1,0 +1,102 @@
+package com.god.kotlin.data
+
+import com.god.kotlin.data.entity.*
+import com.god.kotlin.net.OnResult
+
+interface TradeDataSource {
+
+    fun login(userType: String, userId: String, password: String,
+              checkCode: String, verifiCodeId: String,
+              callback: OnResult<MutableList<User>>
+    )
+
+    fun searchStock(code: String, callback: OnResult<TradeStockEntity>)
+
+    fun getHandStockList(
+        fundsId: String, count: Int, offset: Int,
+        callback: OnResult<MutableList<TradeHandEntity>>
+    )
+
+    fun getAvailable(
+//        market: String,secuid: String,fundsId: String,
+        code: String, price: Double, flag: String, callback: OnResult<Int>)
+
+    fun transaction(
+        market: String,
+//        secuid: String,
+//        fundsId: String,
+        code: String,
+        price: Double,
+        qty: Int,
+        postFlag: String,
+        callback: OnResult<TradeResultEntity>
+    )
+
+    fun queryRiskLevel(custid: String, callback: OnResult<RiskLevel>)
+
+    fun queryAccountList(callback: OnResult<MutableList<Account>>)
+
+    fun queryInformation(callback: OnResult<Information>)
+
+    fun postInformation(
+        idType: String, idCard: String, phone: String, postCode: String,
+        email: String, address: String, callback: OnResult<String>
+    )
+
+    fun queryOrderList(count: Int, offset: Int, callback: OnResult<MutableList<Order>>)
+
+    fun postOrder(orderdate: String, fundid: String, ordersno: String, bsflag: String, callback: OnResult<String>)
+
+    fun queryFunds(moneyType: Int, callback: OnResult<Funds>)
+
+    fun postPwd(pwd: String, callback: OnResult<String>)
+
+    fun postFundsPwd(pwd: String, oldPwd: String, callback: OnResult<String>)
+
+    fun queryTransferList(fundid: String, callback: OnResult<MutableList<TransferRecord>>)
+
+    fun queryTodayDeal(fundid: String, count: Int, offset: Int, callback: OnResult<MutableList<Deal>>)
+
+    fun queryHistoryDeal(
+        begin: String,
+        end: String,
+        fundid: String,
+        count: Int,
+        offset: Int,
+        callback: OnResult<MutableList<Deal>>
+    )
+
+    fun queryOrderList1(fundid: String,count: Int, offset: Int, callback: OnResult<MutableList<Order>>)
+
+    fun queryHistoryOrderList(
+        begin: String,
+        end: String,
+        fundid: String,
+        count: Int,
+        offset: Int,
+        callback: OnResult<MutableList<Order>>
+    )
+
+    fun queryIpoQuota(secuid:String,callback:OnResult<MutableList<Quota>>)
+
+    fun queryNewStockList(callback: OnResult<MutableList<NewStock>>)
+
+    fun queryPeiHaoList(
+        begin: String,
+        end: String,
+        count: Int,
+        offset: Int,
+        callback: OnResult<MutableList<PeiHao>>
+    )
+
+    fun queryZhongQianList(
+        begin: String,
+        end: String,
+        count: Int,
+        offset: Int,
+        callback: OnResult<MutableList<ZhongQian>>
+    )
+
+    fun queryDaiJiaoList(callback: OnResult<MutableList<DaiJiao>>)
+
+}

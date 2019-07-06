@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:descendantFocusability="blocksDescendants"
+                android:background="@color/trade_white"
+                android:orientation="vertical">
+
+
+    <ImageView
+            android:id="@+id/stock_checkbox"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
+            android:background="@drawable/check_box_compass"
+    />
+
+
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="20dp"
+            android:layout_toRightOf="@id/stock_checkbox">
+
+        <TextView
+                android:id="@+id/stock_name"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:gravity="center_vertical"
+                android:text="格力电器"
+                android:textColor="@color/trade_item_text"
+                android:textSize="15dp"/>
+
+        <TextView
+                android:id="@+id/stock_code"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@id/stock_name"
+                android:gravity="center_vertical"
+                android:text="600211"
+                android:textColor="@color/trade_input_text"
+                android:textSize="15dp"/>
+
+        <View
+                android:id="@+id/line"
+                android:layout_below="@id/stock_name"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/trade_gray"/>
+
+        <LinearLayout
+                android:layout_below="@id/line"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal"
+        >
+
+            <RelativeLayout android:layout_width="wrap_content" android:layout_height="wrap_content">
+
+                <TextView
+                        android:id="@+id/txt_num_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:gravity="center_vertical"
+                        android:text="@string/trade_fresh_available_num"
+                        android:textColor="@color/trade_item_text"
+                        android:textSize="14dp"/>
+
+                <TextView
+                        android:id="@+id/stock_available_num"
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:gravity="center_vertical"
+                        android:text="可申购0股"
+                        android:textColor="@color/trade_input_text"
+                        android:layout_below="@id/txt_num_title"
+                        android:textSize="14dp"/>
+
+            </RelativeLayout>
+
+
+            <View android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" />
+
+
+            <com.god.kotlin.trade.AdjustEditText
+                    android:layout_width="170dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_height="50dp"
+                    app:hint="委托数量"
+                    app:unit="100"
+                    tools:layout_height="40dp"
+                    app:ad_color="@color/trade_red"
+            />
+
+        </LinearLayout>
+    </RelativeLayout>
+
+</RelativeLayout>

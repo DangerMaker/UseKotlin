@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools" package="com.god.kotlin">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!--android:usesCleartextTraffic="true"-->
+
+    <application
+            android:allowBackup="true"
+            android:icon="@mipmap/ic_launcher"
+            android:label="@string/app_name"
+            android:name=".App"
+            android:roundIcon="@mipmap/ic_launcher_round"
+            android:supportsRtl="true"
+            android:theme="@style/AppTheme" tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".TestActivity">
+
+        </activity>
+
+
+        <activity android:name=".menu.MenuActivity"/>
+        <activity android:name=".trade.TradeActivity"/>
+        <activity android:name=".profile.RiskQueryActivity"/>
+        <activity android:name=".profile.AccountListActivity"/>
+        <activity android:name=".change.ChangeInformationActivity"/>
+        <activity android:name=".trade.TradeMarketActivity"/>
+        <activity android:name=".trade.TradeTransActivity"/>
+        <activity android:name=".change.ChangePwdActivity"/>
+        <activity android:name=".profile.RiskTestActivity"/>
+        <activity android:name=".transfer.TransferMenuActivity"/>
+        <activity android:name=".transfer.TransferRecordActivity"/>
+        <activity android:name=".transfer.TransferFundsActivity"/>
+        <activity android:name=".transfer.TransferBankActivity"/>
+        <activity android:name=".transfer.TransferBrokerActivity"/>
+        <activity android:name=".trade.agree.TradeAgreeActivity"/>
+        <activity android:name=".query.QueryMenuActivity"/>
+        <activity android:name=".query.QueryTradeActivity"/>
+        <activity android:name=".ipo.IpoMenuActivity"/>
+        <activity android:name=".ipo.IpoOrderActivity"/>
+        <activity android:name=".ipo.query.QueryIpoActivity"/>
+        <activity android:name=".pre.PreActivity"/>
+        <activity android:name=".pre.AddPreActivity"/>
+    </application>
+
+</manifest>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <include
+            android:id="@+id/bar_layout"
+            layout="@layout/toolbar_normal"/>
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="20dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+            android:paddingRight="20dp"
+            android:orientation="horizontal">
+
+        <TextView
+                style="@style/trade_edit_title_custom"
+                android:text="@string/trade_risk_type"/>
+
+        <TextView
+                android:layout_marginLeft="10dp"
+                android:id="@+id/risk_type"
+                style="@style/trade_edit_title_custom"
+                android:textColor="@color/trade_red"
+        />
+
+    </LinearLayout>
+
+    <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/trade_gray"/>
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="20dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+            android:paddingRight="20dp"
+            android:orientation="horizontal">
+
+        <TextView
+                style="@style/trade_edit_title_custom"
+                android:text="@string/trade_risk_score"
+        />
+
+        <TextView
+                android:layout_marginLeft="10dp"
+                android:id="@+id/risk_score"
+                style="@style/trade_edit_title_custom"
+                android:textColor="@color/trade_red"/>
+
+    </LinearLayout>
+
+    <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/trade_gray"/>
+
+</LinearLayout>

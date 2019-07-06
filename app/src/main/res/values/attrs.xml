@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="AdjustEditText">
+        <attr name="hint" format="string"/>
+        <attr name="unit" format="float"/>
+        <attr name="ad_color" format="reference"/>
+    </declare-styleable>
+
+    <declare-styleable name="SingleLineTextView">
+        <attr name="textContent" format="string"/>
+        <attr name="textSize" format="dimension"/>
+        <attr name="textColor" format="color"/>
+        <attr name="gravity" format="integer"/>
+    </declare-styleable>
+</resources>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <Button
+            android:text="验证码"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:id="@+id/button"/>
+
+
+    <ImageView
+            android:id="@+id/safe_code_iv"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="20dip"
+            android:layout_marginRight="20dp"
+            android:padding="5dp"
+            android:src="@drawable/trade_gray_full" />
+
+    <Button
+            android:text="业务"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:id="@+id/button1"/>
+
+</LinearLayout>
