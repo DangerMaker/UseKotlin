@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/shape_white_bg_corner13"
+    >
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="63dp"
+        android:textColor="#FF101010"
+        android:textSize="20sp"
+        android:text="@string/trade_tickout_notice"
+        android:gravity="center"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="20dip"
+        android:text="@string/trade_tickout_desc"
+        android:lineSpacingMultiplier="1.2"
+        android:textColor="#FF030303"
+        android:textSize="17dp" />
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dip"
+        android:layout_marginTop="12dp"
+        android:background="#E1E1E1" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+        android:orientation="horizontal"
+        >
+        <TextView
+            android:id="@+id/btnTickoutCancel"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:text="@string/trade_input_cancel"
+            android:visibility="gone"
+            android:textColor="@color/trade_black"
+            android:textSize="15sp" />
+        <View
+            android:layout_width="1dip"
+            android:layout_height="match_parent"
+            android:background="#E1E1E1"
+            android:visibility="gone"
+            />
+        <TextView
+            android:id="@+id/btnTickoutRelogin"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:text="@string/trade_tickout_relogin"
+            android:textColor="#5677FC"
+            android:textSize="15sp" />
+    </LinearLayout>
+</LinearLayout>

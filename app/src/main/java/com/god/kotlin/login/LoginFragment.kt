@@ -8,6 +8,7 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.edit
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -16,6 +17,7 @@ import com.god.kotlin.R
 import com.god.kotlin.menu.MenuActivity
 import com.god.kotlin.util.obtainViewModel
 import com.god.kotlin.util.provideAccountSharedPref
+import com.god.kotlin.util.toast
 import kotlinx.android.synthetic.main.trade_fragment_login.*
 
 class LoginFragment : Fragment() {
@@ -65,9 +67,20 @@ class LoginFragment : Fragment() {
             login_loading.visibility = View.GONE
             if (it) {
                 startActivity(Intent(context, MenuActivity::class.java))
-            }else{
+            } else {
 
             }
+        })
+
+
+        viewModel.bitmap.observe(this, Observer {
+            if(it != null){
+                safe_code_iv.setImageBitmap(it)
+            }
+        })
+
+        viewModel.tips.observe(this, Observer {
+            it.toast(context)
         })
 
         login_btn.setOnClickListener {
@@ -84,8 +97,9 @@ class LoginFragment : Fragment() {
                 "Z", "userid", "password", "checkCode",
                 "veriId"
             )
-
         }
+
+        viewModel.getVerificationCode(30,15)
 
     }
 }

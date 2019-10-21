@@ -1,12 +1,36 @@
 package com.god.kotlin.data
 
-import android.os.Handler
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.util.Log
+import com.ez08.trade.net.Client
+import com.ez08.trade.net.STradeVerificationCode
+import com.ez08.trade.net.STradeVerificationCodeA
 import com.god.kotlin.data.entity.*
 import com.god.kotlin.net.OnResult
 import com.god.kotlin.util.async
+import java.lang.Exception
+import com.god.kotlin.net.Error
+
 
 class TradeRepository : TradeDataSource {
+
+    override fun getVerificationCode(width: Int, height: Int, callback: OnResult<Bitmap>) {
+        Client.getInstance().send(STradeVerificationCode(width, height)) { success, data ->
+            try {
+                val resp = STradeVerificationCodeA(data.headBytes, data.bodyBytes, Client.getInstance().aesKey)
+                val picReal = resp.getPic()
+                val decodedByte = BitmapFactory.decodeByteArray(picReal, 0, picReal.size)
+                callback.onSucceed(decodedByte)
+            } catch (e: Exception) {
+                val error = Error()
+                error.dwReqId = "0"
+                error.dwErrorCode = "0"
+                error.szError = "获取验证码失败"
+                callback.onFailure(error)
+            }
+        }
+    }
 
     override fun login(
         userType: String,
@@ -17,12 +41,12 @@ class TradeRepository : TradeDataSource {
         callback: OnResult<MutableList<User>>
     ) {
         async {
-        var user = User("李磊", "Z", "00002000001", "secret", "secuid", "cusid")
-        var user1 = User("李磊", "0", "00002000001", "secret1", "secuid1", "cusid1")
-        val list = mutableListOf<User>()
-        list.add(user)
-        list.add(user1)
-        callback.onSucceed(list)
+            var user = User("李磊", "Z", "00002000001", "secret", "secuid", "cusid")
+            var user1 = User("李磊", "0", "00002000001", "secret1", "secuid1", "cusid1")
+            val list = mutableListOf<User>()
+            list.add(user)
+            list.add(user1)
+            callback.onSucceed(list)
         }
     }
 
@@ -307,7 +331,8 @@ class TradeRepository : TradeDataSource {
         callback: OnResult<Int>
     ) {
         async {
-            callback.onSucceed(1000) }
+            callback.onSucceed(1000)
+        }
 
     }
 

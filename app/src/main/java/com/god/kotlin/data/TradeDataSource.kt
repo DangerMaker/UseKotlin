@@ -1,13 +1,21 @@
 package com.god.kotlin.data
 
+import android.graphics.Bitmap
 import com.god.kotlin.data.entity.*
 import com.god.kotlin.net.OnResult
 
 interface TradeDataSource {
 
-    fun login(userType: String, userId: String, password: String,
-              checkCode: String, verifiCodeId: String,
-              callback: OnResult<MutableList<User>>
+    fun getVerificationCode(
+        width: Int,
+        height: Int,
+        callback: OnResult<Bitmap>
+    )
+
+    fun login(
+        userType: String, userId: String, password: String,
+        checkCode: String, verifiCodeId: String,
+        callback: OnResult<MutableList<User>>
     )
 
     fun searchStock(code: String, callback: OnResult<TradeStockEntity>)
@@ -19,7 +27,8 @@ interface TradeDataSource {
 
     fun getAvailable(
 //        market: String,secuid: String,fundsId: String,
-        code: String, price: Double, flag: String, callback: OnResult<Int>)
+        code: String, price: Double, flag: String, callback: OnResult<Int>
+    )
 
     fun transaction(
         market: String,
@@ -66,7 +75,7 @@ interface TradeDataSource {
         callback: OnResult<MutableList<Deal>>
     )
 
-    fun queryOrderList1(fundid: String,count: Int, offset: Int, callback: OnResult<MutableList<Order>>)
+    fun queryOrderList1(fundid: String, count: Int, offset: Int, callback: OnResult<MutableList<Order>>)
 
     fun queryHistoryOrderList(
         begin: String,
@@ -77,7 +86,7 @@ interface TradeDataSource {
         callback: OnResult<MutableList<Order>>
     )
 
-    fun queryIpoQuota(secuid:String,callback:OnResult<MutableList<Quota>>)
+    fun queryIpoQuota(secuid: String, callback: OnResult<MutableList<Quota>>)
 
     fun queryNewStockList(callback: OnResult<MutableList<NewStock>>)
 
