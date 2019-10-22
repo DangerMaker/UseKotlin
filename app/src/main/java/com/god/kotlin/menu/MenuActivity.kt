@@ -4,8 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import com.ez08.trade.net.Client
 import com.ez08.trade.net.NetUtil
-import com.ez08.trade.net.STradeGateLogin
-import com.ez08.trade.net.STradeGateLoginA
+import com.ez08.trade.net.login.STradeGateLogin
+import com.ez08.trade.net.login.STradeGateLoginA
 import com.ez08.trade.tools.CommonUtils
 import com.ez08.trade.ui.TradeMenuActivity
 import com.ez08.trade.user.TradeUser
@@ -26,17 +26,19 @@ class MenuActivity : BaseActivity() {
             MenuFragment.newInstance()
         }
 
-        showBusyDialog()
-        if (Client.state != Client.STATE.LOGIN) {
-            if (Client.state == Client.STATE.DISCONNECT) {
-                Client.getInstance().connect {
-                    if (Client.sessionId == null) {
-                        JumpActivity.start(context, "登录")
-                    } else {
-                        setLoginSessionPackage()
-                    }
-                }
+        if (Client.getInstance().state != Client.STATE.LOGIN) {
+            showBusyDialog()
+            if (Client.getInstance().state == Client.STATE.DISCONNECT) {
+                Client.getInstance().connect()
             }
+        }
+    }
+
+    override fun onConnect() {
+        if (Client.sessionId == null) {
+            JumpActivity.start(context, "登录")
+        } else {
+            setLoginSessionPackage()
         }
     }
 
@@ -45,7 +47,8 @@ class MenuActivity : BaseActivity() {
         tradeGateLogin.setBody(Client.strUserType, Client.userId, Client.password, Client.sessionId, Client.strNet2)
         Client.getInstance().send(tradeGateLogin) { success, data ->
             dismissBusyDialog()
-            val gateLoginA = STradeGateLoginA(data.headBytes, data.bodyBytes, Client.getInstance().aesKey)
+            val gateLoginA =
+                STradeGateLoginA(data.headBytes, data.bodyBytes, Client.getInstance().aesKey)
             if (!gateLoginA.getbLoginSucc()) {
                 CommonUtils.show(this, gateLoginA.getSzErrMsg())
                 Client.getInstance().shutDown()

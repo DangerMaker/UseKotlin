@@ -1,4 +1,6 @@
-package com.ez08.trade.net;
+package com.ez08.trade.net.verification;
+
+import com.ez08.trade.net.AbsResponse;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;

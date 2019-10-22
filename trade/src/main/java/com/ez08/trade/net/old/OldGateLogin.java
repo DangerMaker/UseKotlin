@@ -1,8 +1,8 @@
 package com.ez08.trade.net.old;
 
 import com.ez08.trade.net.Constant;
-import com.ez08.trade.net.STradeBaseHead;
-import com.ez08.trade.net.STradeGateUserInfo;
+import com.ez08.trade.net.head.STradeBaseHead;
+import com.ez08.trade.net.login.STradeGateUserInfo;
 import com.xuhao.didi.core.iocore.interfaces.ISendable;
 
 import java.io.UnsupportedEncodingException;

@@ -1,5 +1,9 @@
-package com.ez08.trade.net;
+package com.ez08.trade.net.biz;
 
+
+import com.ez08.trade.net.AbsSendable;
+import com.ez08.trade.net.head.STradeBaseHead;
+import com.ez08.trade.net.login.STradeGateUserInfo;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;

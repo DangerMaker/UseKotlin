@@ -1,7 +1,8 @@
-package com.ez08.trade.net;
+package com.ez08.trade.net.session;
 
 import android.util.Log;
 
+import com.ez08.trade.net.AbsResponse;
 import com.xuhao.didi.core.utils.BytesUtils;
 
 import java.nio.ByteBuffer;
@@ -9,8 +10,8 @@ import java.nio.ByteOrder;
 
 public class STradeSessionUpdateA  extends AbsResponse {
 
-    byte[] sSessionId = new byte[30];
-    int[] dwReserved = new int[10];
+    public byte[] sSessionId = new byte[30];
+    public int[] dwReserved = new int[10];
 
     public STradeSessionUpdateA(byte[] head, byte[] originBody, byte[] aesKey) {
         super(head, originBody, aesKey);

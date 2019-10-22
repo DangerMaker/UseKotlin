@@ -67,11 +67,11 @@ class LoginFragment : Fragment() {
             login_loading.visibility = View.GONE
             if (it) {
                 startActivity(Intent(context, MenuActivity::class.java))
+                activity?.finish()
             } else {
 
             }
         })
-
 
         viewModel.bitmap.observe(this, Observer {
             if(it != null){
@@ -93,10 +93,7 @@ class LoginFragment : Fragment() {
                 }
 
             login_loading.visibility = View.VISIBLE
-            viewModel.lggin(
-                "Z", "userid", "password", "checkCode",
-                "veriId"
-            )
+            viewModel.login("Z", "109000512", "123123", check_code.text.toString(), "0")
         }
 
         viewModel.getVerificationCode(30,15)

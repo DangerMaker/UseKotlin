@@ -15,7 +15,6 @@ import androidx.annotation.Nullable;
 
 import com.ez08.trade.Constant;
 import com.ez08.trade.R;
-import com.ez08.trade.net.Callback;
 import com.ez08.trade.net.Client;
 import com.ez08.trade.tools.DialogUtils;
 import com.ez08.trade.tools.YCParser;

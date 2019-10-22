@@ -12,12 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.ez08.trade.TradeInitalizer;
 import com.ez08.trade.net.Client;
-import com.ez08.trade.net.OnConnectListener;
-import com.ez08.trade.net.STradeGateLogin;
-import com.ez08.trade.net.STradeGateLoginA;
 import com.ez08.trade.net.TickoutListener;
-import com.ez08.trade.tools.CommonUtils;
-import com.ez08.trade.tools.JumpActivity;
 import com.ez08.trade.tools.NetworkReceiver;
 import com.ez08.trade.ui.user.TradeTickoutWindows;
 

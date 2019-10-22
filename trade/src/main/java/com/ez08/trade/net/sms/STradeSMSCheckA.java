@@ -1,4 +1,6 @@
-package com.ez08.trade.net;
+package com.ez08.trade.net.sms;
+
+import com.ez08.trade.net.AbsResponse;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -10,7 +12,7 @@ import java.nio.ByteOrder;
  * 	DWORD	dwReserved[10];
  * };
  */
-public class STradeSMSCheckA extends AbsResponse{
+public class STradeSMSCheckA extends AbsResponse {
 
     private byte bSuccess;
     private int[] dwReserved = new int[10];

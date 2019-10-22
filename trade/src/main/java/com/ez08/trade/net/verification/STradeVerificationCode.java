@@ -1,4 +1,7 @@
-package com.ez08.trade.net;
+package com.ez08.trade.net.verification;
+
+import com.ez08.trade.net.AbsSendable;
+import com.ez08.trade.net.head.STradeBaseHead;
 
 import java.nio.ByteBuffer;
 

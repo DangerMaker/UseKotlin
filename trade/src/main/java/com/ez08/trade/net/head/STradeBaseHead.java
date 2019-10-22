@@ -1,4 +1,6 @@
-package com.ez08.trade.net;
+package com.ez08.trade.net.head;
+
+import com.ez08.trade.net.Constant;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;

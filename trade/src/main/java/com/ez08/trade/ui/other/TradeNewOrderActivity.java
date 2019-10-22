@@ -2,7 +2,6 @@ package com.ez08.trade.ui.other;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -16,13 +15,12 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
-import com.ez08.trade.Constant;
 import com.ez08.trade.R;
 import com.ez08.trade.net.Callback;
 import com.ez08.trade.net.Client;
-import com.ez08.trade.net.STradeHQOrderItem;
-import com.ez08.trade.net.STradeHQQuery;
-import com.ez08.trade.net.STradeHQQueryA;
+import com.ez08.trade.net.hq.STradeHQOrderItem;
+import com.ez08.trade.net.hq.STradeHQQuery;
+import com.ez08.trade.net.hq.STradeHQQueryA;
 import com.ez08.trade.tools.CommonUtils;
 import com.ez08.trade.tools.DialogUtils;
 import com.ez08.trade.tools.MathUtils;
@@ -32,17 +30,11 @@ import com.ez08.trade.ui.BaseActivity;
 import com.ez08.trade.ui.trade.entity.TradeStockEntity;
 import com.xuhao.didi.core.pojo.OriginalData;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class TradeNewOrderActivity extends BaseActivity implements View.OnClickListener {
     ImageView backBtn;

@@ -1,5 +1,6 @@
 package com.ez08.trade.net;
 
+import com.ez08.trade.net.head.STradeBaseHead;
 import com.xuhao.didi.core.iocore.interfaces.IPulseSendable;
 
 import java.nio.ByteBuffer;

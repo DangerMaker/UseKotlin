@@ -12,15 +12,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ez08.trade.R;
 import com.ez08.trade.net.Client;
-import com.ez08.trade.net.StringCallback;
 import com.ez08.trade.tools.YCParser;
 import com.ez08.trade.ui.BaseActivity;
 import com.ez08.trade.ui.user.adpater.TradeShareHoldersAdapter;
 import com.ez08.trade.ui.user.entity.ShareHoldersEntity;
 import com.ez08.trade.ui.user.entity.TradeShareHoldersTitle;
 import com.ez08.trade.ui.view.LinearItemDecoration;
-
-import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;

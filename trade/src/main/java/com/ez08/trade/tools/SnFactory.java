@@ -1,4 +1,4 @@
-package com.ez08.trade.net;
+package com.ez08.trade.tools;
 
 import java.util.concurrent.atomic.AtomicInteger;
 

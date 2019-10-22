@@ -1,6 +1,8 @@
-package com.ez08.trade.net;
+package com.ez08.trade.net.biz;
 
 import android.util.Log;
+import com.ez08.trade.net.AbsResponse;
+import com.ez08.trade.net.NetUtil;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;

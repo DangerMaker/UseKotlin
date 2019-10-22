@@ -1,5 +1,8 @@
-package com.ez08.trade.net;
+package com.ez08.trade.net.hq;
 
+
+import com.ez08.trade.net.AbsSendable;
+import com.ez08.trade.net.head.STradeBaseHead;
 
 import java.nio.ByteBuffer;
 
@@ -13,7 +16,7 @@ import static com.ez08.trade.net.NetUtil.byteCopy;
  *     char    szCode[13];//
  * };
  */
-public class STradeHQQuery extends AbsSendable{
+public class STradeHQQuery extends AbsSendable {
 
     byte[] idMarket = new byte[4];
     byte[] szCode = new byte[13];

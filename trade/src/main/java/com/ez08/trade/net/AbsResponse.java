@@ -1,6 +1,7 @@
 package com.ez08.trade.net;
 
 import android.util.Log;
+import com.ez08.trade.net.head.STradeBaseHead;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;

@@ -1,6 +1,8 @@
-package com.ez08.trade.net;
+package com.ez08.trade.net.login;
 
 import android.util.Log;
+import com.ez08.trade.net.AbsResponse;
+import com.ez08.trade.net.NetUtil;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -23,7 +25,7 @@ import java.util.List;
  * };
  * };
  */
-public class STradeGateLoginA extends AbsResponse{
+public class STradeGateLoginA extends AbsResponse {
     public int bLoginSucc;
     public int dwCount;
     public List<STradeGateLoginAItem> list;

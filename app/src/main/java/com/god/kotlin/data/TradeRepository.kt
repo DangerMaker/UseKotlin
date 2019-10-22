@@ -3,14 +3,17 @@ package com.god.kotlin.data
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
-import com.ez08.trade.net.Client
-import com.ez08.trade.net.STradeVerificationCode
-import com.ez08.trade.net.STradeVerificationCodeA
+import com.ez08.trade.net.*
+import com.ez08.trade.net.login.STradeGateLogin
+import com.ez08.trade.net.login.STradeGateLoginA
+import com.ez08.trade.net.verification.STradeVerificationCode
+import com.ez08.trade.net.verification.STradeVerificationCodeA
 import com.god.kotlin.data.entity.*
 import com.god.kotlin.net.OnResult
 import com.god.kotlin.util.async
 import java.lang.Exception
 import com.god.kotlin.net.Error
+import java.util.ArrayList
 
 
 class TradeRepository : TradeDataSource {
@@ -18,7 +21,11 @@ class TradeRepository : TradeDataSource {
     override fun getVerificationCode(width: Int, height: Int, callback: OnResult<Bitmap>) {
         Client.getInstance().send(STradeVerificationCode(width, height)) { success, data ->
             try {
-                val resp = STradeVerificationCodeA(data.headBytes, data.bodyBytes, Client.getInstance().aesKey)
+                val resp = STradeVerificationCodeA(
+                    data.headBytes,
+                    data.bodyBytes,
+                    Client.getInstance().aesKey
+                )
                 val picReal = resp.getPic()
                 val decodedByte = BitmapFactory.decodeByteArray(picReal, 0, picReal.size)
                 callback.onSucceed(decodedByte)
@@ -40,14 +47,47 @@ class TradeRepository : TradeDataSource {
         verifiCodeId: String,
         callback: OnResult<MutableList<User>>
     ) {
-        async {
-            var user = User("李磊", "Z", "00002000001", "secret", "secuid", "cusid")
-            var user1 = User("李磊", "0", "00002000001", "secret1", "secuid1", "cusid1")
-            val list = mutableListOf<User>()
-            list.add(user)
-            list.add(user1)
-            callback.onSucceed(list)
+        val tradeGateLogin = STradeGateLogin()
+        var str2 = "|ZNZ|ANDROID"
+        tradeGateLogin.setBody(userType, userId, password, checkCode, str2)
+        Client.getInstance().send(tradeGateLogin) { success, data ->
+            Client.strNet2 = str2
+            Client.strUserType = userType
+            Client.userId = userId
+            Client.password = password
+
+            val gateLoginA =
+                STradeGateLoginA(data.headBytes, data.bodyBytes, Client.getInstance().aesKey)
+            if(gateLoginA.getbLoginSucc()){
+                val list = ArrayList<User>()
+                for (i in gateLoginA.list.indices) {
+                    val user = User(
+                        NetUtil.byteToStr(gateLoginA.list[i].sz_name),
+                        NetUtil.byteToStr(gateLoginA.list[i].sz_market),
+                        gateLoginA.list[i].n64_fundid.toString() + "",
+                        NetUtil.byteToStr(gateLoginA.list[i].sz_custcert),
+                        NetUtil.byteToStr(gateLoginA.list[i].sz_secuid),
+                        gateLoginA.list[i].n64_custid.toString()
+                        )
+                    list.add(user)
+                }
+                callback.onSucceed(list)
+            }else{
+                val error = Error()
+                error.dwReqId = "0"
+                error.dwErrorCode = "0"
+                error.szError = gateLoginA.getSzErrMsg()
+                callback.onFailure(error)
+            }
         }
+//        async {
+//            var user = User("李磊", "Z", "00002000001", "secret", "secuid", "cusid")
+//            var user1 = User("李磊", "0", "00002000001", "secret1", "secuid1", "cusid1")
+//            val list = mutableListOf<User>()
+//            list.add(user)
+//            list.add(user1)
+//            callback.onSucceed(list)
+//        }
     }
 
     override fun queryPeiHaoList(

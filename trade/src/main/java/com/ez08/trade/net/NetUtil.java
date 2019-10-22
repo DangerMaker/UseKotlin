@@ -1,5 +1,7 @@
 package com.ez08.trade.net;
 
+import com.ez08.trade.net.login.STradeGateUserInfo;
+
 import java.io.UnsupportedEncodingException;
 
 import static com.ez08.trade.net.Constant.UTF8;
