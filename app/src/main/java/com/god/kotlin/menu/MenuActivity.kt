@@ -2,6 +2,7 @@ package com.god.kotlin.menu
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import com.ez08.trade.net.Client
 import com.ez08.trade.net.NetUtil
 import com.ez08.trade.net.login.STradeGateLogin
@@ -14,7 +15,10 @@ import com.god.kotlin.BaseActivity
 import com.god.kotlin.R
 import com.god.kotlin.util.JumpActivity
 import com.god.kotlin.util.addFragment
+import com.god.kotlin.util.toast
+import com.xuhao.didi.socket.client.impl.exceptions.ManuallyDisconnectException
 import java.util.ArrayList
+import javax.security.auth.login.LoginException
 
 class MenuActivity : BaseActivity() {
 
@@ -26,6 +30,16 @@ class MenuActivity : BaseActivity() {
             MenuFragment.newInstance()
         }
 
+       connect()
+    }
+
+    override fun onKickOUt() {
+        super.onKickOUt()
+        "您被踢出".toast(this)
+        Client.getInstance().logout()
+    }
+
+    private fun connect(){
         if (Client.getInstance().state != Client.STATE.LOGIN) {
             showBusyDialog()
             if (Client.getInstance().state == Client.STATE.DISCONNECT) {
@@ -34,9 +48,17 @@ class MenuActivity : BaseActivity() {
         }
     }
 
+    override fun onDisConnect(e: Exception) {
+        if (e is LoginException) {
+            connect()
+        }
+    }
+
     override fun onConnect() {
         if (Client.sessionId == null) {
+            dismissBusyDialog()
             JumpActivity.start(context, "登录")
+            finish()
         } else {
             setLoginSessionPackage()
         }

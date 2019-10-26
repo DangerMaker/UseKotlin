@@ -8,6 +8,7 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.core.content.edit
 import androidx.fragment.app.Fragment
@@ -53,6 +54,8 @@ class LoginFragment : Fragment() {
             password_edit?.setText(getString(SHARE_PREF_PASSWORD, ""))
         }
 
+        check_code.inputType = EditorInfo.TYPE_CLASS_PHONE;
+
         auto_input.setOnCheckedChangeListener { _, isChecked ->
             if (!isChecked)
                 sharePref?.edit {
@@ -93,7 +96,7 @@ class LoginFragment : Fragment() {
                 }
 
             login_loading.visibility = View.VISIBLE
-            viewModel.login("Z", "109000512", "123123", check_code.text.toString(), "0")
+            viewModel.login("Z", "109005527", "123123", check_code.text.toString(), "0")
         }
 
         viewModel.getVerificationCode(30,15)

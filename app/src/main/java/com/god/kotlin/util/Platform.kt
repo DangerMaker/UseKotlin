@@ -1,6 +1,7 @@
 package com.god.kotlin.util
 
 import android.text.TextUtils
+import com.god.kotlin.pre.PreData
 
 fun getBSStringByTag(tag: String): String {
     return if (tag == "B") {
@@ -41,6 +42,24 @@ fun getTransferStatus(type: String): String {
         "调整为失败"
     } else {
         "未知"
+    }
+}
+
+fun getOrderStatus(data:String):String{
+    return when (data) {
+        "0" -> "未报"
+        "1" -> "正报"
+        "2" -> "已报"
+        "3" -> "已报待撤"
+        "4" -> "部成待撤"
+        "5" -> "部撤"
+        "6" -> "已撤"
+        "7" -> "部成"
+        "8" -> "已成"
+        "9" -> "废单"
+        "A" -> "待报"
+        "B" -> "正报"
+        else -> "未知"
     }
 }
 

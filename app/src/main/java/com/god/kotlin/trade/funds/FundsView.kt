@@ -44,7 +44,7 @@ class FundsView(context: Context?) : RelativeLayout(context) {
         keyong.text = funds.fundavl.format2()
         zongzichan.text = funds.marketvalue.format2()
         shizhi.text = funds.stkvalue.format2()
-        kequ.text = funds.fundfrz.format2()
+        kequ.text = funds.fundbal.format2()
     }
 }
 

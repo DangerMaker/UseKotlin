@@ -42,6 +42,5 @@ public class TradeTickoutWindows extends Dialog implements View.OnClickListener 
         JumpActivity.start(context,"登录");
         context.finish();
         dismiss();
-        TradeInitalizer.isTickout=false;
     }
 }

@@ -33,8 +33,8 @@ open class BaseActivity : AppCompatActivity() {
                 onKickOUt()
             }
 
-            override fun disconnect() {
-                onDisConnect()
+            override fun disconnect(e: Exception) {
+                onDisConnect(e)
             }
         }
 
@@ -62,7 +62,7 @@ open class BaseActivity : AppCompatActivity() {
 
     }
 
-    protected open fun onDisConnect(){
+    protected open fun onDisConnect(e :Exception){
 
     }
 

@@ -16,7 +16,7 @@ import com.ez08.trade.net.TickoutListener;
 import com.ez08.trade.tools.NetworkReceiver;
 import com.ez08.trade.ui.user.TradeTickoutWindows;
 
-public class BaseActivity extends AppCompatActivity implements TickoutListener {
+public class BaseActivity extends AppCompatActivity {
 
     protected String TAG;
     protected Context context;
@@ -27,7 +27,6 @@ public class BaseActivity extends AppCompatActivity implements TickoutListener {
         super.onCreate(savedInstanceState);
         context = this;
         TAG = this.getClass().getSimpleName();
-        Client.getInstance().setTickoutListener(this);
         tradeTickoutWindows = new TradeTickoutWindows(this);
 //        checkNetwork();
     }
@@ -61,29 +60,23 @@ public class BaseActivity extends AppCompatActivity implements TickoutListener {
         return context.getResources().getColorStateList(color);
     }
 
-    @Override
-    public void onTickout() {
-        if (TradeInitalizer.isTickout&&tradeTickoutWindows!=null){
-            tradeTickoutWindows.show();
-        }
-    }
-    private void checkNetwork(){
-        networkReceiver = new NetworkReceiver(this, new NetworkReceiver.NetworkCallback() {
-            @Override
-            public void onAvailable() {
-                if (Client.sessionId!=null&&!Client.getInstance().isConnect()){
-                    Log.e("reconnet","重连");
-                    Client.getInstance().unBind();
-                    Client.getInstance().connect(null);
-                }
-            }
-            @Override
-            public void onLost() {
-                Log.e("reconnet","断网");
-                Client.getInstance().unBind();
-            }
-        });
-    }
+//    private void checkNetwork(){
+//        networkReceiver = new NetworkReceiver(this, new NetworkReceiver.NetworkCallback() {
+//            @Override
+//            public void onAvailable() {
+//                if (Client.sessionId!=null&&!Client.getInstance().isConnect()){
+//                    Log.e("reconnet","重连");
+//                    Client.getInstance().unBind();
+//                    Client.getInstance().connect(null);
+//                }
+//            }
+//            @Override
+//            public void onLost() {
+//                Log.e("reconnet","断网");
+//                Client.getInstance().unBind();
+//            }
+//        });
+//    }
     @Override
     protected void onDestroy() {
         super.onDestroy();

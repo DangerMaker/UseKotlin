@@ -13,6 +13,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.god.kotlin.R
 import com.god.kotlin.data.entity.TradeStockEntity
+import com.god.kotlin.user.UserHelper
 import com.god.kotlin.util.*
 import kotlinx.android.synthetic.main.view_top.view.*
 import kotlinx.android.synthetic.main.view_trade.*
@@ -73,8 +74,10 @@ class TradeTransView(context: Context?) : RelativeLayout(context), ITradeView {
 
         submit.setOnClickListener {
             _data?.let {
+                val user =  UserHelper.getUserByMarket(it.market)
+
                 viewModel.transaction(
-                    it.market, it.stkcode,
+                    it.market, it.stkcode, user.secuid,user.fundid,
                     price.text.toDouble(), total_num.text.toInt(), if (direction) "0B" else "0S"
                 )
             }
@@ -114,7 +117,7 @@ class TradeTransView(context: Context?) : RelativeLayout(context), ITradeView {
             input_code.setData(it.stkcode, it.stkname)
             price.text = it.fixprice.format2()
 
-            viewModel.getAvailable(it.stkcode, it.fixprice, if (direction) "0B" else "0S")
+//            viewModel.getAvailable(it.stkcode, it.fixprice, if (direction) "0B" else "0S")
 
             newest_price.text = it.fNewest.format2()
             newest_price.setTextColor(ContextCompat.getColorStateList(context, getPriceColor(it.fNewest, it.fOpen)))

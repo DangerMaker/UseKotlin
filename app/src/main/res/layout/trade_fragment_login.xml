@@ -182,7 +182,7 @@
                             android:background="@null"
                             android:ems="10"
                             android:hint="验证码"
-                            android:inputType="textPassword"
+                            android:inputType="number"
                             android:maxLines="1"
                             android:textColorHint="#c9c9c9"
                             android:textCursorDrawable="@null"
@@ -264,7 +264,7 @@
                 android:background="@drawable/trade_white_button"
                 android:text="@string/trade_login"
                 android:textColor="@color/trade_black"
-                android:textSize="18dp"/>
+                android:textSize="15dp"/>
 
     </LinearLayout>
 

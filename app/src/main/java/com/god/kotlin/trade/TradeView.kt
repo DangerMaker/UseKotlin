@@ -12,6 +12,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.god.kotlin.R
 import com.god.kotlin.data.entity.TradeStockEntity
+import com.god.kotlin.user.UserHelper
 import com.god.kotlin.util.*
 import kotlinx.android.synthetic.main.view_top.view.*
 import kotlinx.android.synthetic.main.view_trade.*
@@ -53,8 +54,9 @@ class TradeView(context: Context?) : RelativeLayout(context), ITradeView {
         }
 
         submit.setOnClickListener {
+            val user =  UserHelper.getUserByMarket(_data.market)
             viewModel.transaction(
-                "market", _data.stkcode,
+                _data.market, _data.stkcode,user.secuid,user.fundid,
                 price.text.toDouble(), total_num.text.toInt(), if(direction) "0B" else "0S"
             )
         }
@@ -94,25 +96,30 @@ class TradeView(context: Context?) : RelativeLayout(context), ITradeView {
     }
 
     override fun setData(data: TradeStockEntity) {
+        val user =  UserHelper.getUserByMarket(data.market)
+
         data.let {
             _data = data
             input_code.setData(it.stkcode, it.stkname)
             price.text = it.fixprice.format2()
-
-            viewModel.getAvailable(it.stkcode, it.fixprice,  if(direction) "0B" else "0S")
-
-            newest_price.text = it.fNewest.format2()
-            newest_price.setTextColor(ContextCompat.getColorStateList(context, getPriceColor(it.fNewest, it.fOpen)))
-            last_price.text = it.fLastClose.format2()
-            limit_up_price.text = (it.fLastClose * 1.1f).format2()
-            limit_up_price.setTextColor(ContextCompat.getColorStateList(context, R.color.trade_red))
-            limit_down_price.text = (it.fLastClose * 0.9f).format2()
-            limit_down_price.setTextColor(ContextCompat.getColorStateList(context, R.color.trade_green))
-
-            list.clear()
-            list.addAll(data.bid)
-            list.addAll(data.ask)
-            adapter.notifyDataSetChanged()
+//
+            viewModel.getAvailable(
+                data.market, user.secuid,user.fundid,
+                it.stkcode, it.fixprice, direction
+            )
+//
+//            newest_price.text = it.fNewest.format2()
+//            newest_price.setTextColor(ContextCompat.getColorStateList(context, getPriceColor(it.fNewest, it.fOpen)))
+//            last_price.text = it.fLastClose.format2()
+//            limit_up_price.text = (it.fLastClose * 1.1f).format2()
+//            limit_up_price.setTextColor(ContextCompat.getColorStateList(context, R.color.trade_red))
+//            limit_down_price.text = (it.fLastClose * 0.9f).format2()
+//            limit_down_price.setTextColor(ContextCompat.getColorStateList(context, R.color.trade_green))
+//
+//            list.clear()
+//            list.addAll(data.bid)
+//            list.addAll(data.ask)
+//            adapter.notifyDataSetChanged()
         }
     }
 }

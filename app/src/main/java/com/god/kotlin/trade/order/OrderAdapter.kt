@@ -8,10 +8,7 @@ import android.widget.TextView
 import com.god.kotlin.R
 import com.god.kotlin.data.entity.Account
 import com.god.kotlin.data.entity.Order
-import com.god.kotlin.util.format2
-import com.god.kotlin.util.getTime
-import com.god.kotlin.util.inflate
-import com.god.kotlin.util.setPriceColor
+import com.god.kotlin.util.*
 
 class OrderAdapter(
     private val list: MutableList<Order>
@@ -58,12 +55,16 @@ class OrderAdapter(
         }
 
         with(rowView.findViewById<TextView>(R.id.order_state)) {
-            text = if(order.bsflag == "b") "买入" else "卖出"
+            text = if (order.bsflag == "B") {
+                "买入"
+            } else {
+                "卖出"
+            }
             setPriceColor(color)
         }
 
         with(rowView.findViewById<TextView>(R.id.final_state)) {
-            text = order.orderstatus
+            text = getOrderStatus(order.orderstatus)
             setPriceColor(color)
         }
 

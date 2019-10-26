@@ -10,3 +10,19 @@ fun Double.format2(): String {
 fun Int.save100(): String {
     return (this / 100 * 100).toString()
 }
+
+fun String?.toIntOrZero(): Int {
+    return try {
+        this?.toInt() ?: 0
+    } catch (e: Exception) {
+        0
+    }
+}
+
+fun String?.toDoubleOrZero(): Double {
+    return try {
+        this?.toDouble() ?: 0.0
+    } catch (e: Exception) {
+        0.0
+    }
+}

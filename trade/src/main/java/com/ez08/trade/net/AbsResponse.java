@@ -25,7 +25,6 @@ public class AbsResponse {
         }
 
         if (sTradeBaseHead.btCompressFlag == 2) {
-            Log.e("unPress","wPid="+sTradeBaseHead.wPid);
             //解压
             body = OpensslHelper.unPress(encryptBody.length, sTradeBaseHead.dwRawSize, encryptBody);
         }else{

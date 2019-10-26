@@ -11,4 +11,5 @@ public class TradeHandEntity {
     public double mktval; //市值
     public double income; //盈亏
     public double lastprice; //最新价
+    public String moneyType;
 }

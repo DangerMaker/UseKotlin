@@ -52,9 +52,7 @@ public class TradeOtherHolder extends BaseViewHolder<Object> {
             }
 
             if(entity.title.equals("退出登录")){
-                Client.getInstance().shutDown();
-                JumpActivity.start(getContext(),"登录");
-                ((Activity)getContext()).finish();
+                Client.getInstance().logout();
                 return;
             }
             JumpActivity.start(getContext(),entity.title);

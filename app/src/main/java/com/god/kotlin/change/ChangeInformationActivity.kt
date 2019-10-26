@@ -21,7 +21,7 @@ class ChangeInformationActivity : AppCompatActivity() {
         val viewModel = obtainViewModel(InformationViewModel::class.java)
         viewModel.information.observe(this, Observer {
             information_name.setText(it.name)
-            information_sex.setText(if (it.sex == "1") "男" else "女")
+            information_sex.setText(if (it.sex == "1"){ "男" }else {"女"})
             information_id_type.setText(it.idType)
             information_card.setText(it.idCard)
             information_phone.setText(it.phone)

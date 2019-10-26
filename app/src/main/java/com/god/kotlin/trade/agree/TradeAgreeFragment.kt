@@ -9,6 +9,7 @@ import androidx.lifecycle.Observer
 import com.god.kotlin.R
 import com.god.kotlin.data.entity.TradeStockEntity
 import com.god.kotlin.trade.SellViewModel
+import com.god.kotlin.user.UserHelper
 import kotlinx.android.synthetic.main.fragment_trade_agree.*
 
 class TradeAgreeFragment : Fragment() {
@@ -59,7 +60,7 @@ class TradeAgreeFragment : Fragment() {
         viewModel.stockEntity.observe(this, Observer {
             stockEntity = it
             agree_stock_code.setData(it.stkcode, it.stkname)
-            viewModel.getAvailable(it.stkcode, it.fixprice, bsflag)
+//            viewModel.getAvailable(it.stkcode, it.fixprice, bsflag)
         })
 
         viewModel.available.observe(this, Observer {
@@ -68,8 +69,10 @@ class TradeAgreeFragment : Fragment() {
 
         agree_submit.setOnClickListener {
             stockEntity?.let {
+                val user =  UserHelper.getUserByMarket(it.market)
+
                 viewModel.transaction(
-                    "market", it.stkcode,
+                    "market", it.stkcode,user.secuid,user.fundid,
                     it.fixprice, 123, bsflag
                 )
             }

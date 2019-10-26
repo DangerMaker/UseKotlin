@@ -14,12 +14,14 @@ import com.ez08.trade.net.exchange.STradePacketKeyExchange;
 import com.ez08.trade.net.exchange.STradePacketKeyExchangeResp;
 import com.ez08.trade.net.head.STradeBaseHead;
 import com.ez08.trade.net.head.STradeCommOK;
+import com.ez08.trade.net.login.STradeGateUserInfo;
 import com.ez08.trade.net.session.STradeSessionKickoutA;
 import com.ez08.trade.net.session.STradeSessionUpdateA;
 import com.ez08.trade.tools.SnFactory;
 import com.xuhao.didi.core.pojo.OriginalData;
 import com.xuhao.didi.core.protocol.IReaderProtocol;
 import com.xuhao.didi.socket.client.impl.client.action.ActionDispatcher;
+import com.xuhao.didi.socket.client.impl.exceptions.ManuallyDisconnectException;
 import com.xuhao.didi.socket.client.sdk.OkSocket;
 import com.xuhao.didi.socket.client.sdk.client.ConnectionInfo;
 import com.xuhao.didi.socket.client.sdk.client.OkSocketOptions;
@@ -28,6 +30,7 @@ import com.xuhao.didi.socket.client.sdk.client.action.SocketActionAdapter;
 import com.xuhao.didi.socket.client.sdk.client.connection.DefaultReconnectManager;
 import com.xuhao.didi.socket.client.sdk.client.connection.IConnectionManager;
 
+import javax.security.auth.login.LoginException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
@@ -48,7 +51,6 @@ public class Client {
         DISCONNECT
     }
 
-    IConnectionManager manager;
     public byte[] aesKey = null;
     public static byte[] sessionId = null;
     public static String strUserType;
@@ -63,11 +65,12 @@ public class Client {
 
     private Client() {
         mRequestTable = new Hashtable<>();
+        mySocketActionAdapter = new MySocketActionAdapter();
     }
 
     private MySocketActionAdapter mySocketActionAdapter;
 
-    private TickoutListener tickoutListener;
+    private IConnectionManager manager;
 
     private static Client instance = new Client();
 
@@ -76,6 +79,8 @@ public class Client {
     }
 
     public void connect(OnConnectListener onConnectListener) {
+        disconnect();
+
         ConnectionInfo info = new ConnectionInfo(IP, BIZ_PORT);
         manager = OkSocket.open(info);
         OkSocketOptions options = manager.getOption();
@@ -110,15 +115,17 @@ public class Client {
         });
         manager.option(builder.build());
         //注册Socket行为监听器,SocketActionAdapter是回调的Simple类,其他回调方法请参阅类文档
-        mySocketActionAdapter = new MySocketActionAdapter(onConnectListener);
+        mySocketActionAdapter = new MySocketActionAdapter();
         manager.registerReceiver(mySocketActionAdapter);
         //调用通道进行连接
         manager.connect();
     }
 
     public void connect() {
+        disconnect();
         ConnectionInfo info = new ConnectionInfo(IP, BIZ_PORT);
         manager = OkSocket.open(info);
+        Log.e("Manager", manager.toString());
         OkSocketOptions options = manager.getOption();
         //基于当前参配对象构建一个参配建造者类
         OkSocketOptions.Builder builder = new OkSocketOptions.Builder(options);
@@ -151,27 +158,17 @@ public class Client {
         });
         manager.option(builder.build());
         //注册Socket行为监听器,SocketActionAdapter是回调的Simple类,其他回调方法请参阅类文档
-        mySocketActionAdapter = new MySocketActionAdapter(null);
         manager.registerReceiver(mySocketActionAdapter);
         //调用通道进行连接
         manager.connect();
     }
 
     private class MySocketActionAdapter extends SocketActionAdapter {
-        private OnConnectListener onConnectListener;
-
-        public MySocketActionAdapter(OnConnectListener onConnectListener) {
-            this.onConnectListener = onConnectListener;
-        }
-
         @Override
         public void onSocketConnectionSuccess(ConnectionInfo info, String action) {
             sendState(STATE.CONNECTED);
             manager.send(new STradePacketKeyExchange());
             manager.getPulseManager().setPulseSendable(new STradeCommOK());
-            if (onConnectListener != null) {
-                onConnectListener.onConnect();
-            }
         }
 
         @Override
@@ -204,14 +201,6 @@ public class Client {
             //重复登录，踢出
             if (head.wPid == AbsSendable.PID_TRADE_SESSION_KICKOUT) {
                 sendState(STATE.KICK);
-                STradeSessionKickoutA resp = new STradeSessionKickoutA(data.getHeadBytes(),
-                        data.getBodyBytes(), aesKey);
-                sessionId = resp.getsSessionId();
-                TradeInitalizer.isTickout = true;
-                if (tickoutListener != null) {
-                    tickoutListener.onTickout();
-                }
-                shutDown();
                 return;
             }
 
@@ -231,6 +220,7 @@ public class Client {
                 } else {
                     callback.onResult(true, data);
                 }
+                manager.getPulseManager().feed();
                 mRequestTable.remove(head.dwReqId);
             }
 
@@ -239,7 +229,7 @@ public class Client {
         @Override
         public void onSocketDisconnection(ConnectionInfo info, String action, Exception e) {
             super.onSocketDisconnection(info, action, e);
-            sendState(STATE.DISCONNECT);
+            sendState(STATE.DISCONNECT, e);
         }
     }
 
@@ -252,6 +242,7 @@ public class Client {
 
 
     public void sendBiz(String request, final StringCallback callback) {
+        Log.e("Biz",request);
         send(new STradeGateBizFun(request), new Callback() {
             @Override
             public void onResult(boolean success, OriginalData data) {
@@ -296,10 +287,18 @@ public class Client {
         return false;
     }
 
-    public void unBind() {
-        if (manager != null) {
+    public void disconnect() {
+        if (manager != null && manager.isConnect()) {
             manager.disconnect();
             manager.unRegisterReceiver(mySocketActionAdapter);
+        }
+    }
+
+    public void logout() {
+        if (manager != null) {
+            sessionId = null;
+            STradeGateUserInfo.getInstance().clearUserInfo();
+            manager.disconnect();
         }
     }
 
@@ -315,18 +314,20 @@ public class Client {
         }
     }
 
-    public void setTickoutListener(TickoutListener tickoutListener) {
-        this.tickoutListener = tickoutListener;
-    }
-
     private void checkIsConnect() {
         if (manager == null || !manager.isConnect()) {
             connect(null);
         }
     }
 
-    public void sendState(STATE state) {
+
+    private void sendState(STATE state, Exception e) {
         this.state = state;
+        Log.e("sendState",state.name());
+        if(e == null){
+            e = new LoginException();
+        }
+
         List<StateListener> copyData = new ArrayList<>(mStateListeners);
         Iterator<StateListener> it = copyData.iterator();
         while (it.hasNext()) {
@@ -345,9 +346,13 @@ public class Client {
                     listener.kickOut();
                     break;
                 case DISCONNECT:
-                    listener.disconnect();
+                    listener.disconnect(e);
                     break;
             }
         }
+    }
+
+    private void sendState(STATE state) {
+        sendState(state, null);
     }
 }

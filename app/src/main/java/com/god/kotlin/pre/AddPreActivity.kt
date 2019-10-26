@@ -96,7 +96,7 @@ class AddPreActivity : AppCompatActivity() {
             pre_input_code.setData(it.stkcode, it.stkname)
             pre_price.setText(it.fixprice.format2())
 
-            viewModel.getAvailable(it.stkcode, it.fixprice, direction)
+//            viewModel.getAvailable(it.stkcode, it.fixprice, direction)
 
             newest_price.text = it.fNewest.format2()
             newest_price.setTextColor(ContextCompat.getColorStateList(context, getPriceColor(it.fNewest, it.fOpen)))

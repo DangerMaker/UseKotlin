@@ -7,6 +7,7 @@ import com.god.kotlin.data.entity.Funds
 import com.god.kotlin.data.entity.RiskLevel
 import com.god.kotlin.net.Error
 import com.god.kotlin.net.OnResult
+import com.god.kotlin.user.UserHelper
 
 class FundsViewModel(private val repository: TradeRepository) :
     ViewModel() {
@@ -14,7 +15,7 @@ class FundsViewModel(private val repository: TradeRepository) :
     val funds = MutableLiveData<Funds>()
 
     fun query(type: Int) {
-        repository.queryFunds(type, object : OnResult<Funds> {
+        repository.queryFunds(UserHelper.getUser().fundid,type, object : OnResult<Funds> {
             override fun onSucceed(response: Funds) {
                 funds.value = response
             }

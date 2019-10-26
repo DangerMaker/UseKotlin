@@ -26,14 +26,14 @@ interface TradeDataSource {
     )
 
     fun getAvailable(
-//        market: String,secuid: String,fundsId: String,
-        code: String, price: Double, flag: String, callback: OnResult<Int>
+        market: String,secuid: String,fundsId: String,
+        code: String, price: Double, flag: Boolean, callback: OnResult<Int>
     )
 
     fun transaction(
         market: String,
-//        secuid: String,
-//        fundsId: String,
+        secuid: String,
+        fundsId: String,
         code: String,
         price: Double,
         qty: Int,
@@ -56,7 +56,7 @@ interface TradeDataSource {
 
     fun postOrder(orderdate: String, fundid: String, ordersno: String, bsflag: String, callback: OnResult<String>)
 
-    fun queryFunds(moneyType: Int, callback: OnResult<Funds>)
+    fun queryFunds(fundsId: String,moneyType: Int, callback: OnResult<Funds>)
 
     fun postPwd(pwd: String, callback: OnResult<String>)
 

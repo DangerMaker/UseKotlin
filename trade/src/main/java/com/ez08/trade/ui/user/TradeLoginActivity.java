@@ -185,7 +185,7 @@ public class TradeLoginActivity extends BaseActivity implements View.OnClickList
             STradeGateLoginA gateLoginA = new STradeGateLoginA(data.getHeadBytes(), data.getBodyBytes(), Client.getInstance().aesKey);
             if (!gateLoginA.getbLoginSucc()){
                 CommonUtils.show(this,gateLoginA.getSzErrMsg());
-                Client.getInstance().shutDown();
+//                Client.getInstance().shutDown();
                 JumpActivity.start(this,"登录");
             }else{
                 List<TradeUser> list = new ArrayList<>();

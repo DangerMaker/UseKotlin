@@ -10,6 +10,6 @@ public interface StateListener {
 
     void kickOut();
 
-    void disconnect();
+    void disconnect(Exception e);
 
 }

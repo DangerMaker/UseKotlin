@@ -1,11 +1,14 @@
 package com.god.kotlin.menu
 
+import android.app.Activity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.ez08.trade.net.Client
+import com.ez08.trade.tools.JumpActivity
 import com.god.kotlin.R
 import com.god.kotlin.change.ChangeInformationActivity
 import com.god.kotlin.change.ChangePwdActivity
@@ -31,6 +34,10 @@ class MenuAdapter(private val header: View, private val list: List<StringMenu>) 
     val HEAD = 0
     val NORMAL = 1
 
+    private fun logout(){
+        Client.getInstance().logout()
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         when (viewType) {
             HEAD -> {
@@ -52,6 +59,7 @@ class MenuAdapter(private val header: View, private val list: List<StringMenu>) 
                             "转股回售" -> view.startActivity(TradeTransActivity::class.java)
                             "预埋单" -> view.startActivity(PreActivity::class.java)
                             "银行转账" -> view.startActivity(TransferMenuActivity::class.java)
+                            "退出登录" -> logout()
                             else -> throw Exception("router err")
                         }
                     }

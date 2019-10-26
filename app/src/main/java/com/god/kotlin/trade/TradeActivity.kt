@@ -6,6 +6,7 @@ import androidx.viewpager.widget.ViewPager
 import com.god.kotlin.R
 import com.god.kotlin.trade.funds.FundsFragment
 import com.god.kotlin.trade.order.OrderFragment
+import com.god.kotlin.user.UserHelper
 import com.god.kotlin.util.Constant
 import com.god.kotlin.util.getEasyFragment
 import com.god.kotlin.util.obtainViewModel
@@ -44,7 +45,7 @@ class TradeActivity : AppCompatActivity(),TradeParent {
 
     override fun onResume() {
         super.onResume()
-        obtainViewModel().getHandList("fundsId")
+        obtainViewModel().getHandList(UserHelper.getUser().fundid)
     }
 
 

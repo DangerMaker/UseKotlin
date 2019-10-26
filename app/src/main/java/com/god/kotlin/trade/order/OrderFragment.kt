@@ -67,6 +67,6 @@ class OrderFragment : Fragment() {
             showSimpleDialog(context, it)
         })
 
-        viewModel.query(20, 0)
+        viewModel.query(100, 1)
     }
 }

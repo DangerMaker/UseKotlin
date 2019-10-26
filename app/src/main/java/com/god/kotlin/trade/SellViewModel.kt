@@ -15,7 +15,9 @@ class SellViewModel(private val repository: TradeRepository) :
     val stockEntity = MutableLiveData<TradeStockEntity>()
     val handStockList = MutableLiveData<MutableList<TradeHandEntity>>()
     val available = MutableLiveData<Int>()
+    val maxSell = MutableLiveData<Int>()
     val order = MutableLiveData<TradeResultEntity>()
+    val tips = MutableLiveData<String>()
 
     fun search(code: String) {
         repository.searchStock(code, object : OnResult<TradeStockEntity> {
@@ -29,7 +31,7 @@ class SellViewModel(private val repository: TradeRepository) :
         })
     }
 
-    fun getHandList(fundsId: String, count: Int = 20, offset: Int = 0) {
+    fun getHandList(fundsId: String, count: Int = 100, offset: Int = 1) {
         repository.getHandStockList(fundsId, count, offset, object : OnResult<MutableList<TradeHandEntity>> {
             override fun onSucceed(response: MutableList<TradeHandEntity>) {
                 handStockList.value = response
@@ -41,20 +43,26 @@ class SellViewModel(private val repository: TradeRepository) :
         })
     }
 
-    fun getAvailable(code: String, price: Double, flag: String) {
-        repository.getAvailable(code, price, flag, object : OnResult<Int> {
+    fun getAvailable( market: String,secuid: String,fundsId: String,code: String, price: Double, flag: Boolean) {
+        repository.getAvailable( market,secuid,fundsId,
+            code, price, flag, object : OnResult<Int> {
             override fun onSucceed(response: Int) {
-                available.value = response
+                if(flag) {
+                    available.value = response
+                }else{
+                    maxSell.value = response
+                }
             }
 
             override fun onFailure(error: Error) {
+                tips.value = error.szError
             }
 
         })
     }
 
-    fun transaction(market: String, code: String, price: Double, qty: Int, postFlag: String) {
-        repository.transaction(market, code, price, qty, postFlag, object : OnResult<TradeResultEntity> {
+    fun transaction(market: String, code: String,secuid: String,fundsId: String, price: Double, qty: Int, postFlag: String) {
+        repository.transaction(market, code,secuid,fundsId, price, qty, postFlag, object : OnResult<TradeResultEntity> {
             override fun onSucceed(response: TradeResultEntity) {
                 order.value = response
             }

@@ -4,12 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.god.kotlin.R
 import com.god.kotlin.data.entity.TradeHandEntity
 import com.god.kotlin.util.inflate
 import com.god.kotlin.util.showSimpleDialog
+import com.god.kotlin.util.toast
 import kotlinx.android.synthetic.main.fragment_sell.*
 
 /**
@@ -75,9 +77,16 @@ class SellFragment : Fragment() {
             handAdapter.notifyDataSetChanged()
         })
 
-        viewModel.available.observe(this, Observer {
-            (tradeView as ITradeView).setAvailable(it)
-        })
+        if(_flag) {
+            viewModel.available.observe(this, Observer {
+                (tradeView as ITradeView).setAvailable(it)
+            })
+
+        }else {
+            viewModel.maxSell.observe(this, Observer {
+                (tradeView as ITradeView).setAvailable(it)
+            })
+        }
 
         viewModel.order.observe(this, Observer {
             showSimpleDialog(
@@ -86,6 +95,10 @@ class SellFragment : Fragment() {
                         "合同序号：" + it.orderid + "\n" +
                         "委托批号：" + it.ordergroup
             )
+        })
+
+        viewModel.tips.observe(this, Observer {
+            it.toast(context, Toast.LENGTH_LONG)
         })
 
         (tradeView as ITradeView).initData(_flag, viewModel)
