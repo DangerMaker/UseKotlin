@@ -75,7 +75,7 @@ interface TradeDataSource {
         callback: OnResult<MutableList<Deal>>
     )
 
-    fun queryOrderList1(fundid: String, count: Int, offset: Int, callback: OnResult<MutableList<Order>>)
+    fun queryTodayOrderList(fundid: String, count: Int, offset: Int, callback: OnResult<MutableList<Order>>)
 
     fun queryHistoryOrderList(
         begin: String,

@@ -18,6 +18,7 @@ class PasswordViewModel(private val repository: TradeRepository) :
             }
 
             override fun onFailure(error: Error) {
+                result.value = error.szError
             }
 
         })
@@ -30,6 +31,7 @@ class PasswordViewModel(private val repository: TradeRepository) :
             }
 
             override fun onFailure(error: Error) {
+                result.value = error.szError
             }
 
         })

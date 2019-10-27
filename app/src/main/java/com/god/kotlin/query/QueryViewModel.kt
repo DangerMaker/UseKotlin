@@ -19,7 +19,7 @@ class QueryViewModel(private val repository: TradeRepository) :
 
     fun queryOrder(fundid: String, count: Int, offset: Int, begin: String = "", end: String = "") {
         if (TextUtils.isEmpty(begin)) {
-            repository.queryOrderList1(fundid, count, offset, object : OnResult<MutableList<Order>> {
+            repository.queryTodayOrderList(fundid, count, offset, object : OnResult<MutableList<Order>> {
                 override fun onSucceed(response: MutableList<Order>) {
                     orderList.value = response
                 }

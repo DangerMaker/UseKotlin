@@ -39,7 +39,7 @@ class QueryTradeActivity : AppCompatActivity() {
             0 -> {
                 toolbar_title.text = "当日成交"
                 date_layout.visibility = View.GONE
-                invoke = { viewModel.queryDeal("fundid", 0, 100) }
+                invoke = { viewModel.queryDeal("fundid", 100, 1) }
                 addFragment(TAG0, R.id.container, true) {
                     QueryDealFragment.newInstance()
                 }
@@ -48,7 +48,7 @@ class QueryTradeActivity : AppCompatActivity() {
             1 -> {
                 toolbar_title.text = "当日委托"
                 date_layout.visibility = View.GONE
-                invoke = { viewModel.queryOrder("fundid", 0, 100) }
+                invoke = { viewModel.queryOrder("fundid", 100, 1) }
                 addFragment(TAG1, R.id.container, true) {
                     QueryOrderFragment.newInstance()
                 }
@@ -56,7 +56,7 @@ class QueryTradeActivity : AppCompatActivity() {
 
             2 -> {
                 toolbar_title.text = "历史成交"
-                invoke = { viewModel.queryDeal("fundid", 0, 100, startValue, endValue) }
+                invoke = { viewModel.queryDeal("fundid", 100, 1, startValue, endValue) }
                 addFragment(TAG2, R.id.container, true) {
                     QueryDealFragment.newInstance()
                 }
@@ -64,7 +64,7 @@ class QueryTradeActivity : AppCompatActivity() {
 
             3 -> {
                 toolbar_title.text = "历史委托"
-                invoke = { viewModel.queryOrder("fundid", 0, 100, startValue, endValue) }
+                invoke = { viewModel.queryOrder("fundid", 100, 1, startValue, endValue) }
                 addFragment(TAG3, R.id.container, true) {
                     QueryOrderFragment.newInstance()
                 }

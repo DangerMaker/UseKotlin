@@ -5,5 +5,7 @@ data class NewStock (
     val stkname:String,
     val linkstk:String,
     val minqty:Int,
-    val maxqty:Int
+    val maxqty:Int,
+    val market:String,
+    var isSelect:Boolean
 )

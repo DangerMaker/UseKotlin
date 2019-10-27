@@ -43,7 +43,7 @@ class QueryIpoActivity : AppCompatActivity() {
             0 -> {
                 toolbar_title.text = "配号查询"
                 date_layout.visibility = View.VISIBLE
-                invoke = { viewModel.queryPeiHao("fundid", 0, 100, startValue, endValue) }
+                invoke = { viewModel.queryPeiHao("fundid", 100, 1, startValue, endValue) }
                 addFragment(TAG0, R.id.container, true) {
                     PeiHaoFragment.newInstance()
                 }
@@ -52,7 +52,7 @@ class QueryIpoActivity : AppCompatActivity() {
             1 -> {
                 toolbar_title.text = "中签查询"
                 date_layout.visibility = View.VISIBLE
-                invoke = { viewModel.queryZhongQian("fundid", 0, 100,startValue,endValue) }
+                invoke = { viewModel.queryZhongQian("fundid", 100, 1,startValue,endValue) }
                 addFragment(TAG1, R.id.container, true) {
                     ZhongQianFragment.newInstance()
                 }

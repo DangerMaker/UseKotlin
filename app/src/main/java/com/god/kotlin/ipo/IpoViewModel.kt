@@ -1,12 +1,10 @@
 package com.god.kotlin.ipo
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.god.kotlin.data.TradeRepository
-import com.god.kotlin.data.entity.Account
-import com.god.kotlin.data.entity.NewStock
-import com.god.kotlin.data.entity.Quota
-import com.god.kotlin.data.entity.RiskLevel
+import com.god.kotlin.data.entity.*
 import com.god.kotlin.net.Error
 import com.god.kotlin.net.OnResult
 
@@ -16,6 +14,7 @@ class IpoViewModel(private val repository: TradeRepository) :
     var szQuota = 0
     var shQuota = 0
     var tips = MutableLiveData<String>()
+    var result = MutableLiveData<String>()
 
     fun queryQuota(secuid: String) {
         repository.queryIpoQuota(secuid, object : OnResult<MutableList<Quota>> {
@@ -47,5 +46,41 @@ class IpoViewModel(private val repository: TradeRepository) :
             override fun onFailure(error: Error) {
             }
         })
+    }
+
+    var total: Int = 0
+    var temp = 0
+    var collection: String = ""
+    fun transaction(secuid: String, fundsId: String, list: MutableList<NewStock>) {
+        total = list.size
+        temp = 0
+        collection = ""
+        for (stock in list) {
+            repository.transaction(
+                stock.market, stock.stkcode, secuid, fundsId, 0.0, stock.maxqty, "0D",
+                object : OnResult<TradeResultEntity> {
+                    override fun onSucceed(response: TradeResultEntity) {
+                        collect("[" + stock.stkname + "]" + "   申购成功" + "\n")
+                    }
+
+                    override fun onFailure(error: Error) {
+
+                        collect(
+                            "[" + stock.stkname +  "]" + "   申购失败" + "\n" +
+                                    "原因：" + error.szError + "\n"
+                        )
+                    }
+                })
+        }
+    }
+
+    fun collect(str: String) {
+        if (temp < total) {
+            collection += str
+            temp += 1
+            if(temp == total){
+                result.value = collection
+            }
+        }
     }
 }

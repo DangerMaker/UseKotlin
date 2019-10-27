@@ -96,7 +96,7 @@ class LoginFragment : Fragment() {
                 }
 
             login_loading.visibility = View.VISIBLE
-            viewModel.login("Z", "109005527", "123123", check_code.text.toString(), "0")
+            viewModel.login("Z", "109000512", "123123", check_code.text.toString(), "0")
         }
 
         viewModel.getVerificationCode(30,15)

@@ -6,8 +6,10 @@ import android.view.View
 import android.widget.ListView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import com.ez08.trade.tools.DialogUtils
 import com.god.kotlin.R
 import com.god.kotlin.data.entity.NewStock
+import com.god.kotlin.user.UserHelper
 import com.god.kotlin.util.obtainViewModel
 import com.god.kotlin.util.startActivityExt
 import kotlinx.android.synthetic.main.activity_ipo_order.*
@@ -49,15 +51,21 @@ class IpoOrderActivity : AppCompatActivity() {
         })
 
         viewModel.queryStockList()
-        viewModel.queryQuota("secuid")
+
+        val user = UserHelper.getUser()
+        viewModel.queryQuota(user.secuid)
 
         ipo_submit.setOnClickListener {
-
+            viewModel.transaction(user.secuid,user.fundid,list)
         }
 
         ipo_checkbox.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) selectAll() else unSelectAll()
         }
+
+        viewModel.result.observe(this, Observer {
+            DialogUtils.showSimpleDialog(this,it)
+        })
     }
 
     private fun selectAll() {

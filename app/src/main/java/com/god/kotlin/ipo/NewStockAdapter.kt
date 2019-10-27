@@ -37,15 +37,9 @@ class NewStockAdapter(
         }
 //
         val checkBox = rowView.findViewById<ImageView>(R.id.stock_checkbox)
-        checkBox.isPressed = listView.isItemChecked(position)
-//
-//        checkBox.isSelected = listView.isItemChecked(position)
-
-//        with(rowView.findViewById<TextView>(R.id.funds_account)) {
-//            text = account.custid
-//        }
-
-
+        val flag = listView.isItemChecked(position)
+        checkBox.isPressed = flag
+        list[position].isSelect = flag
         return rowView
     }
 

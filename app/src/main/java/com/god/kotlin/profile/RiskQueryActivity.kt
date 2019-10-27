@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.god.kotlin.R
+import com.god.kotlin.user.UserHelper
 import com.god.kotlin.util.obtainViewModel
 import kotlinx.android.synthetic.main.activity_risk_query.*
 import kotlinx.android.synthetic.main.toolbar_normal.*
@@ -23,6 +24,8 @@ class RiskQueryActivity : AppCompatActivity(){
             risk_score.text = it.score
         })
 
-        viewModel.query("123")
+        val user = UserHelper.getUser()
+
+        viewModel.query(user.custid)
     }
 }

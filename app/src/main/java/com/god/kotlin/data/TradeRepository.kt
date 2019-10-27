@@ -13,7 +13,12 @@ import com.ez08.trade.net.verification.STradeVerificationCodeA
 import com.ez08.trade.tools.CommonUtils
 import com.ez08.trade.tools.DialogUtils
 import com.ez08.trade.tools.YCParser
+import com.ez08.trade.ui.bank.entity.TransferEntity
+import com.ez08.trade.ui.bank.entity.TransferTitleEntity
+import com.ez08.trade.ui.fresh_stock.entity.TradeZqEntity
 import com.ez08.trade.ui.trade.entity.TradeEntrustEntity
+import com.ez08.trade.ui.user.entity.ShareHoldersEntity
+import com.ez08.trade.ui.user.entity.TradeShareHoldersTitle
 import com.ez08.trade.user.UserHelper
 import com.god.kotlin.data.entity.*
 import com.god.kotlin.net.OnResult
@@ -28,6 +33,7 @@ import java.util.ArrayList
 
 class TradeRepository : TradeDataSource {
 
+    //获取验证码
     override fun getVerificationCode(width: Int, height: Int, callback: OnResult<Bitmap>) {
         Client.getInstance().send(STradeVerificationCode(width, height)) { success, data ->
             try {
@@ -40,21 +46,14 @@ class TradeRepository : TradeDataSource {
                 val decodedByte = BitmapFactory.decodeByteArray(picReal, 0, picReal.size)
                 callback.onSucceed(decodedByte)
             } catch (e: Exception) {
-                val error = Error()
-                error.dwReqId = "0"
-                error.dwErrorCode = "0"
-                error.szError = "获取验证码失败"
-                callback.onFailure(error)
+                callback.onFailure(handleError("获取验证码失败"))
             }
         }
     }
 
+    //登录
     override fun login(
-        userType: String,
-        userId: String,
-        password: String,
-        checkCode: String,
-        verifiCodeId: String,
+        userType: String, userId: String, password: String, checkCode: String, verifiCodeId: String,
         callback: OnResult<MutableList<User>>
     ) {
         val tradeGateLogin = STradeGateLogin()
@@ -83,199 +82,389 @@ class TradeRepository : TradeDataSource {
                 }
                 callback.onSucceed(list)
             } else {
-                val error = Error()
-                error.dwReqId = "0"
-                error.dwErrorCode = "0"
-                error.szError = gateLoginA.getSzErrMsg()
-                callback.onFailure(error)
+                callback.onFailure(handleError(gateLoginA.getSzErrMsg()))
             }
         }
-//        async {
-//            var user = User("李磊", "Z", "00002000001", "secret", "secuid", "cusid")
-//            var user1 = User("李磊", "0", "00002000001", "secret1", "secuid1", "cusid1")
-//            val list = mutableListOf<User>()
-//            list.add(user)
-//            list.add(user1)
-//            callback.onSucceed(list)
-//        }
     }
 
+    //新股配号
     override fun queryPeiHaoList(
-        begin: String,
-        end: String,
-        count: Int,
-        offset: Int,
+        begin: String, end: String, count: Int, offset: Int,
         callback: OnResult<MutableList<PeiHao>>
     ) {
-        async {
-            val list = mutableListOf<PeiHao>()
-            val peiHao = PeiHao("600600", "潍柴动力", "20120808", "1232312", 1000)
-            list.add(peiHao)
-            list.add(peiHao)
-            list.add(peiHao)
-            callback.onSucceed(list)
+        val body = "FUN=411518&TBL_IN=strdate,enddate,fundid,stkcode,secuid,qryflag,count,poststr;" +
+                begin + "," +
+                end + "," +
+                "" + "," +
+                "" + "," +
+                "" + "," +
+                "0" + "," +
+                "100" + "," +
+                ";"
+
+        Client.getInstance().sendBiz(body) { success, data ->
+            if (success) {
+                val result = YCParser.parseArray(data)
+                val list = mutableListOf<PeiHao>()
+                for (i in result.indices) {
+                    val stkcode = result[i]["stkcode"].orEmpty()
+                    val stkname = result[i]["stkname"].orEmpty()
+                    val bizdate = result[i]["bizdate"].orEmpty()
+                    val mateno = result[i]["mateno"].orEmpty()
+                    val matchqty = result[i]["matchqty"].toIntOrZero()
+                    val entity = PeiHao(stkcode,stkname,bizdate,mateno,matchqty)
+                    list.add(entity)
+                }
+                callback.onSucceed(list)
+            }else{
+                callback.onFailure(handleError(data))
+            }
         }
     }
 
+    //新股中签
     override fun queryZhongQianList(
-        begin: String,
-        end: String,
-        count: Int,
-        offset: Int,
+        begin: String, end: String, count: Int, offset: Int,
         callback: OnResult<MutableList<ZhongQian>>
     ) {
-        async {
-            val list = mutableListOf<ZhongQian>()
-            val zhongQian = ZhongQian("600600", 1000, "20120808", "0")
-            list.add(zhongQian)
-            list.add(zhongQian)
-            list.add(zhongQian)
-            callback.onSucceed(list)
+        val body = "FUN=411560&TBL_IN=secuid,market,stkcode,issuetype,begindate,enddate,count,poststr;" +
+                "" + "," +
+                "" + "," +
+                "" + "," +
+                "" + "," +
+                begin + "," +
+                end + "," +
+                "100" + "," +
+                ";"
+
+        Client.getInstance().sendBiz(body) { success, data ->
+            if (success) {
+                val result = YCParser.parseArray(data)
+                val list = mutableListOf<ZhongQian>()
+
+                for (i in result.indices) {
+                    val stkname = result[i]["stkname"].orEmpty()
+                    val matchdate = result[i]["matchdate"].orEmpty()
+                    val hitqty = result[i]["hitqty"].toIntOrZero()
+                    val status = result[i]["status"].orEmpty()
+                    val entity = ZhongQian(stkname,hitqty,matchdate,status)
+                    list.add(entity)
+                }
+                callback.onSucceed(list)
+            }else{
+                callback.onFailure(handleError(data))
+            }
         }
     }
 
+    //新股代缴款
     override fun queryDaiJiaoList(callback: OnResult<MutableList<DaiJiao>>) {
-        async {
-            val list = mutableListOf<DaiJiao>()
-            val daiJiao = DaiJiao("万科A", "600600", "20120808", "0", 20000)
-            list.add(daiJiao)
-            list.add(daiJiao)
-            list.add(daiJiao)
-            callback.onSucceed(list)
+        val body = "FUN=411547&TBL_IN=secuid,market,stkcode,issuetype;" + "," + "," + "," + ";"
+
+        Client.getInstance().sendBiz(body) { success, data ->
+            if (success) {
+                val result = YCParser.parseArray(data)
+                val list = mutableListOf<DaiJiao>()
+                for (i in result.indices) {
+                    val stkname = result[i]["stkname"].orEmpty()
+                    val matchdate = result[i]["matchdate"].orEmpty()
+                    val hitqty = result[i]["hitqty"].toIntOrZero()
+                    val stkcode = result[i]["stkcode"].orEmpty()
+                    val market = result[i]["market"].orEmpty()
+                    val entity = DaiJiao(stkname,stkcode,matchdate,market,hitqty)
+                    list.add(entity)
+                }
+                callback.onSucceed(list)
+            }else{
+                callback.onFailure(handleError(data))
+            }
         }
     }
 
+    //获取上市深市新股额度
     override fun queryIpoQuota(secuid: String, callback: OnResult<MutableList<Quota>>) {
-        async {
-            val list = mutableListOf<Quota>()
-            val quota = Quota("0", 1000, "20120808")
-            val quota1 = Quota("1", 1000, "20120808")
-            list.add(quota)
-            list.add(quota1)
-            callback.onSucceed(list)
+        val body = "FUN=410610&TBL_IN=market,secuid,orgid,count,posstr;" +
+                "" + "," +
+                secuid + "," +
+                "" + "," +
+                "100" + "," +
+                ";"
+
+        Client.getInstance().sendBiz(body) { success, data ->
+            if (success) {
+                Log.e("queryIpoQuota",data)
+
+                val result = YCParser.parseArray(data)
+                val list = mutableListOf<Quota>()
+                for (i in result.indices) {
+                    val market = result[i]["market"].orEmpty()
+                    val custquota = result[i]["custquota"].toIntOrZero()
+                    val receivedate = result[i]["receivedate"].orEmpty()
+                    val entity = Quota(market,custquota,receivedate)
+                    list.add(entity)
+                }
+                callback.onSucceed(list)
+            }else{
+                callback.onFailure(handleError(data))
+            }
         }
     }
 
+    //获取新股列表
     override fun queryNewStockList(callback: OnResult<MutableList<NewStock>>) {
-        async {
-            val list = mutableListOf<NewStock>()
-            val newStock = NewStock("600600", "美的集团", "123", 1000, 1000)
-            list.add(newStock)
-            list.add(newStock)
-            list.add(newStock)
-            list.add(newStock)
-            callback.onSucceed(list)
+        val body = "FUN=411549&TBL_IN=market,stkcode,issuedate;" +
+                "" + "," +
+                "" + "," +
+                ";"
+
+        Client.getInstance().sendBiz(body) { success, data ->
+            if (success) {
+                val result = YCParser.parseArray(data)
+                val list = mutableListOf<NewStock>()
+                for (i in result.indices) {
+                    val stkcode = result[i]["stkcode"].orEmpty()
+                    val stkname = result[i]["stkname"].orEmpty()
+                    val linkstk = result[i]["linkstk"].orEmpty()
+                    val maxqty = result[i]["maxqty"].toIntOrZero()
+                    val minqty = result[i]["minqty"].toIntOrZero()
+                    val market = result[i]["market"].orEmpty()
+                    val entity = NewStock(stkcode,stkname,linkstk,minqty,maxqty,market,false)
+                    list.add(entity)
+                }
+                callback.onSucceed(list)
+            }else{
+                callback.onFailure(handleError(data))
+            }
         }
     }
 
-    override fun queryTodayDeal(fundid: String, count: Int, offset: Int, callback: OnResult<MutableList<Deal>>) {
-        async {
-            val list = mutableListOf<Deal>()
-            val deal = Deal("20190101", "101201", 66.11, 100, "没底集团", "500500", "B")
-            list.add(deal)
-            list.add(deal)
-            list.add(deal)
-            list.add(deal)
-            list.add(deal)
-            callback.onSucceed(list)
-        }
-    }
-
-    override fun queryHistoryDeal(
-        begin: String,
-        end: String,
-        fundid: String,
-        count: Int,
-        offset: Int,
+    //查询当日成交
+    override fun queryTodayDeal(
+        fundid: String, count: Int, offset: Int,
         callback: OnResult<MutableList<Deal>>
     ) {
-        async {
-            val list = mutableListOf<Deal>()
-            val deal = Deal("20190101", "101001", 66.11, 100, "没底集团", "500500", "B")
-            list.add(deal)
-            list.add(deal)
-            list.add(deal)
-            list.add(deal)
-            list.add(deal)
-            callback.onSucceed(list)
+        val body =
+            "FUN=410512&TBL_IN=fundid,market,secuid,stkcode,ordersno,bankcode,qryflag,count,poststr,qryoperway;" +
+                    "" + "," +
+                    "" + "," +
+                    "" + "," +
+                    "" + "," +
+                    "" + "," +
+                    "" + "," +
+                    "1" + "," +
+                    "100" + "," +
+                    "" + "," +
+                    ";"
+
+        Client.getInstance().sendBiz(body) { success, data ->
+            if (success) {
+                val result = YCParser.parseArray(data)
+                val list = mutableListOf<Deal>()
+                for (i in result.indices) {
+                    val stkcode = result[i]["stkcode"].orEmpty()
+                    val stkname = result[i]["stkname"].orEmpty()
+                    val matchtime = result[i]["matchtime"].orEmpty()
+                    val matchprice = result[i]["matchprice"].toDoubleOrZero()
+                    val matchqty = result[i]["matchqty"].toIntOrZero()
+                    val trddate = result[i]["trddate"].orEmpty()
+                    val bsFlag = result[i]["bsflag"].orEmpty()
+                    val entity = Deal(trddate, matchtime, matchprice, matchqty, stkname, stkcode, bsFlag)
+                    list.add(entity)
+                }
+                callback.onSucceed(list)
+            } else {
+                callback.onFailure(handleError(data))
+            }
         }
     }
 
-    override fun queryOrderList1(fundid: String, count: Int, offset: Int, callback: OnResult<MutableList<Order>>) {
-        async {
-            val list = mutableListOf<Order>()
-            val order = Order()
-            order.stkname = "美的集团"
-            order.stkcode = "600500"
-            order.orderprice = 66.11
-            order.opertime = "101212"
-            order.orderdate = "20190101"
-            order.orderqty = 200
-            order.matchqty = 100
-            order.bsflag = "B"
-            order.orderstatus = "成功"
-            order.ordersno = "101010100"
-            order.fundid = "100100"
-            list.add(order)
-            list.add(order)
-            list.add(order)
-            callback.onSucceed(list)
+    //查询历史成交
+    override fun queryHistoryDeal(
+        begin: String, end: String, fundid: String, count: Int, offset: Int,
+        callback: OnResult<MutableList<Deal>>
+    ) {
+        val body = "FUN=411513&TBL_IN=strdate,enddate,fundid,market,secuid,stkcode,bankcode,qryflag,count,poststr;" +
+                begin + "," +
+                end + "," +
+                "" + "," +
+                "" + "," +
+                "" + "," +
+                "" + "," +
+                "" + "," +
+                offset + "," +
+                count + "," +
+                ";"
+
+        Client.getInstance().sendBiz(body) { success, data ->
+            if (success) {
+                val result = YCParser.parseArray(data)
+                val list = mutableListOf<Deal>()
+                for (i in result.indices) {
+                    val stkcode = result[i]["stkcode"].orEmpty()
+                    val stkname = result[i]["stkname"].orEmpty()
+                    val matchtime = result[i]["matchtime"].orEmpty()
+                    val matchprice = result[i]["matchprice"].toDoubleOrZero()
+                    val matchqty = result[i]["matchqty"].toIntOrZero()
+                    val trddate = result[i]["trddate"].orEmpty()
+                    val bsFlag = result[i]["bsflag"].orEmpty()
+                    val entity = Deal(trddate, matchtime, matchprice, matchqty, stkname, stkcode, bsFlag)
+                    list.add(entity)
+                }
+                callback.onSucceed(list)
+            } else {
+                callback.onFailure(handleError(data))
+            }
         }
     }
 
+    //查询当日委托
+    override fun queryTodayOrderList(fundid: String, count: Int, offset: Int, callback: OnResult<MutableList<Order>>) {
+        val body =
+            "FUN=410510&TBL_IN=market,fundid,secuid,stkcode,ordersno,Ordergroup,bankcode,qryflag,count,poststr,extsno,qryoperway;" +
+                    "" + "," +
+                    "" + "," +
+                    "" + "," +
+                    "" + "," +
+                    "" + "," +
+                    "" + "," +
+                    "" + "," +
+                    offset + "," +
+                    count + "," +
+                    "" + "," +
+                    "" + "," +
+                    ";"
+
+        Client.getInstance().sendBiz(body) { success, data ->
+            if (success) {
+                val list = mutableListOf<Order>()
+                val result = YCParser.parseArray(data)
+                for (i in result.indices) {
+                    val entity = Order()
+                    entity.stkcode = result[i]["stkcode"]
+                    entity.stkname = result[i]["stkname"]
+                    entity.orderprice = result[i]["orderprice"].toDoubleOrZero()
+                    entity.opertime = result[i]["opertime"]
+                    entity.orderdate = result[i]["orderdate"]
+                    entity.orderqty = result[i]["orderqty"].toIntOrZero()
+                    entity.matchqty = result[i]["matchqty"].toIntOrZero()
+                    entity.bsflag = result[i]["bsflag"]
+                    entity.orderstatus = result[i]["orderstatus"]
+                    list.add(entity)
+                }
+                callback.onSucceed(list)
+            } else {
+                callback.onFailure(handleError(data))
+            }
+        }
+    }
+
+    //查询历史委托
     override fun queryHistoryOrderList(
-        begin: String,
-        end: String,
-        fundid: String,
-        count: Int,
-        offset: Int,
+        begin: String, end: String, fundid: String, count: Int, offset: Int,
         callback: OnResult<MutableList<Order>>
     ) {
-        async {
-            val list = mutableListOf<Order>()
-            val order = Order()
-            order.stkname = "美的集团"
-            order.stkcode = "600500"
-            order.orderprice = 66.11
-            order.opertime = "121212"
-            order.orderdate = "20190101"
-            order.orderqty = 200
-            order.matchqty = 100
-            order.bsflag = "B"
-            order.orderstatus = "成功"
-            order.ordersno = "101010100"
-            order.fundid = "100100"
-            list.add(order)
-            list.add(order)
-            list.add(order)
-            callback.onSucceed(list)
+        val body =
+            "FUN=411511&TBL_IN=strdate,enddate,fundid,market,secuid,stkcode,ordersno,Ordergroup,bankcode,qryflag,count,poststr,extsno,qryoperway;" +
+                    begin + "," +
+                    end + "," +
+                    "" + "," + //fundid
+                    "" + "," +
+                    "" + "," + //secuid
+                    "" + "," +
+                    "" + "," +
+                    "" + "," +
+                    "" + "," +
+                    offset + "," +
+                    count + "," +
+                    "" + "," +
+                    "" + "," +
+                    ";"
+        Client.getInstance().sendBiz(body) { success, data ->
+            if (success) {
+                val list = mutableListOf<Order>()
+                val result = YCParser.parseArray(data)
+                for (i in result.indices) {
+                    val entity = Order()
+                    entity.stkcode = result[i]["stkcode"]
+                    entity.stkname = result[i]["stkname"]
+                    entity.orderprice = result[i]["orderprice"].toDoubleOrZero()
+                    entity.opertime = result[i]["opertime"]
+                    entity.orderdate = result[i]["orderdate"]
+                    entity.orderqty = result[i]["orderqty"].toIntOrZero()
+                    entity.matchqty = result[i]["matchqty"].toIntOrZero()
+                    entity.bsflag = result[i]["bsflag"]
+                    entity.orderstatus = result[i]["orderstatus"]
+                    list.add(entity)
+                }
+                callback.onSucceed(list)
+            } else {
+                callback.onFailure(handleError(data))
+            }
         }
     }
 
+    //查询转账记录
     override fun queryTransferList(fundid: String, callback: OnResult<MutableList<TransferRecord>>) {
-        async {
-            val list = mutableListOf<TransferRecord>()
-            val record1 = TransferRecord("2020-12-02", "101221", "100000.00", "0")
-            list.add(record1)
-            list.add(record1)
-            list.add(record1)
-            callback.onSucceed(list)
+        val body = "FUN=410608&TBL_IN=fundid,moneytype,sno,extsno,qryoperway;" +
+                fundid + "," +
+                "" + "," +
+                "" + "," +
+                "" + "," +
+                ";"
+
+        Client.getInstance().sendBiz(body) { success, data ->
+            if (success) {
+                val list = mutableListOf<TransferRecord>()
+                val result = YCParser.parseArray(data)
+                for (i in result.indices) {
+                    val operdate = result[i]["operdate"].orEmpty()
+                    val opertime = result[i]["opertime"].orEmpty()
+                    val status = result[i]["status"].orEmpty()
+                    val fundeffect = result[i]["fundeffect"].orEmpty()
+                    val entity = TransferRecord(operdate, opertime, fundeffect, status)
+                    list.add(entity)
+                }
+                callback.onSucceed(list)
+            } else {
+                callback.onFailure(handleError(data))
+            }
         }
     }
 
-
+    //修改密码
     override fun postPwd(pwd: String, callback: OnResult<String>) {
-        async {
-            callback.onSucceed("成功")
+        val body = "FUN=410302&TBL_IN=newpwd;$pwd;"
+
+        Client.getInstance().sendBiz(body) { success, data ->
+            if (success) {
+                val result = YCParser.parseObject(data)
+                val msg = result["msgok"].orEmpty()
+                callback.onSucceed(msg)
+            } else {
+                callback.onFailure(handleError(data))
+            }
         }
     }
 
+    //修改资金密码
     override fun postFundsPwd(pwd: String, oldPwd: String, callback: OnResult<String>) {
-        async {
-            callback.onSucceed("成功")
+        val body = "FUN=410303&TBL_IN=fundid,oldfundpwd,newfundpwd;" +
+                "" + "," +
+                oldPwd + "," +
+                pwd + ";"
+
+        Client.getInstance().sendBiz(body) { success, data ->
+            if (success) {
+                val result = YCParser.parseObject(data)
+                val msg = result["msgok"].orEmpty()
+                callback.onSucceed(msg)
+            } else {
+                callback.onFailure(handleError(data))
+            }
         }
     }
 
+    //查询资金概括
     override fun queryFunds(fundsId: String, moneyType: Int, callback: OnResult<Funds>) {
         val body = "FUN=410502&TBL_IN=fundid,moneytype,remark;" + fundsId + "," +
                 moneyType + ",;"
@@ -295,11 +484,9 @@ class TradeRepository : TradeDataSource {
                 callback.onFailure(handleError(data))
             }
         }
-//        async {
-//            callback.onSucceed(Funds(1234.45, 13423.123, 234234.123, 523.1))
-//        }
     }
 
+    //查询委托列表
     override fun queryOrderList(count: Int, offset: Int, callback: OnResult<MutableList<Order>>) {
         val body = "FUN=410415&TBL_IN=orderdate,fundid,secuid,stkcode,ordersno,qryflag,count,poststr;" +
                 "" + "," +
@@ -334,32 +521,11 @@ class TradeRepository : TradeDataSource {
                 callback.onFailure(handleError(data))
             }
         }
-//        async {
-//            val list = mutableListOf<Order>()
-//            val order = Order()
-//            order.stkname = "美的集团"
-//            order.stkcode = "600500"
-//            order.orderprice = 66.11
-//            order.opertime = "101201"
-//            order.orderdate = "20190101"
-//            order.orderqty = 200
-//            order.matchqty = 100
-//            order.bsflag = "B"
-//            order.orderstatus = "成功"
-//            order.ordersno = "101010100"
-//            order.fundid = "100100"
-//            list.add(order)
-//            list.add(order)
-//            list.add(order)
-//            callback.onSucceed(list)
-//        }
     }
 
+    //修改委托
     override fun postOrder(
-        orderdate: String,
-        fundid: String,
-        ordersno: String,
-        bsflag: String,
+        orderdate: String, fundid: String, ordersno: String, bsflag: String,
         callback: OnResult<String>
     ) {
         val body = "FUN=410413&TBL_IN=orderdate,fundid,ordersno,bsflag;" +
@@ -377,11 +543,9 @@ class TradeRepository : TradeDataSource {
                 callback.onFailure(handleError(data))
             }
         }
-//        async {
-//            callback.onSucceed("成功")
-//        }
     }
 
+    //查询个人资料
     override fun queryInformation(callback: OnResult<Information>) {
         val body = "FUN=410321"
 
@@ -396,27 +560,17 @@ class TradeRepository : TradeDataSource {
                 val postid = result["postid"].orEmpty()
                 val email = result["email"].orEmpty()
                 val telno = result["telno"].orEmpty()
-                val information = Information(custname,sex,idtype,idno,telno,postid,email,addr)
+                val information = Information(custname, sex, idtype, idno, telno, postid, email, addr)
                 callback.onSucceed(information)
-            }else{
+            } else {
                 callback.onFailure(handleError(data))
             }
-//        async {
-//            val information = Information(
-//                "刘海", "1", "身份证", "00080808080",
-//                "12345667", "12000", "175208544@qq.com", "顶起"
-//            )
-//            callback.onSucceed(information)
         }
     }
 
+    //修改个人资料
     override fun postInformation(
-        idType: String,
-        idCard: String,
-        phone: String,
-        postCode: String,
-        email: String,
-        address: String,
+        idType: String, idCard: String, phone: String, postCode: String, email: String, address: String,
         callback: OnResult<String>
     ) {
 
@@ -434,41 +588,54 @@ class TradeRepository : TradeDataSource {
                 val result = YCParser.parseObject(data)
                 val msgok = result["msgok"].orEmpty()
                 callback.onSucceed(msgok)
-            }else{
+            } else {
                 callback.onFailure(handleError(data))
             }
         }
-//        async {
-//            callback.onSucceed("成功")
-//        }
     }
 
+    //查询用户账户列表
     override fun queryAccountList(callback: OnResult<MutableList<Account>>) {
-        async {
-            val list = mutableListOf<Account>()
-            list.add(Account("custid123", "0", "secuid123", "李冬梅"))
-            list.add(Account("custid223", "1", "secuid223", "李冬梅"))
-            list.add(Account("custid323", "2", "secuid323", "李冬梅"))
-            Log.e("TradeRepository", "queryAccountList")
-            callback.onSucceed(list)
+        val body = "FUN=410501&TBL_IN=fundid,market,secuid,qryflag,count,poststr;,,,1,10,;"
+        Client.getInstance().sendBiz(body) { success, data ->
+            if (success) {
+                val result = YCParser.parseArray(data)
+                val list = mutableListOf<Account>()
+                for (i in result.indices) {
+                    val custid = result[i]["custid"].orEmpty()
+                    val market = result[i]["market"].orEmpty()
+                    val secuid = result[i]["secuid"].orEmpty()
+                    val name = result[i]["name"].orEmpty()
+                    val fundid = result[i]["fundid"].orEmpty()
+                    val entity = Account(custid, market, secuid, name)
+                    list.add(entity)
+                }
+                callback.onSucceed(list)
+            } else {
+                callback.onFailure(handleError(data))
+            }
         }
     }
 
+    //查询风险等级
     override fun queryRiskLevel(custid: String, callback: OnResult<RiskLevel>) {
-        async {
-            var entity = RiskLevel("C4", "69")
-            callback.onSucceed(entity)
+        val body = "FUN=99000120&TBL_IN=ANS_TYPE,USER_CODE;0,$custid;"
+        Client.getInstance().sendBiz(body) { success, data ->
+            if (success) {
+                val result = YCParser.parseObject(data)
+                val score = result["SURVEY_SCORE"].orEmpty()
+                val type = result["RATING_LVL_NAME"].orEmpty()
+                val riskLevel = RiskLevel(type,score)
+                callback.onSucceed(riskLevel)
+            } else {
+                callback.onFailure(handleError(data))
+            }
         }
     }
 
+    //发送交易请求
     override fun transaction(
-        market: String,
-        code: String,
-        secuid: String,
-        fundsId: String,
-        price: Double,
-        qty: Int,
-        postFlag: String,
+        market: String, code: String, secuid: String, fundsId: String, price: Double, qty: Int, postFlag: String,
         callback: OnResult<TradeResultEntity>
     ) {
         val body = "FUN=410411&TBL_IN=market,secuid,fundid,stkcode,bsflag,price,qty,ordergroup," +
@@ -504,25 +671,15 @@ class TradeRepository : TradeDataSource {
                 callback.onFailure(handleError(data))
             }
         }
-//        async {
-//            val entity = TradeResultEntity()
-//            entity.ordergroup = "1"
-//            entity.orderid = "2"
-//            entity.ordersno = "3"
-//            callback.onSucceed(entity)
-//        }
     }
 
+    //获取可买可卖最大值
     override fun getAvailable(
-        market: String, secuid: String, fundsId: String,
-        code: String, price: Double, flag: Boolean,
+        market: String, secuid: String, fundsId: String, code: String, price: Double, flag: Boolean,
         callback: OnResult<Int>
     ) {
-        val d: String = if (flag) {
-            "B"
-        } else {
-            "S"
-        }
+
+        val d = if(flag) "B" else "S"
 
         val body =
             "FUN=410410&TBL_IN=market,secuid,fundid,stkcode,bsflag,price,bankcode,hiqtyflag,creditid,creditflag,linkmarket,linksecuid,sorttype,dzsaletype,prodcode;" +
@@ -543,17 +700,11 @@ class TradeRepository : TradeDataSource {
                 callback.onFailure(handleError(data))
             }
         }
-
-//        async {
-//            callback.onSucceed(1000)
-//        }
-
     }
 
+    //获取持仓数据
     override fun getHandStockList(
-        fundsId: String,
-        count: Int,
-        offset: Int,
+        fundsId: String, count: Int, offset: Int,
         callback: OnResult<MutableList<TradeHandEntity>>
     ) {
         val body = "FUN=410503&TBL_IN=market,fundid,secuid,stkcode,qryflag,count,poststr;" +
@@ -584,30 +735,10 @@ class TradeRepository : TradeDataSource {
                 callback.onFailure(error)
             }
         }
-//        async {
-//            var mList = mutableListOf<TradeHandEntity>()
-//            var entity = TradeHandEntity()
-//            entity.stkname = "格力电器"
-//            entity.stkcode = "000651"
-//            entity.costprice = 12.49
-//            entity.lastprice = 56.12
-//            entity.lastprice = 56.12
-//            entity.income = 10934.12
-//            entity.stkbal = 1000
-//            entity.stkavl = 300
-//
-//            mList.add(entity)
-//            mList.add(entity)
-//            mList.add(entity)
-//            mList.add(entity)
-//            mList.add(entity)
-//            mList.add(entity)
-//            callback.onSucceed(mList)
-//        }
     }
 
+    //搜索股票
     override fun searchStock(code: String, callback: OnResult<TradeStockEntity>) {
-
         val body = "FUN=410203&TBL_IN=market,stklevel,stkcode,poststr,rowcount,stktype;" +
                 "" + "," +
                 "" + "," +
@@ -641,32 +772,11 @@ class TradeRepository : TradeDataSource {
                 callback.onFailure(error)
             }
         }
-//        async {
-//            val result = TradeStockEntity()
-//            result.market = "0"
-//            result.stkcode = "000651"
-//            result.stkname = "格力电器"
-//            result.fHigh = 54.80
-//            result.fLow = 53.21
-//            result.fOpen = 54.23
-//            result.fLastClose = 53.31
-//            result.fNewest = 52.10
-//            result.fixprice = 52.18
-//
-//            val dang = TradeStockEntity.Dang()
-//            dang.fOrder = 10
-//            dang.fPrice = 10.88
-//
-//            result.ask = mutableListOf(dang, dang, dang, dang, dang)
-//            result.bid = mutableListOf(dang, dang, dang, dang, dang)
-//            callback.onSucceed(result)
-//        }
     }
 
     private fun handleError(data: String): Error {
         val error = Error()
         error.szError = data
-        Log.e("handleError", data)
         return error
     }
 
