@@ -2,23 +2,32 @@ package com.god.kotlin.trade
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModel
 import androidx.viewpager.widget.ViewPager
+import com.god.kotlin.BaseActivity
 import com.god.kotlin.R
 import com.god.kotlin.trade.funds.FundsFragment
 import com.god.kotlin.trade.order.OrderFragment
+import com.god.kotlin.trade.order.OrderViewModel
 import com.god.kotlin.user.UserHelper
 import com.god.kotlin.util.Constant
 import com.god.kotlin.util.getEasyFragment
 import com.god.kotlin.util.obtainViewModel
 import com.god.kotlin.widget.tablayout.EasyFragment
 import com.god.kotlin.widget.tablayout.FragmentAdapter
+import com.xuhao.didi.socket.common.interfaces.basic.AbsLoopThread
 import kotlinx.android.synthetic.main.activity_trade.*
+import java.lang.Exception
 
-class TradeActivity : AppCompatActivity(),TradeParent {
+class TradeActivity : BaseActivity(),TradeParent {
 
     private val fragmentList: MutableList<EasyFragment> = mutableListOf()
     private lateinit var adapter: FragmentAdapter
     private var _type = 0
+
+    @Volatile
+    private lateinit var mReconnectTestingThread: CycleLoopThread
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,15 +50,32 @@ class TradeActivity : AppCompatActivity(),TradeParent {
         }
 
         img_back.setOnClickListener { finish() }
+        mReconnectTestingThread = CycleLoopThread()
+        start()
     }
 
-    override fun onResume() {
-        super.onResume()
-        obtainViewModel().getHandList(UserHelper.getUser().fundid)
+    override fun onDestroy() {
+        super.onDestroy()
+        stop()
     }
 
 
-    class PageChangeListener : ViewPager.OnPageChangeListener {
+    @Synchronized
+    private fun stop() {
+        if (mReconnectTestingThread != null) {
+            mReconnectTestingThread.shutdown()
+        }
+    }
+
+    private fun start() {
+        synchronized(mReconnectTestingThread) {
+            if (mReconnectTestingThread.isShutdown) {
+                mReconnectTestingThread.start()
+            }
+        }
+    }
+
+   private  inner class PageChangeListener : ViewPager.OnPageChangeListener {
         override fun onPageScrollStateChanged(state: Int) {
         }
 
@@ -57,10 +83,28 @@ class TradeActivity : AppCompatActivity(),TradeParent {
         }
 
         override fun onPageSelected(position: Int) {
+            tab_pager.currentItem = position
         }
     }
 
+    private inner class CycleLoopThread : AbsLoopThread() {
+
+        override fun runInLoopThread() {
+            if(tab_pager.currentItem == 2){
+                obtainOrderModel().query(100, 1)
+            }else{
+                obtainViewModel().getHandList(UserHelper.getUser().fundid)
+            }
+            Thread.sleep(5000)
+        }
+
+        override fun loopFinish(e: Exception?) {
+        }
+
+    }
+
     override fun obtainViewModel(): SellViewModel = obtainViewModel(SellViewModel::class.java)
+    fun obtainOrderModel() : OrderViewModel = obtainViewModel(OrderViewModel::class.java)
 
 }
 

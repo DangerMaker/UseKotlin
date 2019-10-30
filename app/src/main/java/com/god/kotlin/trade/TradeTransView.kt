@@ -12,6 +12,7 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.god.kotlin.R
+import com.god.kotlin.data.entity.Avail
 import com.god.kotlin.data.entity.TradeStockEntity
 import com.god.kotlin.user.UserHelper
 import com.god.kotlin.util.*
@@ -27,6 +28,9 @@ import kotlinx.android.synthetic.main.view_trade_market.view.*
 import kotlinx.android.synthetic.main.view_trade_ratio.view.*
 
 class TradeTransView(context: Context?) : RelativeLayout(context), ITradeView {
+    override fun updateHQ(data: TradeStockEntity) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
     private var list = mutableListOf<TradeStockEntity.Dang>()
     private var adapter: LevelAdapter
@@ -102,12 +106,12 @@ class TradeTransView(context: Context?) : RelativeLayout(context), ITradeView {
     override fun setStockCode(code: String) {
     }
 
-    override fun setAvailable(max: Int) {
-        maxValue = max
-        if (direction) {
-            available_num.text = "可买${max}股"
+    override fun setAvailable(avail: Avail) {
+        maxValue = avail.num
+        if (avail.direction) {
+            available_num.text = "可买${maxValue}股"
         } else {
-            available_num.text = "可卖${max}股"
+            available_num.text = "可卖${maxValue}股"
         }
     }
 

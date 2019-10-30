@@ -9,17 +9,17 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.ez08.trade.net.Client
 import com.ez08.trade.tools.JumpActivity
+import com.ez08.trade.ui.other.TradeOrderActivity
 import com.god.kotlin.R
+import com.god.kotlin.bank.TradeBankActivity
 import com.god.kotlin.change.ChangeInformationActivity
 import com.god.kotlin.change.ChangePwdActivity
 import com.god.kotlin.ipo.IpoOrderActivity
 import com.god.kotlin.pre.PreActivity
 import com.god.kotlin.profile.*
 import com.god.kotlin.query.QueryMenuActivity
-import com.god.kotlin.trade.TradeActivity
+import com.god.kotlin.trade.*
 import com.god.kotlin.trade.agree.TradeAgreeActivity
-import com.god.kotlin.trade.TradeMarketActivity
-import com.god.kotlin.trade.TradeTransActivity
 import com.god.kotlin.transfer.TransferMenuActivity
 import com.god.kotlin.util.Constant
 import com.god.kotlin.util.inflate
@@ -57,8 +57,10 @@ class MenuAdapter(private val header: View, private val list: List<StringMenu>) 
                             "修改资料" -> view.startActivity(ChangeInformationActivity::class.java)
                             "修改密码" -> view.startActivity(ChangePwdActivity::class.java)
                             "转股回售" -> view.startActivity(TradeTransActivity::class.java)
-                            "预埋单" -> view.startActivity(PreActivity::class.java)
-                            "银行转账" -> view.startActivity(TransferMenuActivity::class.java)
+                            "预埋单" -> view.startActivity(TradeOrderActivity::class.java)
+//                            "预埋单" -> view.startActivity(PreActivity::class.java)
+//                            "银行转账" -> view.startActivity(TransferMenuActivity::class.java)
+                            "银行转账" -> view.startActivity(TradeBankActivity::class.java)
                             "退出登录" -> logout()
                             else -> throw Exception("router err")
                         }
@@ -107,8 +109,8 @@ class MenuHorizontalAdapter(private val list: List<ImageMenu>) : RecyclerView.Ad
                     "撤单" -> view.startActivity(TradeActivity::class.java) { putExtra(Constant.TRADE_TYPE, 2) }
                     "持仓" -> view.startActivity(TradeActivity::class.java) { putExtra(Constant.TRADE_TYPE, 3) }
                     "市价买卖" -> view.startActivity(TradeMarketActivity::class.java) { putExtra(Constant.TRADE_TYPE, 0) }
-                    "对买对卖" -> view.startActivity(TradeMarketActivity::class.java) { putExtra(Constant.TRADE_TYPE, 1) }
-                    "批量委托" -> AccountListActivity::class.java
+                    "对买对卖" -> view.startActivity(TradeBothActivity::class.java)
+                    "批量委托" -> view.startActivity(TradeSeveralActivity::class.java)
                     "查询" -> view.startActivity(QueryMenuActivity::class.java)
                     else -> throw Exception("router err")
                 }

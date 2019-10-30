@@ -1,5 +1,6 @@
 package com.god.kotlin.trade
 
+import com.god.kotlin.data.entity.Avail
 import com.god.kotlin.data.entity.TradeStockEntity
 
 interface ITradeView {
@@ -8,9 +9,11 @@ interface ITradeView {
 
     fun setStockCode(code: String)
 
-    fun setAvailable(max: Int)
+    fun setAvailable(avail: Avail)
 
     fun setData(data: TradeStockEntity)
+
+    fun updateHQ(data: TradeStockEntity)
 }
 
 interface ITradeAction {

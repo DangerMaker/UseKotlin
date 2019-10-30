@@ -23,12 +23,10 @@
 
         <activity android:name=".menu.MenuActivity"/>
         <activity android:name=".MainActivity"/>
-        <activity android:name=".trade.TradeActivity"/>
         <activity android:name=".profile.RiskQueryActivity"/>
         <activity android:name=".profile.AccountListActivity"/>
         <activity android:name=".change.ChangeInformationActivity"/>
-        <activity android:name=".trade.TradeMarketActivity"/>
-        <activity android:name=".trade.TradeTransActivity"/>
+
         <activity android:name=".change.ChangePwdActivity"/>
         <activity android:name=".profile.RiskTestActivity"/>
         <activity android:name=".transfer.TransferMenuActivity"/>
@@ -36,7 +34,6 @@
         <activity android:name=".transfer.TransferFundsActivity"/>
         <activity android:name=".transfer.TransferBankActivity"/>
         <activity android:name=".transfer.TransferBrokerActivity"/>
-        <activity android:name=".trade.agree.TradeAgreeActivity"/>
         <activity android:name=".query.QueryMenuActivity"/>
         <activity android:name=".query.QueryTradeActivity"/>
         <activity android:name=".ipo.IpoMenuActivity"/>
@@ -44,6 +41,21 @@
         <activity android:name=".ipo.query.QueryIpoActivity"/>
         <activity android:name=".pre.PreActivity"/>
         <activity android:name=".pre.AddPreActivity"/>
+
+        <activity android:name=".trade.TradeActivity"/>
+        <activity android:name=".trade.TradeMarketActivity"/>
+        <activity android:name=".trade.TradeTransActivity"/>
+        <activity android:name=".trade.agree.TradeAgreeActivity"/>
+        <activity android:name=".trade.TradeBothActivity"/>
+        <activity android:name=".trade.TradeSeveralActivity"/>
+
+        <activity android:name=".bank.TradeBankActivity" />
+        <activity android:name=".bank.TradeBank2SecurityActivity" />
+        <activity android:name=".bank.TradeSecurity2BankActivity" />
+
+        <activity android:name=".pre.TradeOrderActivity" />
+        <activity android:name=".pre.TradeNewOrderActivity" />
+
     </application>
 
 </manifest>

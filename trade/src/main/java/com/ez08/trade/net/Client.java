@@ -100,7 +100,7 @@ public class Client {
                 ByteBuffer buffer = ByteBuffer.wrap(header);
                 buffer.order(byteOrder);
                 STradeBaseHead head = new STradeBaseHead(buffer);
-                Log.e("STradeBaseHead Response", head.toString());
+//                Log.e("STradeBaseHead Response", head.toString());
                 return head.dwBodySize;
             }
         });
@@ -143,7 +143,7 @@ public class Client {
                 ByteBuffer buffer = ByteBuffer.wrap(header);
                 buffer.order(byteOrder);
                 STradeBaseHead head = new STradeBaseHead(buffer);
-                Log.e("STradeBaseHead Response", head.toString());
+//                Log.e("STradeBaseHead Response", head.toString());
                 return head.dwBodySize;
             }
         });

@@ -1,7 +1,6 @@
 package com.ez08.trade.ui.other;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,24 +16,19 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.ez08.trade.Constant;
 import com.ez08.trade.R;
-import com.ez08.trade.net.Callback;
 import com.ez08.trade.net.Client;
 import com.ez08.trade.tools.DialogUtils;
 import com.ez08.trade.tools.YCParser;
 import com.ez08.trade.ui.BaseActivity;
 import com.ez08.trade.ui.view.LinearItemDecoration;
 import com.ez08.trade.user.TradeUser;
+
 import com.ez08.trade.user.UserHelper;
 
-import org.json.JSONObject;
-
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class TradeOrderActivity extends BaseActivity implements View.OnClickListener {
     ImageView backBtn;
@@ -85,7 +79,7 @@ public class TradeOrderActivity extends BaseActivity implements View.OnClickList
         @NonNull
         @Override
         public MyHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-            return new MyHolder(LayoutInflater.from(context).inflate(R.layout.trade_holder_order, viewGroup, false));
+            return new MyHolder(LayoutInflater.from(context).inflate(R.layout.trade_holder_order1, viewGroup, false));
         }
 
         @Override

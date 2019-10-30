@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import com.god.kotlin.BaseActivity
 import com.god.kotlin.R
 import com.god.kotlin.data.entity.Account
 import com.god.kotlin.util.inflate
@@ -11,7 +12,7 @@ import com.god.kotlin.util.obtainViewModel
 import kotlinx.android.synthetic.main.activity_account_list.*
 import kotlinx.android.synthetic.main.toolbar_normal.*
 
-class AccountListActivity : AppCompatActivity() {
+class AccountListActivity : BaseActivity() {
 
     private val list = mutableListOf<Account>()
     private lateinit var accountAdapter: AccountAdapter
@@ -19,7 +20,6 @@ class AccountListActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_account_list)
-        Log.e("AccountListActivity","onCreate")
 
         toolbar_title.text = "股东资料"
         toolbar_back.setOnClickListener { finish() }
@@ -35,15 +35,8 @@ class AccountListActivity : AppCompatActivity() {
             list.clear()
             list.addAll(it)
             accountAdapter.notifyDataSetChanged()
-            Log.e("AccountListActivity","notifyDataSetChanged")
         })
 
         viewModel.query()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        Log.e("AccountListActivity","onResume")
-
     }
 }

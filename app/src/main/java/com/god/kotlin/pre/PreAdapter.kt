@@ -7,11 +7,7 @@ import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
-import androidx.appcompat.widget.AppCompatCheckBox
 import com.god.kotlin.R
-import com.god.kotlin.data.entity.Account
-import com.god.kotlin.data.entity.NewStock
-import com.god.kotlin.util.getMarketType
 import com.god.kotlin.util.inflate
 
 class PreAdapter(
@@ -22,7 +18,7 @@ class PreAdapter(
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val stock = getItem(position)
-        val rowView = convertView ?: context.inflate(R.layout.trade_holder_order)
+        val rowView = convertView ?: context.inflate(R.layout.trade_holder_order1)
 
         with(rowView.findViewById<TextView>(R.id.pre_item_name)) {
             text = stock.name

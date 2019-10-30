@@ -30,11 +30,19 @@ class MenuActivity : BaseActivity() {
             MenuFragment.newInstance()
         }
 
-       connect()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        connect()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        dismissBusyDialog()
     }
 
     override fun onKickOUt() {
-        super.onKickOUt()
         "您被踢出".toast(this)
         Client.getInstance().logout()
     }
@@ -54,7 +62,7 @@ class MenuActivity : BaseActivity() {
         }
     }
 
-    override fun onConnect() {
+    override fun onExchange() {
         if (Client.sessionId == null) {
             dismissBusyDialog()
             JumpActivity.start(context, "登录")
@@ -89,8 +97,6 @@ class MenuActivity : BaseActivity() {
                 }
 
                 UserHelper.setUserList(list)
-                startActivity(Intent(this, TradeMenuActivity::class.java))
-                finish()
             }
         }
     }

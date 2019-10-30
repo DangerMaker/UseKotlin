@@ -5,6 +5,7 @@ import android.content.DialogInterface
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import com.god.kotlin.BaseActivity
 import com.god.kotlin.R
 import com.god.kotlin.util.obtainViewModel
 import com.god.kotlin.util.showSelectDialog
@@ -13,7 +14,7 @@ import kotlinx.android.synthetic.main.activity_change_pwd.*
 import kotlinx.android.synthetic.main.activity_information_change.*
 import kotlinx.android.synthetic.main.toolbar_normal.*
 
-class ChangePwdActivity : AppCompatActivity() {
+class ChangePwdActivity : BaseActivity() {
 
     private var type = 0 // 0 交易密码 1资金密码
     private var array: Array<String> = arrayOf("交易密码", "资金密码")

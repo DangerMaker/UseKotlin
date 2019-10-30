@@ -6,7 +6,7 @@
 
     <include
         android:id="@+id/bar_layout"
-        layout="@layout/toolbar_normal" />
+        layout="@layout/toolbar_normal1" />
 
     <include layout="@layout/trade_holder_daijiao_title" />
 

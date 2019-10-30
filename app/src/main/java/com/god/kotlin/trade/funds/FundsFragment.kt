@@ -53,6 +53,7 @@ class FundsFragment : Fragment() {
         fundsModel = obtainViewModel(FundsViewModel::class.java)
 
         viewModel.handStockList.observe(this, Observer {
+            list.clear()
             list.addAll(it)
             handAdapter.notifyDataSetChanged()
         })

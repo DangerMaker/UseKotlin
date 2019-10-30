@@ -3,27 +3,34 @@ package com.god.kotlin.trade
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
+import com.god.kotlin.BaseActivity
 import com.god.kotlin.R
 import com.god.kotlin.trade.funds.FundsFragment
 import com.god.kotlin.trade.order.OrderFragment
+import com.god.kotlin.trade.order.OrderViewModel
+import com.god.kotlin.user.UserHelper
 import com.god.kotlin.util.Constant
 import com.god.kotlin.util.getEasyFragment
 import com.god.kotlin.util.obtainViewModel
 import com.god.kotlin.widget.tablayout.EasyFragment
 import com.god.kotlin.widget.tablayout.FragmentAdapter
+import com.xuhao.didi.socket.common.interfaces.basic.AbsLoopThread
 import kotlinx.android.synthetic.main.activity_trade.*
+import java.lang.Exception
 
-class TradeMarketActivity : AppCompatActivity(),TradeParent {
+class TradeMarketActivity : BaseActivity(), TradeParent {
 
     private val fragmentList: MutableList<EasyFragment> = mutableListOf()
     private lateinit var adapter: FragmentAdapter
     private var _type = 0
+    private lateinit var mReconnectTestingThread: CycleLoopThread
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_trade)
 
-        _type = intent?.getIntExtra(Constant.TRADE_TYPE,0) ?: return
+        _type = intent?.getIntExtra(Constant.TRADE_TYPE, 0) ?: return
 
         fragmentList.add(getEasyFragment(BUY_TAG, "市价买入") { SellFragment.newInstance(true, 1) })
         fragmentList.add(getEasyFragment(SELL_TAG, "市价卖出") { SellFragment.newInstance(false, 1) })
@@ -38,15 +45,33 @@ class TradeMarketActivity : AppCompatActivity(),TradeParent {
         }
 
         img_back.setOnClickListener { finish() }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        obtainViewModel().getHandList("fundsId")
+        mReconnectTestingThread = CycleLoopThread()
+        start()
     }
 
 
-    class PageChangeListener : ViewPager.OnPageChangeListener {
+    override fun onDestroy() {
+        super.onDestroy()
+        stop()
+    }
+
+
+    @Synchronized
+    private fun stop() {
+        if (mReconnectTestingThread != null) {
+            mReconnectTestingThread.shutdown()
+        }
+    }
+
+    private fun start() {
+        synchronized(mReconnectTestingThread) {
+            if (mReconnectTestingThread.isShutdown) {
+                mReconnectTestingThread.start()
+            }
+        }
+    }
+
+    private inner class PageChangeListener : ViewPager.OnPageChangeListener {
         override fun onPageScrollStateChanged(state: Int) {
         }
 
@@ -54,11 +79,24 @@ class TradeMarketActivity : AppCompatActivity(),TradeParent {
         }
 
         override fun onPageSelected(position: Int) {
+            tab_pager.currentItem = position
         }
     }
 
-    override fun obtainViewModel(): SellViewModel = obtainViewModel(SellViewModel::class.java)
+    private inner class CycleLoopThread : AbsLoopThread() {
 
+        override fun runInLoopThread() {
+
+            obtainViewModel().getHandList(UserHelper.getUser().fundid)
+            Thread.sleep(5000)
+        }
+
+        override fun loopFinish(e: Exception?) {
+        }
+
+    }
+
+    override fun obtainViewModel(): SellViewModel = obtainViewModel(SellViewModel::class.java)
 }
 
 

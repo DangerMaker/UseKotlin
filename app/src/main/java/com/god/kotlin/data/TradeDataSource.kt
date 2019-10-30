@@ -108,4 +108,6 @@ interface TradeDataSource {
 
     fun queryDaiJiaoList(callback: OnResult<MutableList<DaiJiao>>)
 
+    fun getHQ(market: String,code: String,callback :OnResult<TradeStockEntity>)
+
 }

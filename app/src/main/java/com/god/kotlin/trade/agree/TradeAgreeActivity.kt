@@ -3,6 +3,7 @@ package com.god.kotlin.trade.agree
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
+import com.god.kotlin.BaseActivity
 import com.god.kotlin.R
 import com.god.kotlin.trade.SellFragment
 import com.god.kotlin.trade.SellViewModel
@@ -14,7 +15,7 @@ import com.god.kotlin.widget.tablayout.EasyFragment
 import com.god.kotlin.widget.tablayout.FragmentAdapter
 import kotlinx.android.synthetic.main.activity_trade.*
 
-class TradeAgreeActivity : AppCompatActivity(), TradeParent {
+class TradeAgreeActivity : BaseActivity(), TradeParent {
 
     private val fragmentList: MutableList<EasyFragment> = mutableListOf()
     private lateinit var adapter: FragmentAdapter

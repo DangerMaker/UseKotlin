@@ -42,6 +42,7 @@ open class BaseActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
+        dismissBusyDialog()
         super.onDestroy()
         Client.getInstance().unRegisterListener(stateListener)
     }
@@ -59,7 +60,7 @@ open class BaseActivity : AppCompatActivity() {
     }
 
     protected open fun onKickOUt(){
-
+        finish()
     }
 
     protected open fun onDisConnect(e :Exception){
@@ -67,8 +68,8 @@ open class BaseActivity : AppCompatActivity() {
     }
 
     protected fun dismissBusyDialog() {
-        if (pDialog != null) {
-            pDialog!!.dismiss()
+        if (pDialog != null && pDialog!!.isShowing) {
+            pDialog?.dismiss()
         }
     }
 
@@ -76,13 +77,12 @@ open class BaseActivity : AppCompatActivity() {
 
     protected fun showBusyDialog() {
         pDialog = ProgressDialog(this)
-        pDialog!!.setMessage("请稍候...")
-        pDialog!!.setCancelable(true)
-        pDialog!!.setProgressStyle(ProgressDialog.STYLE_SPINNER)
-        if (Thread.currentThread() === Looper.getMainLooper().thread) {
-            pDialog!!.show()
-        } else {
-            runOnUiThread { pDialog!!.show() }
+        pDialog.let {
+            it?.setMessage("请稍候...")
+            it?.setCancelable(true)
+            it?.setProgressStyle(ProgressDialog.STYLE_SPINNER)
+            it?.show()
         }
     }
+
 }

@@ -78,7 +78,7 @@
         <item name="android:textSize">15dp</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:textColor">@color/trade_black</item>
-        <item name="android:textColorHint">@color/trade_gray</item>
+        <item name="android:textColorHint">@color/trade_input_text</item>
         <item name="android:background">@null</item>
     </style>
 

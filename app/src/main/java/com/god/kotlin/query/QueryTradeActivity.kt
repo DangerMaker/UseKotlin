@@ -3,6 +3,7 @@ package com.god.kotlin.query
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import com.god.kotlin.BaseActivity
 import com.god.kotlin.R
 import com.god.kotlin.data.entity.TransferRecord
 import com.god.kotlin.util.Constant.Companion.QUERY_TYPE
@@ -11,7 +12,7 @@ import com.god.kotlin.util.obtainViewModel
 import kotlinx.android.synthetic.main.activity_query_trade.*
 import kotlinx.android.synthetic.main.toolbar_normal.*
 
-class QueryTradeActivity : AppCompatActivity() {
+class QueryTradeActivity : BaseActivity() {
 
     private var _type = 0 //"当日成交", "当日委托", "历史成交", "历史委托"
     private lateinit var viewModel: QueryViewModel

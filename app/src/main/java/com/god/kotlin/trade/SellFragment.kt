@@ -1,6 +1,7 @@
 package com.god.kotlin.trade
 
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,7 +31,7 @@ class SellFragment : Fragment() {
     private var _type: Int = 0
 
     companion object {
-        fun newInstance(flag: Boolean,type: Int): SellFragment {
+        fun newInstance(flag: Boolean, type: Int): SellFragment {
             return SellFragment().apply {
                 arguments = Bundle().apply {
                     putBoolean(TRADE_DIRECTION, flag)
@@ -53,40 +54,43 @@ class SellFragment : Fragment() {
         _type = arguments?.getInt(TRADE_TYPE) ?: return
 
         with(sell_recycler) {
-            tradeView = when(_type){
+            tradeView = when (_type) {
                 0 -> TradeView(context)
                 1 -> TradeMarketView(context)
                 2 -> TradeTransView(context)
+                3 -> TradeBothView(context)
+                4 -> TradeSeveralView(context)
                 else -> View(context)
             }
             sell_recycler.addHeaderView(tradeView)
             sell_recycler.addHeaderView(context.inflate(R.layout.trade_holder_handing_title))
             handAdapter = HandAdapter(list, context!!)
             sell_recycler.adapter = handAdapter
+            setOnItemClickListener { _, _, position, _ ->
+                (tradeView as ITradeView).setStockCode(list[position - 2].stkcode)
+            }
         }
 
         //data layer
         viewModel = (activity as TradeParent).obtainViewModel()
+        (tradeView as ITradeView).initData(_flag, viewModel)
 
         viewModel.stockEntity.observe(this, Observer {
-            (tradeView as ITradeView).setData(it)
+            if (!TextUtils.isEmpty(it.stkcode)) {
+                (tradeView as ITradeView).setData(it)
+                viewModel.getHQ(it.market, it.stkcode)
+            } else {
+                "没有当前股票".toast(context)
+            }
         })
 
-        viewModel.handStockList.observe(this, Observer {
-            list.addAll(it)
-            handAdapter.notifyDataSetChanged()
+        viewModel.available.observe(this, Observer {
+            (tradeView as ITradeView).setAvailable(it)
         })
 
-        if(_flag) {
-            viewModel.available.observe(this, Observer {
-                (tradeView as ITradeView).setAvailable(it)
-            })
-
-        }else {
-            viewModel.maxSell.observe(this, Observer {
-                (tradeView as ITradeView).setAvailable(it)
-            })
-        }
+        viewModel.currentHQ.observe(this, Observer {
+            (tradeView as ITradeView).updateHQ(it)
+        })
 
         viewModel.order.observe(this, Observer {
             showSimpleDialog(
@@ -101,7 +105,11 @@ class SellFragment : Fragment() {
             it.toast(context, Toast.LENGTH_LONG)
         })
 
-        (tradeView as ITradeView).initData(_flag, viewModel)
+        viewModel.handStockList.observe(this, Observer {
+            list.clear()
+            list.addAll(it)
+            handAdapter.notifyDataSetChanged()
+        })
     }
 }
 

@@ -3,13 +3,14 @@ package com.god.kotlin.change
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import com.god.kotlin.BaseActivity
 import com.god.kotlin.R
 import com.god.kotlin.util.obtainViewModel
 import com.god.kotlin.util.toast
 import kotlinx.android.synthetic.main.activity_information_change.*
 import kotlinx.android.synthetic.main.toolbar_normal.*
 
-class ChangeInformationActivity : AppCompatActivity() {
+class ChangeInformationActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

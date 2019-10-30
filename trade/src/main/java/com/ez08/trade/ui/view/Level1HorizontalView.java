@@ -93,7 +93,6 @@ public class Level1HorizontalView extends LinearLayout implements View.OnClickLi
 
     }
 
-
     private void bat(TextView price, TextView volume, List<TradeLevel1Entity.Dang> list, int position) {
         price.setText(MathUtils.format2Num(list.get(position).fPrice));
         price.setTextColor(list.get(position).fPrice > entity.fOpen ? ScreenUtil.setTextColor(getContext(), R.color.trade_red) : ScreenUtil.setTextColor(getContext(), R.color.trade_green));

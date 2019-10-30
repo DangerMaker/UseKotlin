@@ -72,7 +72,7 @@ class TradeAgreeFragment : Fragment() {
                 val user =  UserHelper.getUserByMarket(it.market)
 
                 viewModel.transaction(
-                    "market", it.stkcode,user.secuid,user.fundid,
+                    it.market, it.stkcode,user.secuid,user.fundid,
                     it.fixprice, 123, bsflag
                 )
             }

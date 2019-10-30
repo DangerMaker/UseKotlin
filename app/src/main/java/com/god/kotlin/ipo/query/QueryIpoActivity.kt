@@ -3,6 +3,7 @@ package com.god.kotlin.ipo.query
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import com.god.kotlin.BaseActivity
 import com.god.kotlin.R
 import com.god.kotlin.data.entity.TransferRecord
 import com.god.kotlin.query.QueryDealFragment
@@ -14,7 +15,7 @@ import com.god.kotlin.util.obtainViewModel
 import kotlinx.android.synthetic.main.activity_query_trade.*
 import kotlinx.android.synthetic.main.toolbar_normal.*
 
-class QueryIpoActivity : AppCompatActivity() {
+class QueryIpoActivity : BaseActivity() {
 
     val list = mutableListOf<TransferRecord>()
     private var _type = 0 //"配号", "中签", "代缴""

@@ -21,6 +21,14 @@ fun getTime(time: String): String {
     return ""
 }
 
+fun getMarketByTag(tag: String): String {
+    return if (tag == "0" || tag == "2" || tag == "") {
+        "SZHQ"
+    } else {
+        "SHHQ"
+    }
+}
+
 fun getTransferStatus(type: String): String {
     return if (type == "0") {
         "未报"
@@ -45,7 +53,7 @@ fun getTransferStatus(type: String): String {
     }
 }
 
-fun getOrderStatus(data:String):String{
+fun getOrderStatus(data: String): String {
     return when (data) {
         "0" -> "未报"
         "1" -> "正报"
@@ -88,8 +96,53 @@ fun getMarketType(type: String): String {
     }
 }
 
+fun getResponseQuote(flag: String):String {
+    var result = ""
+    when (flag) {
+        "B" -> result = "买入"
+        "S" -> result = "卖出"
+        "a" -> result = "对方最优价格买入"
+        "f" -> result = "对方最优价格卖出"
+        "b" -> result = "本方最优价格买入"
+        "g" -> result = "本方最优价格卖出"
+        "c" -> result = "即时成交剩余撤销买入"
+        "h" -> result = "即时成交剩余撤销卖出"
+        "d" -> result = "五档即成剩撤买入"
+        "i" -> result = "五档即成剩撤卖出"
+        "e" -> result = "全额成交或撤销买入"
+        "j" -> result = "全额成交或撤销卖出"
+        "q" -> result = "五档即成转限价买入"
+        "r" -> result = "五档即成转限价卖出"
+    }
+
+   return result
+}
+
+//0 红色 1蓝色
+fun getResponseColor(flag: String):Int {
+    var result = 0
+    when (flag) {
+        "B" -> result = 0
+        "S" -> result = 1
+        "a" -> result = 0
+        "f" -> result = 1
+        "b" -> result = 0
+        "g" -> result = 1
+        "c" -> result = 0
+        "h" -> result = 1
+        "d" -> result = 0
+        "i" -> result = 1
+        "e" -> result = 0
+        "j" -> result = 1
+        "q" -> result = 0
+        "r" -> result = 1
+    }
+
+    return result
+}
+
 fun getTagByQuoteName(bsFlag: String, quoteType: String): String {
-    if (TextUtils.isEmpty(quoteType)) {
+    if (TextUtils.isEmpty(quoteType) || quoteType == "报价方式") {
         return ""
     }
 

@@ -6,7 +6,7 @@
     android:background="@color/trade_login_bg"
     android:orientation="vertical">
     <include
-        layout="@layout/toolbar_normal"
+        layout="@layout/toolbar_normal1"
         />
     <LinearLayout
         android:layout_width="match_parent"

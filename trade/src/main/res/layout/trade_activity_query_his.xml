@@ -7,7 +7,7 @@
 
     <include
         android:id="@+id/bar_layout"
-        layout="@layout/toolbar_normal" />
+        layout="@layout/toolbar_normal1" />
 
     <LinearLayout
         android:id="@+id/date_layout"

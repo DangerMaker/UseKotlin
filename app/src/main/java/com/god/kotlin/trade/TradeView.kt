@@ -10,7 +10,9 @@ import android.widget.BaseAdapter
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import com.ez08.trade.tools.DialogUtils
 import com.god.kotlin.R
+import com.god.kotlin.data.entity.Avail
 import com.god.kotlin.data.entity.TradeStockEntity
 import com.god.kotlin.user.UserHelper
 import com.god.kotlin.util.*
@@ -18,16 +20,15 @@ import kotlinx.android.synthetic.main.view_top.view.*
 import kotlinx.android.synthetic.main.view_trade.*
 import kotlinx.android.synthetic.main.view_trade.view.*
 import kotlinx.android.synthetic.main.view_trade_ratio.view.*
+import java.util.*
 
 class TradeView(context: Context?) : RelativeLayout(context), ITradeView {
-
     private var list = mutableListOf<TradeStockEntity.Dang>()
     private var adapter: LevelAdapter
     private lateinit var viewModel: SellViewModel
     private var direction: Boolean = true
     private lateinit var _data: TradeStockEntity
     private var maxValue: Int = 0
-
     init {
         context!!.inflate(R.layout.view_trade, this)
         adapter = LevelAdapter(list, context)
@@ -54,17 +55,27 @@ class TradeView(context: Context?) : RelativeLayout(context), ITradeView {
         }
 
         submit.setOnClickListener {
-            val user =  UserHelper.getUserByMarket(_data.market)
-            viewModel.transaction(
-                _data.market, _data.stkcode,user.secuid,user.fundid,
-                price.text.toDouble(), total_num.text.toInt(), if(direction) "0B" else "0S"
-            )
+            val user = UserHelper.getUserByMarket(_data.market)
+            val option = if (direction) "买入" else "卖出"
+
+              DialogUtils.showTwoButtonDialog(context, option + "交易确认", "确定$option",
+                  "操作类型：" + option + "\n" +
+                  "股票代码：" + _data.stkcode + "  " + _data.stkname + "\n" +
+                  "委托价格：" + price.text.toDouble() + "\n" +
+                  "委托数量：" + total_num.text.toInt() + "\n" +
+                  "委托方式：" + "限价委托" + "\n" +
+                  "股东代码：" + user.secuid
+              ) { _, _ ->
+                  viewModel.transaction(
+                      _data.market, _data.stkcode, user.secuid, user.fundid,
+                      price.text.toDouble(), total_num.text.toInt(), if (direction) "0B" else "0S"
+                  )
+              }
         }
 
     }
 
     override fun initData(flag: Boolean, vm: SellViewModel) {
-        Log.e("TradeView", "initData")
         viewModel = vm
         direction = flag
 
@@ -84,19 +95,23 @@ class TradeView(context: Context?) : RelativeLayout(context), ITradeView {
     }
 
     override fun setStockCode(code: String) {
+        input_code.search(code)
     }
 
-    override fun setAvailable(max: Int) {
-        maxValue = max
-        if(direction) {
-            available_num.text = "可买${max}股"
-        }else{
-            available_num.text = "可卖${max}股"
+    override fun setAvailable(avail: Avail) {
+        if(avail.direction == direction){
+            if(avail.direction) {
+                maxValue = avail.num
+                available_num.text = "可买${maxValue}股"
+            }else {
+                maxValue = avail.num
+                available_num.text = "可卖${maxValue}股"
+            }
         }
     }
 
     override fun setData(data: TradeStockEntity) {
-        val user =  UserHelper.getUserByMarket(data.market)
+        val user = UserHelper.getUserByMarket(data.market)
 
         data.let {
             _data = data
@@ -104,23 +119,30 @@ class TradeView(context: Context?) : RelativeLayout(context), ITradeView {
             price.text = it.fixprice.format2()
 //
             viewModel.getAvailable(
-                data.market, user.secuid,user.fundid,
+                data.market, user.secuid, user.fundid,
                 it.stkcode, it.fixprice, direction
             )
-//
-//            newest_price.text = it.fNewest.format2()
-//            newest_price.setTextColor(ContextCompat.getColorStateList(context, getPriceColor(it.fNewest, it.fOpen)))
-//            last_price.text = it.fLastClose.format2()
-//            limit_up_price.text = (it.fLastClose * 1.1f).format2()
-//            limit_up_price.setTextColor(ContextCompat.getColorStateList(context, R.color.trade_red))
-//            limit_down_price.text = (it.fLastClose * 0.9f).format2()
-//            limit_down_price.setTextColor(ContextCompat.getColorStateList(context, R.color.trade_green))
-//
-//            list.clear()
-//            list.addAll(data.bid)
-//            list.addAll(data.ask)
-//            adapter.notifyDataSetChanged()
         }
     }
+
+    override fun updateHQ(data: TradeStockEntity) {
+        data.let {
+            newest_price.text = it.fNewest.format2()
+            newest_price.setTextColor(ContextCompat.getColorStateList(context, getPriceColor(it.fNewest, it.fOpen)))
+            last_price.text = it.fLastClose.format2()
+            limit_up_price.text = (it.fLastClose * 1.1f).format2()
+            limit_up_price.setTextColor(ContextCompat.getColorStateList(context, R.color.trade_red))
+            limit_down_price.text = (it.fLastClose * 0.9f).format2()
+            limit_down_price.setTextColor(ContextCompat.getColorStateList(context, R.color.trade_green))
+
+            list.clear()
+            data.ask.reverse()
+            list.addAll(data.ask)
+            list.addAll(data.bid)
+            adapter.setOpenPrice(it.fOpen)
+            adapter.notifyDataSetChanged()
+        }
+    }
+
 }
 

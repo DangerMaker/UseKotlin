@@ -3,6 +3,7 @@ package com.god.kotlin.trade
 import android.content.Context
 import android.content.DialogInterface
 import android.text.Editable
+import android.text.TextUtils
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
@@ -11,7 +12,10 @@ import android.widget.BaseAdapter
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import com.ez08.trade.tools.DialogUtils
+import com.ez08.trade.tools.YiChuangUtils
 import com.god.kotlin.R
+import com.god.kotlin.data.entity.Avail
 import com.god.kotlin.data.entity.TradeStockEntity
 import com.god.kotlin.user.UserHelper
 import com.god.kotlin.util.*
@@ -75,19 +79,34 @@ class TradeMarketView(context: Context?) : RelativeLayout(context), ITradeView {
 
         submit.setOnClickListener {
             _data?.let {
-                val user =  UserHelper.getUserByMarket(it.market)
+                val user = UserHelper.getUserByMarket(it.market)
+                val postFlag = getTagByQuoteName(if (direction) "0B" else "0S", quote_way.text.toString())
+                if(TextUtils.isEmpty(postFlag)){
+                    "请选择报价方式".toast(context)
+                    return@setOnClickListener
+                }
 
-                viewModel.transaction(
-                    it.market, it.stkcode, user.secuid,user.fundid,
-                    it.fixprice, total_num.text.toInt(), if (direction) "0B" else "0S"
-                )
+                val option = if (direction) "买入" else "卖出"
+
+                DialogUtils.showTwoButtonDialog(
+                    context, option + "交易确认", "确定$option",
+                    "操作类型：" + option + "\n" +
+                            "股票代码：" + it.stkcode + "  " + it.stkname + "\n" +
+                            "委托数量：" + total_num.text.toIntOrZero() + "\n" +
+                            "委托方式：" + quote_way.text.toString() +  postFlag + "\n" +
+                            "股东代码：" + user.secuid
+                ) { _, _ ->
+                    viewModel.transaction(
+                        it.market, it.stkcode, user.secuid, user.fundid,
+                        it.fixprice, total_num.text.toInt(), postFlag
+                    )
+                }
             }
         }
 
     }
 
     override fun initData(flag: Boolean, vm: SellViewModel) {
-        Log.e("TradeView", "initData")
         viewModel = vm
         direction = flag
 
@@ -107,25 +126,38 @@ class TradeMarketView(context: Context?) : RelativeLayout(context), ITradeView {
     }
 
     override fun setStockCode(code: String) {
+        input_code.search(code)
     }
 
-    override fun setAvailable(max: Int) {
-        maxValue = max
-        if (direction) {
-            available_num.text = "可买${max}股"
-        } else {
-            available_num.text = "可卖${max}股"
+    override fun setAvailable(avail: Avail) {
+        if (avail.direction == direction) {
+            if (avail.direction) {
+                maxValue = avail.num
+                available_num.text = "可买${maxValue}股"
+            } else {
+                maxValue = avail.num
+                available_num.text = "可卖${maxValue}股"
+            }
         }
     }
 
     override fun setData(data: TradeStockEntity) {
+        val user = UserHelper.getUserByMarket(data.market)
+
         data.let {
             _data = data
             input_code.setData(it.stkcode, it.stkname)
 //            price.text = it.fixprice.format2()
 
-//            viewModel.getAvailable(it.stkcode, it.fixprice, if (direction) "0B" else "0S")
+            viewModel.getAvailable(
+                data.market, user.secuid, user.fundid,
+                it.stkcode, it.fixprice, direction
+            )
+        }
+    }
 
+    override fun updateHQ(data: TradeStockEntity) {
+        data.let {
             newest_price.text = it.fNewest.format2()
             newest_price.setTextColor(ContextCompat.getColorStateList(context, getPriceColor(it.fNewest, it.fOpen)))
             last_price.text = it.fLastClose.format2()
@@ -135,8 +167,10 @@ class TradeMarketView(context: Context?) : RelativeLayout(context), ITradeView {
             limit_down_price.setTextColor(ContextCompat.getColorStateList(context, R.color.trade_green))
 
             list.clear()
-            list.addAll(data.bid)
+            data.ask.reverse()
             list.addAll(data.ask)
+            list.addAll(data.bid)
+            adapter.setOpenPrice(it.fOpen)
             adapter.notifyDataSetChanged()
         }
     }

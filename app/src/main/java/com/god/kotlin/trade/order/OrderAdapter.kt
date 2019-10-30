@@ -19,12 +19,11 @@ class OrderAdapter(
         val order = getItem(position)
         val rowView = convertView ?: context.inflate(R.layout.trade_holder_entrust)
 
-        val color = if (order.bsflag == "B") {
+        val color = if (getResponseColor(order.bsflag) == 0) {
             R.color.trade_red
-        } else {
+        } else{
             R.color.trade_blue
         }
-
         with(rowView.findViewById<TextView>(R.id.name)) {
             text = order.stkname
             setPriceColor(color)
@@ -55,11 +54,7 @@ class OrderAdapter(
         }
 
         with(rowView.findViewById<TextView>(R.id.order_state)) {
-            text = if (order.bsflag == "B") {
-                "买入"
-            } else {
-                "卖出"
-            }
+            text = getResponseQuote(order.bsflag)
             setPriceColor(color)
         }
 

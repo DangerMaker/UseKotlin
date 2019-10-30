@@ -1,10 +1,12 @@
 package com.god.kotlin.trade
 
 import android.content.Context
+import android.text.TextUtils
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
+import com.ez08.trade.tools.MathUtils
 import com.god.kotlin.R
 import com.god.kotlin.data.entity.TradeHandEntity
 import com.god.kotlin.util.format2
@@ -37,12 +39,15 @@ class HandAdapter(
         }
 
         with(rowView.findViewById<TextView>(R.id.profit_num)) {
-            text = ((item.lastprice - item.costprice) / item.costprice * 100).format2()
+            text = item.income.format2()
             setPriceColor(color)
         }
 
         with(rowView.findViewById<TextView>(R.id.profit_percent)) {
-            text = item.stkname
+            val v = item.costprice * 100
+            val scale = (item.lastprice - item.costprice) /item.costprice * 100
+            val percent = if (v > 0) scale.format2() else "--"
+            text = "$percent%"
             setPriceColor(color)
         }
 

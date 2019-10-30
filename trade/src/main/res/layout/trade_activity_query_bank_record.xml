@@ -5,7 +5,7 @@
 
     <include
         android:id="@+id/bar_layout"
-        layout="@layout/toolbar_normal" />
+        layout="@layout/toolbar_normal1" />
 
     <View
         android:layout_width="match_parent"

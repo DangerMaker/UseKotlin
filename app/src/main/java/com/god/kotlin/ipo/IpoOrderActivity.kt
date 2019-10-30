@@ -7,6 +7,7 @@ import android.widget.ListView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.ez08.trade.tools.DialogUtils
+import com.god.kotlin.BaseActivity
 import com.god.kotlin.R
 import com.god.kotlin.data.entity.NewStock
 import com.god.kotlin.user.UserHelper
@@ -15,7 +16,7 @@ import com.god.kotlin.util.startActivityExt
 import kotlinx.android.synthetic.main.activity_ipo_order.*
 
 
-class IpoOrderActivity : AppCompatActivity() {
+class IpoOrderActivity : BaseActivity() {
 
     private lateinit var viewModel: IpoViewModel
     private lateinit var newStockAdapter: NewStockAdapter

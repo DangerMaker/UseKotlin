@@ -2,12 +2,13 @@ package com.god.kotlin.trade
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.god.kotlin.BaseActivity
 import com.god.kotlin.R
 import com.god.kotlin.util.addFragment
 import com.god.kotlin.util.obtainViewModel
 import kotlinx.android.synthetic.main.toolbar_normal.*
 
-class TradeTransActivity : AppCompatActivity(),TradeParent {
+class TradeTransActivity : BaseActivity(),TradeParent {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

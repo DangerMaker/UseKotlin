@@ -2,33 +2,23 @@ package com.god.kotlin.data
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.net.Uri
 import android.util.Log
-import com.ez08.trade.Constant
-import com.ez08.trade.net.*
+import com.ez08.trade.net.Client
+import com.ez08.trade.net.NetUtil
+import com.ez08.trade.net.hq.STradeHQQuery
+import com.ez08.trade.net.hq.STradeHQQueryA
 import com.ez08.trade.net.login.STradeGateLogin
 import com.ez08.trade.net.login.STradeGateLoginA
 import com.ez08.trade.net.verification.STradeVerificationCode
 import com.ez08.trade.net.verification.STradeVerificationCodeA
-import com.ez08.trade.tools.CommonUtils
-import com.ez08.trade.tools.DialogUtils
 import com.ez08.trade.tools.YCParser
-import com.ez08.trade.ui.bank.entity.TransferEntity
-import com.ez08.trade.ui.bank.entity.TransferTitleEntity
-import com.ez08.trade.ui.fresh_stock.entity.TradeZqEntity
-import com.ez08.trade.ui.trade.entity.TradeEntrustEntity
-import com.ez08.trade.ui.user.entity.ShareHoldersEntity
-import com.ez08.trade.ui.user.entity.TradeShareHoldersTitle
-import com.ez08.trade.user.UserHelper
 import com.god.kotlin.data.entity.*
-import com.god.kotlin.net.OnResult
-import com.god.kotlin.util.async
-import java.lang.Exception
 import com.god.kotlin.net.Error
+import com.god.kotlin.net.OnResult
+import com.god.kotlin.util.getMarketByTag
 import com.god.kotlin.util.toDoubleOrZero
 import com.god.kotlin.util.toIntOrZero
-import com.xuhao.didi.socket.common.interfaces.utils.TextUtils
-import java.util.ArrayList
+import java.util.*
 
 
 class TradeRepository : TradeDataSource {
@@ -498,6 +488,8 @@ class TradeRepository : TradeDataSource {
                 count + "," +
                 ";"
         Client.getInstance().sendBiz(body) { success, data ->
+
+            Log.e("cancel",data)
             if (success) {
                 val list = mutableListOf<Order>()
                 val result = YCParser.parseArray(data)
@@ -681,8 +673,7 @@ class TradeRepository : TradeDataSource {
 
         val d = if(flag) "B" else "S"
 
-        val body =
-            "FUN=410410&TBL_IN=market,secuid,fundid,stkcode,bsflag,price,bankcode,hiqtyflag,creditid,creditflag,linkmarket,linksecuid,sorttype,dzsaletype,prodcode;" +
+        val body = "FUN=410410&TBL_IN=market,secuid,fundid,stkcode,bsflag,price,bankcode,hiqtyflag,creditid,creditflag,linkmarket,linksecuid,sorttype,dzsaletype,prodcode;" +
                     market + "," +
                     secuid + "," +
                     fundsId + "," +
@@ -772,6 +763,45 @@ class TradeRepository : TradeDataSource {
                 callback.onFailure(error)
             }
         }
+    }
+
+
+    override fun getHQ(market: String,code: String,callback :OnResult<TradeStockEntity>){
+        Client.getInstance().send(STradeHQQuery(getMarketByTag(market), code)) { success, data ->
+            if (success) {
+                val queryA = STradeHQQueryA(data.headBytes, data.bodyBytes, Client.getInstance().aesKey)
+
+                val entity = TradeStockEntity()
+                entity.fOpen = queryA.fOpen.toDouble()
+                entity.fLastClose = queryA.fLastClose.toDouble()
+                entity.fHigh = queryA.fHigh.toDouble()
+                entity.fLow = queryA.fLow.toDouble()
+                entity.fNewest = queryA.fNewest.toDouble()
+
+                val askItems = queryA.ask
+                val list1 = ArrayList<TradeStockEntity.Dang>()
+                for (i in askItems.indices) {
+                    val dang = TradeStockEntity.Dang()
+                    dang.fOrder = askItems[i].fOrder.toInt()
+                    dang.fPrice = askItems[i].fPrice.toDouble()
+                    list1.add(dang)
+                }
+                entity.ask = list1
+                val bidItems = queryA.bid
+                val list2 = ArrayList<TradeStockEntity.Dang>()
+                for (i in bidItems.indices) {
+                    val dang = TradeStockEntity.Dang()
+                    dang.fOrder = bidItems[i].fOrder.toInt()
+                    dang.fPrice = bidItems[i].fPrice.toDouble()
+                    list2.add(dang)
+                }
+                entity.bid = list2
+                callback.onSucceed(entity)
+            }else{
+
+            }
+        }
+
     }
 
     private fun handleError(data: String): Error {

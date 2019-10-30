@@ -12,6 +12,7 @@ import com.god.kotlin.R
 import com.god.kotlin.data.entity.Order
 import com.god.kotlin.data.entity.TradeHandEntity
 import com.god.kotlin.trade.HandAdapter
+import com.god.kotlin.trade.TradeActivity
 import com.god.kotlin.trade.TradeView
 import com.god.kotlin.util.*
 import kotlinx.android.synthetic.main.fragment_order.*
@@ -56,7 +57,7 @@ class OrderFragment : Fragment() {
             }
         }
 
-        viewModel = obtainViewModel(OrderViewModel::class.java)
+        viewModel = (activity as TradeActivity).obtainOrderModel()
         viewModel.orderList.observe(this, Observer {
             list.clear()
             list.addAll(it)

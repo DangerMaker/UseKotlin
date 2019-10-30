@@ -28,7 +28,7 @@ class AddPreActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.trade_activity_new_order)
+        setContentView(R.layout.trade_activity_new_order1)
 
         toolbar_title.text = "新建预埋单"
         toolbar_back.setOnClickListener { finish() }

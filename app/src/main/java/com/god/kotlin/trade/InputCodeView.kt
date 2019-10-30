@@ -42,6 +42,10 @@ class InputCodeView : RelativeLayout {
         })
     }
 
+    fun search(code: String){
+        listener(code)
+    }
+
     fun setData(code: String, name: String) {
         textView.visibility = View.VISIBLE
         editText.visibility = View.GONE

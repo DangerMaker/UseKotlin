@@ -7,7 +7,7 @@
     android:orientation="vertical">
 
     <include
-        layout="@layout/toolbar_normal"
+        layout="@layout/toolbar_normal1"
         />
     <RelativeLayout
         android:id="@+id/container"

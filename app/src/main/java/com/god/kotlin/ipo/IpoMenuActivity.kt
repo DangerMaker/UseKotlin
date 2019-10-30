@@ -2,6 +2,7 @@ package com.god.kotlin.ipo
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.god.kotlin.BaseActivity
 import com.god.kotlin.R
 import com.god.kotlin.ipo.query.QueryIpoActivity
 import com.god.kotlin.query.QueryTradeActivity
@@ -11,7 +12,7 @@ import com.god.kotlin.widget.TitleArrayAdapter
 import kotlinx.android.synthetic.main.activity_transfer_menu.*
 import kotlinx.android.synthetic.main.toolbar_normal.*
 
-class IpoMenuActivity : AppCompatActivity(){
+class IpoMenuActivity : BaseActivity(){
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

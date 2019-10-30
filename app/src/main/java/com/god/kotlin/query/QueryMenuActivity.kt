@@ -2,6 +2,7 @@ package com.god.kotlin.query
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.god.kotlin.BaseActivity
 import com.god.kotlin.R
 import com.god.kotlin.transfer.TransferBankActivity
 import com.god.kotlin.transfer.TransferBrokerActivity
@@ -13,7 +14,7 @@ import com.god.kotlin.widget.TitleArrayAdapter
 import kotlinx.android.synthetic.main.activity_transfer_menu.*
 import kotlinx.android.synthetic.main.toolbar_normal.*
 
-class QueryMenuActivity : AppCompatActivity() {
+class QueryMenuActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

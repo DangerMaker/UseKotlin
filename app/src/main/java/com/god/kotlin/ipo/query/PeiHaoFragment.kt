@@ -10,6 +10,7 @@ import com.god.kotlin.R
 import com.god.kotlin.data.entity.Deal
 import com.god.kotlin.data.entity.PeiHao
 import com.god.kotlin.util.inflate
+import com.god.kotlin.util.toast
 import kotlinx.android.synthetic.main.fragment_order.*
 
 class PeiHaoFragment : Fragment() {
@@ -42,9 +43,13 @@ class PeiHaoFragment : Fragment() {
         viewModel = (activity as QueryIpoActivity).obtainViewModel()
 
         viewModel.peiHao.observe(this, Observer {
-            list.clear()
-            list.addAll(it)
-            queryAdapter.notifyDataSetChanged()
+            if(it.isEmpty()){
+                "无记录".toast(context)
+            }else {
+                list.clear()
+                list.addAll(it)
+                queryAdapter.notifyDataSetChanged()
+            }
         })
 
     }

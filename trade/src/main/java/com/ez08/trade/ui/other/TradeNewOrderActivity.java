@@ -63,7 +63,7 @@ public class TradeNewOrderActivity extends BaseActivity implements View.OnClickL
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.trade_activity_new_order);
+        setContentView(R.layout.trade_activity_new_order1);
 
         if (getIntent() != null) {
             position = getIntent().getIntExtra("position", -1);
