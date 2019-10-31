@@ -21,7 +21,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".menu.MenuActivity"/>
+        <activity android:name=".menu.MenuActivity" android:launchMode="singleTask"/>
         <activity android:name=".MainActivity"/>
         <activity android:name=".profile.RiskQueryActivity"/>
         <activity android:name=".profile.AccountListActivity"/>

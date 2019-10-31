@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Bundle
 import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
+import com.ez08.trade.exception.SessionLostException
 import com.ez08.trade.net.Client
 import com.ez08.trade.net.callback.StateListener
 
@@ -64,7 +65,9 @@ open class BaseActivity : AppCompatActivity() {
     }
 
     protected open fun onDisConnect(e :Exception){
-
+        if(e is SessionLostException){
+            finish()
+        }
     }
 
     protected fun dismissBusyDialog() {

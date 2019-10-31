@@ -45,7 +45,7 @@ public abstract class AbsSendable implements ISendable {
         buffer.put(header.parse());
         //fill body
         getBody(buffer);
-//        Log.e("STradeBaseHead Request", header.toString());
+        Log.e("STradeBaseHead Request", header.toString());
         return buffer.array();
     }
 

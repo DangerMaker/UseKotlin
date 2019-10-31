@@ -18,6 +18,13 @@ interface TradeDataSource {
         callback: OnResult<MutableList<User>>
     )
 
+    fun loginSession(
+        userType: String, userId: String, password: String,
+        sessionId: String, strNet2: String,
+        callback: OnResult<MutableList<User>>
+    )
+
+
     fun searchStock(code: String, callback: OnResult<TradeStockEntity>)
 
     fun getHandStockList(

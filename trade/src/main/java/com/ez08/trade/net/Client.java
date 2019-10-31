@@ -5,6 +5,8 @@ import android.os.Looper;
 import android.util.Log;
 
 import com.ez08.trade.TradeInitalizer;
+import com.ez08.trade.exception.LoginException;
+import com.ez08.trade.exception.SessionLostException;
 import com.ez08.trade.net.biz.STradeGateBizFun;
 import com.ez08.trade.net.biz.STradeGateBizFunA;
 import com.ez08.trade.net.biz.STradeGateError;
@@ -14,6 +16,8 @@ import com.ez08.trade.net.exchange.STradePacketKeyExchange;
 import com.ez08.trade.net.exchange.STradePacketKeyExchangeResp;
 import com.ez08.trade.net.head.STradeBaseHead;
 import com.ez08.trade.net.head.STradeCommOK;
+import com.ez08.trade.net.login.STradeGateLogin;
+import com.ez08.trade.net.login.STradeGateLoginA;
 import com.ez08.trade.net.login.STradeGateUserInfo;
 import com.ez08.trade.net.session.STradeSessionKickoutA;
 import com.ez08.trade.net.session.STradeSessionUpdateA;
@@ -30,7 +34,6 @@ import com.xuhao.didi.socket.client.sdk.client.action.SocketActionAdapter;
 import com.xuhao.didi.socket.client.sdk.client.connection.DefaultReconnectManager;
 import com.xuhao.didi.socket.client.sdk.client.connection.IConnectionManager;
 
-import javax.security.auth.login.LoginException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
@@ -143,7 +146,7 @@ public class Client {
                 ByteBuffer buffer = ByteBuffer.wrap(header);
                 buffer.order(byteOrder);
                 STradeBaseHead head = new STradeBaseHead(buffer);
-//                Log.e("STradeBaseHead Response", head.toString());
+                Log.e("STradeBaseHead Response", head.toString());
                 return head.dwBodySize;
             }
         });
@@ -194,6 +197,10 @@ public class Client {
 //              Log.e("STradePacketKeyExchange", exchange.toString());
                 aesKey = OpensslHelper.genMD5(exchange.gy);
 //              Log.e("genMD5", BytesUtils.toHexStringForLog(aesKey));
+                if(sessionId != null) {
+                    setLoginSessionPackage();
+                }
+
                 manager.getPulseManager().pulse();
                 return;
             }
@@ -242,7 +249,7 @@ public class Client {
 
 
     public void sendBiz(String request, final StringCallback callback) {
-        Log.e("Biz",request);
+//        Log.e("Biz",request);
         send(new STradeGateBizFun(request), new Callback() {
             @Override
             public void onResult(boolean success, OriginalData data) {
@@ -294,6 +301,20 @@ public class Client {
         }
     }
 
+    private void setLoginSessionPackage() {
+        STradeGateLogin tradeGateLogin = new STradeGateLogin();
+        tradeGateLogin.setBody(Client.strUserType, Client.userId, Client.password, Client.sessionId, Client.strNet2);
+        Client.getInstance().send(tradeGateLogin, new Callback() {
+            @Override
+            public void onResult(boolean success, OriginalData data) {
+                STradeGateLoginA  gateLoginA = new STradeGateLoginA(data.getHeadBytes(), data.getBodyBytes(), Client.getInstance().aesKey);
+                if (!gateLoginA.getbLoginSucc()) {
+                    logout();
+                }
+            }
+        });
+    }
+
     public void logout() {
         if (manager != null) {
             sessionId = null;
@@ -322,12 +343,15 @@ public class Client {
 
 
     private void sendState(STATE state, Exception e) {
-        this.state = state;
         Log.e("sendState",state.name());
-        if(e == null){
-            e = new LoginException();
+        if(state == STATE.DISCONNECT && e == null){
+            if(this.state == STATE.LOGIN) {
+                e = new LoginException();
+            }else if(this.state == STATE.EXCHANGE){
+                e = new SessionLostException();
+            }
         }
-
+        this.state = state;
         List<StateListener> copyData = new ArrayList<>(mStateListeners);
         Iterator<StateListener> it = copyData.iterator();
         while (it.hasNext()) {

@@ -55,8 +55,7 @@ class TradeRepository : TradeDataSource {
             Client.userId = userId
             Client.password = password
 
-            val gateLoginA =
-                STradeGateLoginA(data.headBytes, data.bodyBytes, Client.getInstance().aesKey)
+            val gateLoginA = STradeGateLoginA(data.headBytes, data.bodyBytes, Client.getInstance().aesKey)
             if (gateLoginA.getbLoginSucc()) {
                 val list = ArrayList<User>()
                 for (i in gateLoginA.list.indices) {
@@ -73,6 +72,35 @@ class TradeRepository : TradeDataSource {
                 callback.onSucceed(list)
             } else {
                 callback.onFailure(handleError(gateLoginA.getSzErrMsg()))
+            }
+        }
+    }
+
+    //session登录
+    override fun loginSession(
+        userType: String, userId: String, password: String, sessionId: String, strNet2: String,
+        callback: OnResult<MutableList<User>>
+    ) {
+        val tradeGateLogin = STradeGateLogin()
+        tradeGateLogin.setBody(Client.strUserType, Client.userId, Client.password, Client.sessionId, Client.strNet2)
+        Client.getInstance().send(tradeGateLogin) { success, data ->
+            val gateLoginA = STradeGateLoginA(data.headBytes, data.bodyBytes, Client.getInstance().aesKey)
+            if (!gateLoginA.getbLoginSucc()) {
+                callback.onFailure(handleError(gateLoginA.getSzErrMsg()))
+            } else {
+                val list = ArrayList<User>()
+                for (i in gateLoginA.list.indices) {
+                    val user = User(
+                        NetUtil.byteToStr(gateLoginA.list[i].sz_name),
+                        NetUtil.byteToStr(gateLoginA.list[i].sz_market),
+                        gateLoginA.list[i].n64_fundid.toString() + "",
+                        NetUtil.byteToStr(gateLoginA.list[i].sz_custcert),
+                        NetUtil.byteToStr(gateLoginA.list[i].sz_secuid),
+                        gateLoginA.list[i].n64_custid.toString()
+                    )
+                    list.add(user)
+                }
+                callback.onSucceed(list)
             }
         }
     }
@@ -488,8 +516,6 @@ class TradeRepository : TradeDataSource {
                 count + "," +
                 ";"
         Client.getInstance().sendBiz(body) { success, data ->
-
-            Log.e("cancel",data)
             if (success) {
                 val list = mutableListOf<Order>()
                 val result = YCParser.parseArray(data)

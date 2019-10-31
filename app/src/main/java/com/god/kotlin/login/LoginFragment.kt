@@ -14,8 +14,11 @@ import androidx.core.content.edit
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.ez08.trade.net.Client
+import com.god.kotlin.MainActivity
 import com.god.kotlin.R
 import com.god.kotlin.menu.MenuActivity
+import com.god.kotlin.trade.TradeActivity
 import com.god.kotlin.util.obtainViewModel
 import com.god.kotlin.util.provideAccountSharedPref
 import com.god.kotlin.util.toast
@@ -61,10 +64,15 @@ class LoginFragment : Fragment() {
                 sharePref?.edit {
                     clear()
                 }
-
         }
 
-        val viewModel = obtainViewModel(LoginViewModel::class.java)
+        safe_code_iv.setOnClickListener {
+            if(Client.getInstance().state == Client.STATE.EXCHANGE){
+                Client.getInstance().connect()
+            }
+        }
+
+        val viewModel = (activity as MainActivity).obtainViewModel()
 
         viewModel.success.observe(this, Observer {
             login_loading.visibility = View.GONE
@@ -98,9 +106,6 @@ class LoginFragment : Fragment() {
             login_loading.visibility = View.VISIBLE
             viewModel.login("Z", "109000512", "123123", check_code.text.toString(), "0")
         }
-
-        viewModel.getVerificationCode(30,15)
-
     }
 }
 

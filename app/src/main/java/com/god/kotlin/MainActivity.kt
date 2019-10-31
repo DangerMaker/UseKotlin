@@ -1,20 +1,36 @@
 package com.god.kotlin
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.ez08.trade.net.Client
 import com.god.kotlin.login.LoginFragment
+import com.god.kotlin.login.LoginViewModel
 import com.god.kotlin.util.addFragment
+import com.god.kotlin.util.obtainViewModel
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         addFragment(TAG,R.id.container,true){
-            LoginFragment.newInstance("123")
+            LoginFragment.newInstance("compass")
         }
+
+        Client.getInstance().connect()
     }
+
+    override fun onExchange() {
+        obtainViewModel().getVerificationCode(30,15)
+
+    }
+
+    override fun onDisConnect(e: Exception) {
+
+    }
+
+    fun obtainViewModel(): LoginViewModel = obtainViewModel(LoginViewModel::class.java)
+
 }
 
 private const val TAG = "MainActivity_LoginFragment"
