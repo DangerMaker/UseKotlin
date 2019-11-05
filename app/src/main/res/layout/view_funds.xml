@@ -74,7 +74,7 @@
                 android:gravity="center_vertical"
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@id/flag_country"
-                android:text="100000000" />
+                android:text="0.0" />
 
         </LinearLayout>
     </LinearLayout>
@@ -104,7 +104,7 @@
                 android:gravity="center_vertical"
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@id/flag_country"
-                android:text="100000000" />
+                android:text="0.0" />
 
         </LinearLayout>
 
@@ -128,7 +128,7 @@
                 android:gravity="center_vertical"
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@id/flag_country"
-                android:text="100000000" />
+                android:text="0.0" />
 
         </LinearLayout>
 
@@ -159,7 +159,7 @@
                 android:gravity="center_vertical"
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@id/flag_country"
-                android:text="100000000" />
+                android:text="0.0" />
 
         </LinearLayout>
 
@@ -183,7 +183,7 @@
                 android:gravity="center_vertical"
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@id/flag_country"
-                android:text="100000000" />
+                android:text="0.0" />
 
         </LinearLayout>
 

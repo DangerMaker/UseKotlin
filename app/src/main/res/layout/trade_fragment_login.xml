@@ -234,7 +234,7 @@
                         android:layout_height="wrap_content"
                         android:background="@null"
                         android:gravity="center_vertical"
-                        android:text="@string/trade_remember_password"
+                        android:text="记住账号"
                         android:textColor="@color/trade_black"
                         android:textSize="14dp"/>
             </LinearLayout>

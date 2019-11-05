@@ -70,7 +70,7 @@ open class BaseActivity : AppCompatActivity() {
         }
     }
 
-    protected fun dismissBusyDialog() {
+    public fun dismissBusyDialog() {
         if (pDialog != null && pDialog!!.isShowing) {
             pDialog?.dismiss()
         }
@@ -78,7 +78,7 @@ open class BaseActivity : AppCompatActivity() {
 
     private var pDialog: ProgressDialog? = null
 
-    protected fun showBusyDialog() {
+    public fun showBusyDialog() {
         pDialog = ProgressDialog(this)
         pDialog.let {
             it?.setMessage("请稍候...")

@@ -9,13 +9,13 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.ez08.trade.net.Client
 import com.ez08.trade.tools.JumpActivity
-import com.ez08.trade.ui.other.TradeOrderActivity
 import com.god.kotlin.R
 import com.god.kotlin.bank.TradeBankActivity
 import com.god.kotlin.change.ChangeInformationActivity
 import com.god.kotlin.change.ChangePwdActivity
 import com.god.kotlin.ipo.IpoOrderActivity
 import com.god.kotlin.pre.PreActivity
+import com.god.kotlin.pre.TradeOrderActivity
 import com.god.kotlin.profile.*
 import com.god.kotlin.query.QueryMenuActivity
 import com.god.kotlin.trade.*

@@ -2,6 +2,7 @@ package com.god.kotlin.trade
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
 import com.god.kotlin.BaseActivity
 import com.god.kotlin.R
@@ -12,6 +13,7 @@ import com.god.kotlin.user.UserHelper
 import com.god.kotlin.util.Constant
 import com.god.kotlin.util.getEasyFragment
 import com.god.kotlin.util.obtainViewModel
+import com.god.kotlin.util.showSimpleDialog
 import com.god.kotlin.widget.tablayout.EasyFragment
 import com.god.kotlin.widget.tablayout.FragmentAdapter
 import com.xuhao.didi.socket.common.interfaces.basic.AbsLoopThread
@@ -43,6 +45,23 @@ class TradeMarketActivity : BaseActivity(), TradeParent {
             sliding_tabs.setViewPager(tab_pager)
             currentItem = _type
         }
+
+        obtainViewModel().loading.observe(this, Observer {
+            if(it){
+                showBusyDialog()
+            }else{
+                dismissBusyDialog()
+            }
+        })
+
+        obtainViewModel().order.observe(this, Observer {
+            showSimpleDialog(
+                context, "委托成功" + "\n" +
+                        "委托序号：" + it.ordersno + "\n" +
+                        "合同序号：" + it.orderid + "\n" +
+                        "委托批号：" + it.ordergroup
+            )
+        })
 
         img_back.setOnClickListener { finish() }
         mReconnectTestingThread = CycleLoopThread()

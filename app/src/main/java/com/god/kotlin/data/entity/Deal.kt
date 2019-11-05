@@ -7,5 +7,6 @@ data class Deal(
     var matchqty: Int,//成交数量
     var stkname: String,
     var stkcode: String,
-    var bsFlag: String
+    var bsFlag: String,
+    var matchtype:Int
 )

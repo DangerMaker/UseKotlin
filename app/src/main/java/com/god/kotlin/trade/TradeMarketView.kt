@@ -79,6 +79,16 @@ class TradeMarketView(context: Context?) : RelativeLayout(context), ITradeView {
 
         submit.setOnClickListener {
             _data?.let {
+                if(_data == null){
+                    "无效的股票，请稍后再试".toast(context)
+                    return@setOnClickListener
+                }
+
+                if(TextUtils.isEmpty(total_num.text)){
+                    "请输入有效数量".toast(context)
+                    return@setOnClickListener
+                }
+
                 val user = UserHelper.getUserByMarket(it.market)
                 val postFlag = getTagByQuoteName(if (direction) "0B" else "0S", quote_way.text.toString())
                 if(TextUtils.isEmpty(postFlag)){
@@ -167,8 +177,12 @@ class TradeMarketView(context: Context?) : RelativeLayout(context), ITradeView {
             limit_down_price.setTextColor(ContextCompat.getColorStateList(context, R.color.trade_green))
 
             list.clear()
-            data.ask.reverse()
-            list.addAll(data.ask)
+
+            val temp = mutableListOf<TradeStockEntity.Dang>()
+            temp.addAll(data.ask)
+            temp.reverse()
+
+            list.addAll(temp)
             list.addAll(data.bid)
             adapter.setOpenPrice(it.fOpen)
             adapter.notifyDataSetChanged()

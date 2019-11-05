@@ -192,8 +192,10 @@ public class TradeBank2SecurityActivity extends BaseActivity implements View.OnC
                 funds.getText().toString() + "," +
                 "" + "," +
                 ";";
+        showBusyDialog();
         Client.getInstance().sendBiz(body, (success, data) -> {
             Log.e("sendBiz", data);
+            dismissBusyDialog();
             if (success) {
                 Uri uri = Uri.parse(Constant.URI_DEFAULT_HELPER + data);
                 Set<String> pn = uri.getQueryParameterNames();

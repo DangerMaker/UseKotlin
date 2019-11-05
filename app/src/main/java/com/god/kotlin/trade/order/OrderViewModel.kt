@@ -30,10 +30,11 @@ class OrderViewModel(private val repository: TradeRepository) :
              bsflag: String){
         repository.postOrder(orderdate,fundid,ordersno,bsflag,object :OnResult<String>{
             override fun onSucceed(response: String) {
-                result.value = response
+                result.value = "操作成功"
             }
 
             override fun onFailure(error: Error) {
+                result.value = "操作失败"
             }
         })
     }

@@ -43,7 +43,6 @@ class OrderFragment : Fragment() {
             orderAdapter = OrderAdapter(list, context!!)
             order_recycler.adapter = orderAdapter
             setOnItemClickListener { _, _, position, _ ->
-                Log.e("onActivityCreated",position.toString())
                 val order = list[position - 1]
                 showTwoButtonDialog(context, "撤单", "确定",
                     "操作类型：" + "撤单" + "\n" +
@@ -51,6 +50,7 @@ class OrderFragment : Fragment() {
                             "证券代码：" + order.stkcode + " " + order.stkname + "\n" +
                             "合同编号：" + order.ordersno
                     , DialogInterface.OnClickListener { _, _ ->
+                        (activity as TradeActivity).showBusyDialog()
                         viewModel.post(order.orderdate, order.fundid, order.ordersno, order.bsflag)
                     }
                 )
@@ -65,9 +65,15 @@ class OrderFragment : Fragment() {
         })
 
         viewModel.result.observe(this, Observer {
-            showSimpleDialog(context, it)
-        })
+            (activity as TradeActivity).dismissBusyDialog()
 
+            showSimpleDialog(context, it)
+            viewModel.query(100, 1)
+        })
+    }
+
+    override fun onResume() {
+        super.onResume()
         viewModel.query(100, 1)
     }
 }

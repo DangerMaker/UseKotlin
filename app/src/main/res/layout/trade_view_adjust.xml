@@ -68,7 +68,7 @@
         android:background="@null"
         android:gravity="center"
         android:hint="@string/trade_entrust_num"
-        android:inputType="number"
+        android:inputType="numberDecimal"
         android:maxLines="1"
         android:padding="5dp"
         android:textColorHint="@color/trade_input_text"

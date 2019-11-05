@@ -20,7 +20,7 @@
         android:orientation="vertical">
         <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="28dip"
+            android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -36,7 +36,7 @@
             <com.ez08.trade.ui.view.MyDelEditetext
                 android:id="@+id/etInputPhoneNum"
                 android:layout_width="match_parent"
-                android:layout_height="28dp"
+                android:layout_height="35dp"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="25dip"
@@ -52,7 +52,7 @@
         </LinearLayout>
         <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="28dip"
+            android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:layout_marginTop="10dp"
             android:orientation="horizontal">
@@ -69,7 +69,7 @@
             <com.ez08.trade.ui.view.MyDelEditetext
                 android:id="@+id/etInputVertify"
                 android:layout_width="100dp"
-                android:layout_height="28dp"
+                android:layout_height="35dp"
                 android:layout_marginLeft="10dip"
                 android:layout_marginRight="10dip"
                 android:layout_weight="1"
@@ -101,11 +101,11 @@
     <View
         android:layout_width="fill_parent"
         android:layout_height="1dip"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="20dp"
         android:background="#E1E1E1" />
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="36dp"
+        android:layout_height="40dp"
         android:orientation="horizontal"
         >
         <TextView
@@ -116,7 +116,7 @@
             android:layout_weight="1"
             android:text="@string/trade_input_cancel"
             android:textColor="@color/trade_black"
-            android:textSize="15sp" />
+            android:textSize="17sp" />
         <View
             android:layout_width="1dip"
             android:layout_height="match_parent"
@@ -129,6 +129,6 @@
             android:layout_weight="1"
             android:text="@string/trade_input_commit"
             android:textColor="#5677FC"
-            android:textSize="15sp" />
+            android:textSize="17sp" />
     </LinearLayout>
 </LinearLayout>

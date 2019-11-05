@@ -1,6 +1,7 @@
 package com.god.kotlin.trade.funds
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +13,7 @@ import com.god.kotlin.trade.HandAdapter
 import com.god.kotlin.trade.SellViewModel
 import com.god.kotlin.trade.TradeActivity
 import com.god.kotlin.trade.TradeView
+import com.god.kotlin.util.format2
 import com.god.kotlin.util.inflate
 import com.god.kotlin.util.obtainViewModel
 import kotlinx.android.synthetic.main.fragment_sell.*
@@ -22,6 +24,7 @@ class FundsFragment : Fragment() {
     private lateinit var fundsModel: FundsViewModel
     private lateinit var fundsView: FundsView
     private lateinit var handAdapter: HandAdapter
+    private var income = 0.0
     private var list: MutableList<TradeHandEntity> = mutableListOf()
 
     companion object {
@@ -56,6 +59,14 @@ class FundsFragment : Fragment() {
             list.clear()
             list.addAll(it)
             handAdapter.notifyDataSetChanged()
+
+            income = 0.0
+            for (item in it) {
+                income += item.income
+                Log.e("income",item.income.toString())
+            }
+            fundsView.setIncome(income)
+
         })
 
         fundsModel.funds.observe(this, Observer {

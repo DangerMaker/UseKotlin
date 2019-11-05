@@ -250,6 +250,10 @@ public class Client {
 
     public void sendBiz(String request, final StringCallback callback) {
 //        Log.e("Biz",request);
+        if(Client.getInstance().state != STATE.LOGIN){
+            return;
+        }
+
         send(new STradeGateBizFun(request), new Callback() {
             @Override
             public void onResult(boolean success, OriginalData data) {

@@ -10,6 +10,8 @@ public class TradeStockEntity {
     public String maxqty;
     public String minqty;
     public double fixprice;
+    public double maxrisevalue;
+    public double maxdownvalue;
 
     public double fLastClose;
     public double fHigh;

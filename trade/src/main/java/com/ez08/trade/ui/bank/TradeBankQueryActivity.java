@@ -28,11 +28,8 @@ import com.ez08.trade.user.UserHelper;
 
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class TradeBankQueryActivity extends BaseActivity implements View.OnClickListener {
 
@@ -68,7 +65,7 @@ public class TradeBankQueryActivity extends BaseActivity implements View.OnClick
         String body = "FUN=410608&TBL_IN=fundid,moneytype,sno,extsno,qryoperway;" +
                 UserHelper.getUser().fundid + "," +
                 "" + "," +
-                ""+ "," +
+                "" + "," +
                 "" + "," +
                 ";";
 
@@ -78,24 +75,59 @@ public class TradeBankQueryActivity extends BaseActivity implements View.OnClick
                 mList = new ArrayList<>();
                 mList.add(new TransferTitleEntity());
                 List<Map<String, String>> result = YCParser.parseArray(data);
+                List<TransferEntity> tempList = new ArrayList<>();
                 for (int i = 0; i < result.size(); i++) {
                     TransferEntity entity = new TransferEntity();
                     entity.operdate = result.get(i).get("operdate");
                     entity.opertime = result.get(i).get("opertime");
                     entity.status = result.get(i).get("status");
                     entity.fundeffect = result.get(i).get("fundeffect");
-                    mList.add(entity);
+//                    mList.add(entity);
+                    tempList.add(entity);
                 }
+
+                Collections.sort(tempList,new DateComparator());
+                mList.addAll(tempList);
                 adapter.clearAndAddAll(mList);
             }
         });
 
     }
 
+    public static class DateComparator implements Comparator<TransferEntity> {
+
+        @Override
+        public int compare(TransferEntity transferEntity, TransferEntity t1) {
+            long time1 = convertTimeToLong(transferEntity.operdate+transferEntity.opertime);
+            long time2 = convertTimeToLong(t1.operdate+t1.opertime);
+            if(time1 > time2){
+                return 1;
+            }else if(time1 < time2){
+                return  -1;
+            }else{
+                return 0;
+            }
+        }
+
+        public static Long convertTimeToLong(String time) {
+            Date date = null;
+            try {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHH:mm:ss");
+                date = sdf.parse(time);
+                return date.getTime();
+            } catch (Exception e) {
+                e.printStackTrace();
+                return 0L;
+            }
+        }
+
+
+    }
+
 
     @Override
     public void onClick(View v) {
-        if(v.getId() == R.id.img_back){
+        if (v.getId() == R.id.img_back) {
             finish();
         }
     }

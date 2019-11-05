@@ -5,6 +5,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.RelativeLayout
 import android.widget.TextView
@@ -40,6 +41,7 @@ class InputCodeView : RelativeLayout {
                 }
             }
         })
+        editText.inputType = EditorInfo.TYPE_CLASS_PHONE
     }
 
     fun search(code: String){

@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import com.god.kotlin.BaseActivity
 import com.god.kotlin.R
 import com.god.kotlin.data.entity.TradeHandEntity
 import com.god.kotlin.util.inflate
@@ -90,15 +91,6 @@ class SellFragment : Fragment() {
 
         viewModel.currentHQ.observe(this, Observer {
             (tradeView as ITradeView).updateHQ(it)
-        })
-
-        viewModel.order.observe(this, Observer {
-            showSimpleDialog(
-                context, "委托成功" + "\n" +
-                        "委托序号：" + it.ordersno + "\n" +
-                        "合同序号：" + it.orderid + "\n" +
-                        "委托批号：" + it.ordergroup
-            )
         })
 
         viewModel.tips.observe(this, Observer {

@@ -41,7 +41,17 @@ class QueryDealFragment : Fragment() {
         viewModel = (activity as QueryTradeActivity).obtainViewModel()
 
         viewModel.dealList.observe(this, Observer {
+            (activity as QueryTradeActivity).dismissBusyDialog()
+
             list.clear()
+            val iterator = it.iterator()
+            while(iterator.hasNext()){
+                val x = iterator.next()
+                if(x.matchtype != 0){
+                    iterator.remove()
+                }
+            }
+
             list.addAll(it)
             queryAdapter.notifyDataSetChanged()
         })

@@ -8,6 +8,10 @@ fun getPriceColor(price: Double, comparePrice: Double): Int {
     return if (price > comparePrice) R.color.trade_red else R.color.trade_green
 }
 
+fun getPriceBlueColor(price: Double, comparePrice: Double): Int {
+    return if (price > comparePrice) R.color.trade_red else R.color.trade_blue
+}
+
 fun TextView.setPriceColor(color: Int) {
     setTextColor(ContextCompat.getColor(this.context, color))
 }

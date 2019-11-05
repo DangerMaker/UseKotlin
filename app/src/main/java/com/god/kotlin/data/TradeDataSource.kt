@@ -12,9 +12,13 @@ interface TradeDataSource {
         callback: OnResult<Bitmap>
     )
 
+    fun sendSms(phone: String,callback: OnResult<String>)
+
+    fun checkSms(phone: String,code: String, callback: OnResult<String>)
+
     fun login(
         userType: String, userId: String, password: String,
-        checkCode: String, verifiCodeId: String,
+        checkCode: String, strNet2: String,
         callback: OnResult<MutableList<User>>
     )
 

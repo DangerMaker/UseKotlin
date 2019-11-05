@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import com.ez08.trade.net.Client
 import com.god.kotlin.menu.MenuActivity
+import com.tencent.bugly.crashreport.CrashReport
 import kotlinx.android.synthetic.main.activity_splash.*
 
 class SplashActivity : BaseActivity() {

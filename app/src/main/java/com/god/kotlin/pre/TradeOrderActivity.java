@@ -1,7 +1,9 @@
 package com.god.kotlin.pre;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +24,9 @@ import com.ez08.trade.ui.BaseActivity;
 import com.ez08.trade.ui.view.LinearItemDecoration;
 import com.god.kotlin.data.entity.User;
 import com.god.kotlin.user.UserHelper;
+import com.god.kotlin.util.SharedPreferencesKt;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,6 +73,18 @@ public class TradeOrderActivity extends BaseActivity implements View.OnClickList
         list = new ArrayList<>();
         adapter = new MyAdapter();
         recyclerView.setAdapter(adapter);
+
+        Gson gson = new Gson();
+        SharedPreferences sharedPreferences = SharedPreferencesKt.providePreSharedPref(context,UserHelper.getUser().getCustid());
+        if(sharedPreferences != null) {
+          String json = sharedPreferences.getString("json", "");
+          if(!TextUtils.isEmpty(json)){
+              List<OrderEntity> ps = gson.fromJson(json, new TypeToken<List<OrderEntity>>(){}.getType());
+              list.clear();
+              list.addAll(ps);
+          }
+        }
+
     }
 
 
@@ -243,6 +260,13 @@ public class TradeOrderActivity extends BaseActivity implements View.OnClickList
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
+        Gson gson = new Gson();
+        String json = gson.toJson(list);
+        SharedPreferences sharedPreferences = SharedPreferencesKt.providePreSharedPref(context,UserHelper.getUser().getCustid());
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("json",json);
+        editor.apply();
 
     }
 }

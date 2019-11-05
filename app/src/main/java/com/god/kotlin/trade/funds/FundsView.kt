@@ -46,6 +46,12 @@ class FundsView(context: Context?) : RelativeLayout(context) {
         shizhi.text = funds.stkvalue.format2()
         kequ.text = funds.fundbal.format2()
     }
+
+    fun setIncome(income:Double) {
+        yingkui.text = income.format2()
+        yingkui.setPriceColor(getPriceBlueColor(income,0.0))
+
+    }
 }
 
 private val itemKey = arrayOf("人民币", "港元", "美元")

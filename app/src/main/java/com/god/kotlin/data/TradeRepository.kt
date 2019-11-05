@@ -3,12 +3,17 @@ package com.god.kotlin.data
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
+import android.widget.Toast
 import com.ez08.trade.net.Client
 import com.ez08.trade.net.NetUtil
 import com.ez08.trade.net.hq.STradeHQQuery
 import com.ez08.trade.net.hq.STradeHQQueryA
 import com.ez08.trade.net.login.STradeGateLogin
 import com.ez08.trade.net.login.STradeGateLoginA
+import com.ez08.trade.net.sms.STradeSMSCheck
+import com.ez08.trade.net.sms.STradeSMSCheckA
+import com.ez08.trade.net.sms.STradeSMSSend
+import com.ez08.trade.net.sms.STradeSMSSendA
 import com.ez08.trade.net.verification.STradeVerificationCode
 import com.ez08.trade.net.verification.STradeVerificationCodeA
 import com.ez08.trade.tools.YCParser
@@ -41,13 +46,37 @@ class TradeRepository : TradeDataSource {
         }
     }
 
+    //发送短信验证码
+    override fun sendSms(phone: String,callback: OnResult<String>) {
+        Client.getInstance().send(STradeSMSSend(phone)) { success, data ->
+            val resp = STradeSMSSendA(data.headBytes, data.bodyBytes, Client.getInstance().aesKey)
+            val szError = resp.szError
+            callback.onSucceed(szError)
+            Log.e("szError", "szError=$szError")
+        }
+    }
+
+    //验证短信验证码
+    override fun checkSms(phone: String, code: String,callback: OnResult<String>) {
+        Client.getInstance().send(STradeSMSCheck(phone, code)) { success, data ->
+            val resp = STradeSMSCheckA(data.headBytes, data.bodyBytes, Client.getInstance().aesKey)
+            val b = resp.getbSuccess()
+            if (b) {
+                callback.onSucceed("验证成功")
+            }else{
+                callback.onFailure(handleError("验证失败"))
+            }
+        }
+    }
+
+
     //登录
     override fun login(
-        userType: String, userId: String, password: String, checkCode: String, verifiCodeId: String,
+        userType: String, userId: String, password: String, checkCode: String, strNet2: String,
         callback: OnResult<MutableList<User>>
     ) {
         val tradeGateLogin = STradeGateLogin()
-        var str2 = "|ZNZ|ANDROID"
+        var str2 = strNet2
         tradeGateLogin.setBody(userType, userId, password, checkCode, str2)
         Client.getInstance().send(tradeGateLogin) { success, data ->
             Client.strNet2 = str2
@@ -276,6 +305,7 @@ class TradeRepository : TradeDataSource {
 
         Client.getInstance().sendBiz(body) { success, data ->
             if (success) {
+                Log.e("deal",data)
                 val result = YCParser.parseArray(data)
                 val list = mutableListOf<Deal>()
                 for (i in result.indices) {
@@ -286,7 +316,8 @@ class TradeRepository : TradeDataSource {
                     val matchqty = result[i]["matchqty"].toIntOrZero()
                     val trddate = result[i]["trddate"].orEmpty()
                     val bsFlag = result[i]["bsflag"].orEmpty()
-                    val entity = Deal(trddate, matchtime, matchprice, matchqty, stkname, stkcode, bsFlag)
+                    val matchtype = result[i]["matchtype"].toIntOrZero()
+                    val entity = Deal(trddate, matchtime, matchprice, matchqty, stkname, stkcode, bsFlag,matchtype)
                     list.add(entity)
                 }
                 callback.onSucceed(list)
@@ -315,6 +346,7 @@ class TradeRepository : TradeDataSource {
 
         Client.getInstance().sendBiz(body) { success, data ->
             if (success) {
+                Log.e("deal",data)
                 val result = YCParser.parseArray(data)
                 val list = mutableListOf<Deal>()
                 for (i in result.indices) {
@@ -323,9 +355,10 @@ class TradeRepository : TradeDataSource {
                     val matchtime = result[i]["matchtime"].orEmpty()
                     val matchprice = result[i]["matchprice"].toDoubleOrZero()
                     val matchqty = result[i]["matchqty"].toIntOrZero()
-                    val trddate = result[i]["trddate"].orEmpty()
+                    val trddate = result[i]["bizdate"].orEmpty()
                     val bsFlag = result[i]["bsflag"].orEmpty()
-                    val entity = Deal(trddate, matchtime, matchprice, matchqty, stkname, stkcode, bsFlag)
+                    val matchtype = result[i]["matchtype"].toIntOrZero()
+                    val entity = Deal(trddate, matchtime, matchprice, matchqty, stkname, stkcode, bsFlag,matchtype)
                     list.add(entity)
                 }
                 callback.onSucceed(list)
@@ -354,6 +387,8 @@ class TradeRepository : TradeDataSource {
 
         Client.getInstance().sendBiz(body) { success, data ->
             if (success) {
+                Log.e("order",data)
+
                 val list = mutableListOf<Order>()
                 val result = YCParser.parseArray(data)
                 for (i in result.indices) {
@@ -781,6 +816,8 @@ class TradeRepository : TradeDataSource {
                     stockEntity.maxqty = result["maxqty"]
                     stockEntity.minqty = result["minqty"]
                     stockEntity.fixprice = result["fixprice"].toDoubleOrZero()
+                    stockEntity.maxrisevalue = result["maxrisevalue"].toDoubleOrZero()
+                    stockEntity.maxdownvalue = result["maxdownvalue"].toDoubleOrZero()
                     callback.onSucceed(stockEntity)
                 }
             } else {
