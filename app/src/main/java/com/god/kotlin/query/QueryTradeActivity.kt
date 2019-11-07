@@ -2,10 +2,10 @@ package com.god.kotlin.query
 
 import android.os.Bundle
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import com.god.kotlin.BaseActivity
 import com.god.kotlin.R
-import com.god.kotlin.data.entity.TransferRecord
 import com.god.kotlin.util.Constant.Companion.QUERY_TYPE
 import com.god.kotlin.util.addFragment
 import com.god.kotlin.util.obtainViewModel
@@ -19,6 +19,7 @@ class QueryTradeActivity : BaseActivity() {
     private lateinit var invoke: () -> Unit
     private lateinit var startValue: String
     private lateinit var endValue: String
+    private lateinit var fragment: Fragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,7 +29,9 @@ class QueryTradeActivity : BaseActivity() {
 
         getPickDate()
 
-        toolbar_back.setOnClickListener { finish() }
+        toolbar_back.setOnClickListener {
+            finish()
+        }
         date_submit.setOnClickListener {
             getPickDate()
             invoke()
@@ -41,46 +44,64 @@ class QueryTradeActivity : BaseActivity() {
                 toolbar_title.text = "当日成交"
                 date_layout.visibility = View.GONE
                 invoke = {
-                    showBusyDialog()
                     viewModel.queryDeal("fundid", 100, 1)
                 }
-                addFragment(TAG0, R.id.container, true) {
-                    QueryDealFragment.newInstance()
-                }
+                fragment = QueryDealFragment.newInstance()
             }
 
             1 -> {
                 toolbar_title.text = "当日委托"
                 date_layout.visibility = View.GONE
                 invoke = {
-                    showBusyDialog()
-                    viewModel.queryOrder("fundid", 100, 1) }
-                addFragment(TAG1, R.id.container, true) {
-                    QueryOrderFragment.newInstance()
+                    viewModel.queryOrder("fundid", 100, 1)
                 }
+                fragment = QueryOrderFragment.newInstance()
             }
 
             2 -> {
                 toolbar_title.text = "历史成交"
                 invoke = {
-                    showBusyDialog()
                     viewModel.queryDeal("fundid", 100, 1, startValue, endValue)
                 }
-                addFragment(TAG2, R.id.container, true) {
-                    QueryDealFragment.newInstance()
-                }
+                fragment = QueryDealFragment.newInstance()
             }
 
             3 -> {
                 toolbar_title.text = "历史委托"
                 invoke = {
-                    showBusyDialog()
-                    viewModel.queryOrder("fundid", 100, 1, startValue, endValue) }
-                addFragment(TAG3, R.id.container, true) {
-                    QueryOrderFragment.newInstance()
+                    viewModel.queryOrder("fundid", 100, 1, startValue, endValue)
                 }
+                fragment = QueryOrderFragment.newInstance()
             }
         }
+
+        addFragment("tag", R.id.container, true) {
+            fragment
+        }
+
+        viewModel.dealList.observe(this, Observer {
+            val iterator = it.iterator()
+            while (iterator.hasNext()) {
+                val x = iterator.next()
+                if (x.matchtype != 0) {
+                    iterator.remove()
+                }
+            }
+
+            (fragment as DealListView).show(it)
+        })
+
+        viewModel.orderList.observe(this, Observer {
+            (fragment as OrderListView).show(it)
+        })
+
+        viewModel.loading.observe(this, Observer {
+            if (it) {
+                showBusyDialog()
+            } else {
+                dismissBusyDialog()
+            }
+        })
 
     }
 
@@ -98,10 +119,3 @@ class QueryTradeActivity : BaseActivity() {
 
     }
 }
-
-private const val TAG0 = "QueryTradeActivity_0"
-private const val TAG1 = "QueryTradeActivity_1"
-private const val TAG2 = "QueryTradeActivity_2"
-private const val TAG3 = "QueryTradeActivity_3"
-
-

@@ -136,8 +136,6 @@ class TradeView(context: Context?) : RelativeLayout(context), ITradeView {
     private var firstHq = false
 
     override fun setData(data: TradeStockEntity) {
-        val user = UserHelper.getUserByMarket(data.market)
-
         data.let {
             _data = it
             input_code.setData(it.stkcode, it.stkname)
@@ -147,11 +145,15 @@ class TradeView(context: Context?) : RelativeLayout(context), ITradeView {
             limit_down_price.text = it.maxdownvalue.format2()
             limit_down_price.setTextColor(ContextCompat.getColorStateList(context, R.color.trade_green))
 
+            limit_up_layout.setOnClickListener {
+                price.text = limit_up_price.text.toString()
+            }
+
+            limit_down_layout.setOnClickListener {
+                price.text = limit_down_price.text.toString()
+            }
+
             firstHq = true
-            viewModel.getAvailable(
-                data.market, user.secuid, user.fundid,
-                it.stkcode, it.fixprice, direction
-            )
         }
     }
 
@@ -160,6 +162,7 @@ class TradeView(context: Context?) : RelativeLayout(context), ITradeView {
             newest_price.text = it.fNewest.format2()
             newest_price.setTextColor(ContextCompat.getColorStateList(context, getPriceColor(it.fNewest, it.fOpen)))
             last_price.text = it.fLastClose.format2()
+            price.text = it.fNewest.format2()
 
             list.clear()
 
@@ -174,6 +177,11 @@ class TradeView(context: Context?) : RelativeLayout(context), ITradeView {
 
             if (firstHq) {
                 price.text = newest_price.text.toString()
+                val user = UserHelper.getUserByMarket(_data!!.market)
+                viewModel.getAvailable(
+                    _data!!.market, user.secuid, user.fundid,
+                    _data!!.stkcode, it.fNewest, direction
+                )
                 firstHq = false
             }
         }

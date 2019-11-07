@@ -11,7 +11,7 @@ public class AbsResponse {
     protected byte[] body;
     public int wPid;
 
-    public AbsResponse(byte[] head, byte[] originBody,byte[] aesKey) {
+    public AbsResponse(byte[] head, byte[] originBody, byte[] aesKey) {
         ByteBuffer headBuffer = ByteBuffer.wrap(head);
         headBuffer.order(ByteOrder.LITTLE_ENDIAN);
         STradeBaseHead sTradeBaseHead = new STradeBaseHead(headBuffer);
@@ -27,7 +27,7 @@ public class AbsResponse {
         if (sTradeBaseHead.btCompressFlag == 2) {
             //解压
             body = OpensslHelper.unPress(encryptBody.length, sTradeBaseHead.dwRawSize, encryptBody);
-        }else{
+        } else {
             body = encryptBody;
         }
 
@@ -35,7 +35,7 @@ public class AbsResponse {
 
     }
 
-    protected int sizeof(Object type){
+    protected int sizeof(Object type) {
         return NetUtil.sizeOf(type);
     }
 

@@ -7,6 +7,11 @@ fun Double.format2(): String {
     return format.format(this)
 }
 
+fun Double.format3(): String {
+    val format = DecimalFormat("0.000")
+    return format.format(this)
+}
+
 fun Int.save100(): String {
     return (this / 100 * 100).toString()
 }

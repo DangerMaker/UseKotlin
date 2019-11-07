@@ -4,9 +4,9 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
-import com.ez08.trade.TradeInitalizer;
-import com.ez08.trade.exception.LoginException;
-import com.ez08.trade.exception.SessionLostException;
+import com.ez08.trade.exception.LoginErrorException;
+import com.ez08.trade.exception.LogoutException;
+import com.ez08.trade.exception.TradeException;
 import com.ez08.trade.net.biz.STradeGateBizFun;
 import com.ez08.trade.net.biz.STradeGateBizFunA;
 import com.ez08.trade.net.biz.STradeGateError;
@@ -19,17 +19,15 @@ import com.ez08.trade.net.head.STradeCommOK;
 import com.ez08.trade.net.login.STradeGateLogin;
 import com.ez08.trade.net.login.STradeGateLoginA;
 import com.ez08.trade.net.login.STradeGateUserInfo;
-import com.ez08.trade.net.session.STradeSessionKickoutA;
 import com.ez08.trade.net.session.STradeSessionUpdateA;
 import com.ez08.trade.tools.SnFactory;
+import com.ez08.trade.user.TradeUser;
 import com.xuhao.didi.core.pojo.OriginalData;
 import com.xuhao.didi.core.protocol.IReaderProtocol;
 import com.xuhao.didi.socket.client.impl.client.action.ActionDispatcher;
-import com.xuhao.didi.socket.client.impl.exceptions.ManuallyDisconnectException;
 import com.xuhao.didi.socket.client.sdk.OkSocket;
 import com.xuhao.didi.socket.client.sdk.client.ConnectionInfo;
 import com.xuhao.didi.socket.client.sdk.client.OkSocketOptions;
-import com.xuhao.didi.socket.client.sdk.client.action.ISocketActionListener;
 import com.xuhao.didi.socket.client.sdk.client.action.SocketActionAdapter;
 import com.xuhao.didi.socket.client.sdk.client.connection.DefaultReconnectManager;
 import com.xuhao.didi.socket.client.sdk.client.connection.IConnectionManager;
@@ -84,6 +82,7 @@ public class Client {
     public void connect(OnConnectListener onConnectListener) {
         disconnect();
 
+        mRequestTable.clear();
         ConnectionInfo info = new ConnectionInfo(IP, BIZ_PORT);
         manager = OkSocket.open(info);
         OkSocketOptions options = manager.getOption();
@@ -125,7 +124,7 @@ public class Client {
     }
 
     public void connect() {
-        disconnect();
+//        disconnect();
         ConnectionInfo info = new ConnectionInfo(IP, BIZ_PORT);
         manager = OkSocket.open(info);
         Log.e("Manager", manager.toString());
@@ -187,7 +186,38 @@ public class Client {
             }
 
             if (head.wPid == AbsSendable.PID_TRADE_GATE_LOGIN) {
-                sendState(STATE.LOGIN);
+                STradeGateLoginA gateLoginA = new STradeGateLoginA(data.getHeadBytes(), data.getBodyBytes()
+                        , Client.getInstance().aesKey);
+                if (gateLoginA.getbLoginSucc()) {
+                    List<TradeUser> list = new ArrayList<TradeUser>();
+                    for (int i = 0; i < gateLoginA.list.size(); i++) {
+                        TradeUser user = new TradeUser(
+                                NetUtil.byteToStr(gateLoginA.list.get(i).sz_name),
+                                NetUtil.byteToStr(gateLoginA.list.get(i).sz_market),
+                                gateLoginA.list.get(i).n64_fundid + "",
+                                NetUtil.byteToStr(gateLoginA.list.get(i).sz_custcert),
+                                NetUtil.byteToStr(gateLoginA.list.get(i).sz_secuid),
+                                gateLoginA.list.get(i).n64_custid + ""
+                        );
+                        list.add(user);
+                    }
+
+                    if (userListener != null) {
+                        userListener.callback(list);
+                    }
+
+                    if (loginCallback != null) {
+                        loginCallback.onResult(true, "");
+                    }
+                    sendState(STATE.LOGIN);
+                } else {
+                    //login failure callback
+                    if (loginCallback != null) {
+                        loginCallback.onResult(false, gateLoginA.getSzErrMsg());
+                    }
+                    throwException(new LoginErrorException());
+                }
+                return;
             }
 
             //握手
@@ -197,7 +227,7 @@ public class Client {
 //              Log.e("STradePacketKeyExchange", exchange.toString());
                 aesKey = OpensslHelper.genMD5(exchange.gy);
 //              Log.e("genMD5", BytesUtils.toHexStringForLog(aesKey));
-                if(sessionId != null) {
+                if (sessionId != null) {
                     setLoginSessionPackage();
                 }
 
@@ -250,7 +280,7 @@ public class Client {
 
     public void sendBiz(String request, final StringCallback callback) {
 //        Log.e("Biz",request);
-        if(Client.getInstance().state != STATE.LOGIN){
+        if (Client.getInstance().state != STATE.LOGIN) {
             return;
         }
 
@@ -305,20 +335,6 @@ public class Client {
         }
     }
 
-    private void setLoginSessionPackage() {
-        STradeGateLogin tradeGateLogin = new STradeGateLogin();
-        tradeGateLogin.setBody(Client.strUserType, Client.userId, Client.password, Client.sessionId, Client.strNet2);
-        Client.getInstance().send(tradeGateLogin, new Callback() {
-            @Override
-            public void onResult(boolean success, OriginalData data) {
-                STradeGateLoginA  gateLoginA = new STradeGateLoginA(data.getHeadBytes(), data.getBodyBytes(), Client.getInstance().aesKey);
-                if (!gateLoginA.getbLoginSucc()) {
-                    logout();
-                }
-            }
-        });
-    }
-
     public void logout() {
         if (manager != null) {
             sessionId = null;
@@ -327,34 +343,47 @@ public class Client {
         }
     }
 
-    /**
-     * 断开连接
-     */
-    public void shutDown() {
+    public void resetVerifyCode(){
+        throwException(new LogoutException());
+    }
+
+    private void throwException(TradeException exception) {
         if (manager != null) {
-            manager.disconnect();
-            manager.unRegisterReceiver(mySocketActionAdapter);
-//            STradeGateUserInfo.getInstance().clearUserInfo();
-//            sessionId = null;
+            sessionId = null;
+            STradeGateUserInfo.getInstance().clearUserInfo();
+            manager.disconnect(exception);
         }
     }
 
-    private void checkIsConnect() {
-        if (manager == null || !manager.isConnect()) {
-            connect(null);
-        }
+    StringCallback loginCallback;
+
+    public void setLoginPasswordPackage(String userType, String userId, String password, String checkCode, String strNet2
+            , StringCallback loginCallback) {
+        this.loginCallback = loginCallback;
+        STradeGateLogin tradeGateLogin = new STradeGateLogin();
+        tradeGateLogin.setBody(userType, userId, password, checkCode, strNet2);
+        Client.getInstance().manager.send(tradeGateLogin);
     }
 
+    private void setLoginSessionPackage() {
+        STradeGateLogin tradeGateLogin = new STradeGateLogin();
+        tradeGateLogin.setBody(Client.strUserType, Client.userId, Client.password, Client.sessionId, Client.strNet2);
+        Client.getInstance().send(tradeGateLogin, new Callback() {
+            @Override
+            public void onResult(boolean success, OriginalData data) {
+                STradeGateLoginA gateLoginA = new STradeGateLoginA(data.getHeadBytes(), data.getBodyBytes(), Client.getInstance().aesKey);
+                if (!gateLoginA.getbLoginSucc()) {
+                    logout();
+                }
+            }
+        });
+    }
 
     private void sendState(STATE state, Exception e) {
-        Log.e("sendState",state.name());
-        if(state == STATE.DISCONNECT && e == null){
-            if(this.state == STATE.LOGIN) {
-                e = new LoginException();
-            }else if(this.state == STATE.EXCHANGE){
-                e = new SessionLostException();
-            }
+        if(e == null){
+            e = new Exception();
         }
+
         this.state = state;
         List<StateListener> copyData = new ArrayList<>(mStateListeners);
         Iterator<StateListener> it = copyData.iterator();
@@ -362,19 +391,24 @@ public class Client {
             StateListener listener = it.next();
             switch (state) {
                 case CONNECTED:
-                    listener.connect();
+                    if (listener != null)
+                        listener.connect();
                     break;
                 case EXCHANGE:
-                    listener.exchange();
+                    if (listener != null)
+                        listener.exchange();
                     break;
                 case LOGIN:
-                    listener.login();
+                    if (listener != null)
+                        listener.login();
                     break;
                 case KICK:
-                    listener.kickOut();
+                    if (listener != null)
+                        listener.kickOut();
                     break;
                 case DISCONNECT:
-                    listener.disconnect(e);
+                    if (listener != null)
+                        listener.disconnect(e);
                     break;
             }
         }
@@ -382,5 +416,15 @@ public class Client {
 
     private void sendState(STATE state) {
         sendState(state, null);
+    }
+
+    private UserListener userListener;
+
+    public interface UserListener {
+        void callback(List<TradeUser> list);
+    }
+
+    public void setOnUserListener(UserListener userListener) {
+        this.userListener = userListener;
     }
 }

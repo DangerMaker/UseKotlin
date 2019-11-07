@@ -18,6 +18,8 @@ class SellViewModel(private val repository: TradeRepository) :
     val handStockList = MutableLiveData<MutableList<TradeHandEntity>>()
     val available = MutableLiveData<Avail>()
     val order = MutableLiveData<TradeResultEntity>()
+    var serverealResult = MutableLiveData<String>()
+
     val tips = MutableLiveData<String>()
     val loading = MutableLiveData<Boolean>()
 
@@ -80,6 +82,53 @@ class SellViewModel(private val repository: TradeRepository) :
         })
     }
 
+    private var total: Int = 0
+    private var temp = 0
+    private var collection: String = ""
+    fun transactionSeveral(market: String, code: String,secuid: String,fundsId: String, price: Double, qty: Int, postFlag: String,
+    items: Int,remainder: Int) {
+        loading.value = true
+        temp = 0
+        total = items
+        collection = ""
+        for (i in 0 until items) {
+            repository.transaction(market, code, secuid, fundsId, price, qty, postFlag,
+                object : OnResult<TradeResultEntity> {
+                    override fun onSucceed(response: TradeResultEntity) {
+                        collect("委托成功" + "\n" +
+                                "委托序号：" + response.ordersno + "\n" +
+                                "合同序号：" + response.orderid + "\n" +
+                                "委托批号：" + response.ordergroup + "\n\n")
+                    }
+
+                    override fun onFailure(error: Error) {
+                        collect("委托失败" + "\n" +
+                                "失败原因：" + error.szError + "\n\n")
+                    }
+
+                })
+        }
+
+        if(remainder != 0){
+            total = items + 1
+            repository.transaction(market, code, secuid, fundsId, price, remainder, postFlag,
+                object : OnResult<TradeResultEntity> {
+                    override fun onSucceed(response: TradeResultEntity) {
+                        collect("委托成功" + "\n" +
+                                "委托序号：" + response.ordersno + "\n" +
+                                "合同序号：" + response.orderid + "\n" +
+                                "委托批号：" + response.ordergroup + "\n\n")
+                    }
+
+                    override fun onFailure(error: Error) {
+                        collect("委托失败" + "\n" +
+                                "失败原因：" + error.szError + "\n\n")
+                    }
+
+                })
+        }
+    }
+
     fun getHQ(market: String,code: String){
         repository.getHQ(market,code,object :OnResult<TradeStockEntity>{
             override fun onSucceed(response: TradeStockEntity) {
@@ -90,5 +139,16 @@ class SellViewModel(private val repository: TradeRepository) :
             }
 
         })
+    }
+
+    fun collect(str: String) {
+        if (temp < total) {
+            collection += str
+            temp += 1
+            if (temp == total) {
+                serverealResult.value = collection
+                loading.value = false
+            }
+        }
     }
 }

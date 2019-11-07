@@ -14,6 +14,8 @@ unsigned char *jByteArray2UnsignedChar(JNIEnv *env, jbyteArray array, int &outle
     return buf;
 }
 
+
+
 jbyteArray unsignedChar2JByteArray(JNIEnv *env, unsigned char *buf, int len) {
     jbyteArray array = env->NewByteArray(len);
     env->SetByteArrayRegion(array, 0, len, reinterpret_cast<jbyte *>(buf));

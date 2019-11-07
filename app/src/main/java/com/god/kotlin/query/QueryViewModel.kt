@@ -15,25 +15,31 @@ class QueryViewModel(private val repository: TradeRepository) :
 
     val orderList = MutableLiveData<MutableList<Order>>()
     val dealList = MutableLiveData<MutableList<Deal>>()
+    val loading = MutableLiveData<Boolean>()
 
 
     fun queryOrder(fundid: String, count: Int, offset: Int, begin: String = "", end: String = "") {
+        loading.value = true
         if (TextUtils.isEmpty(begin)) {
             repository.queryTodayOrderList(fundid, count, offset, object : OnResult<MutableList<Order>> {
                 override fun onSucceed(response: MutableList<Order>) {
                     orderList.value = response
+                    loading.value = false
                 }
 
                 override fun onFailure(error: Error) {
+                    loading.value = false
                 }
             })
         } else {
             repository.queryHistoryOrderList(begin, end, fundid, count, offset, object : OnResult<MutableList<Order>> {
                 override fun onSucceed(response: MutableList<Order>) {
                     orderList.value = response
+                    loading.value = false
                 }
 
                 override fun onFailure(error: Error) {
+                    loading.value = false
                 }
             })
         }
@@ -41,13 +47,16 @@ class QueryViewModel(private val repository: TradeRepository) :
 
 
     fun queryDeal(fundid: String, count: Int, offset: Int, begin: String = "", end: String = "") {
+        loading.value = true
         if (TextUtils.isEmpty(begin)) {
             repository.queryTodayDeal(fundid, count, offset, object : OnResult<MutableList<Deal>> {
                 override fun onSucceed(response: MutableList<Deal>) {
                     dealList.value = response
+                    loading.value = false
                 }
 
                 override fun onFailure(error: Error) {
+                    loading.value = false
                 }
             })
         } else {
@@ -60,9 +69,11 @@ class QueryViewModel(private val repository: TradeRepository) :
                 object : OnResult<MutableList<Deal>> {
                     override fun onSucceed(response: MutableList<Deal>) {
                         dealList.value = response
+                        loading.value = false
                     }
 
                     override fun onFailure(error: Error) {
+                        loading.value = false
                     }
                 })
         }

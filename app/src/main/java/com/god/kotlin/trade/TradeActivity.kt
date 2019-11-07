@@ -72,6 +72,10 @@ class TradeActivity : BaseActivity(),TradeParent {
 
         img_back.setOnClickListener { finish() }
         mReconnectTestingThread = CycleLoopThread()
+        if(_type == 2){
+            obtainViewModel().getHandList(UserHelper.getUser().fundid)
+        }
+
         start()
     }
 

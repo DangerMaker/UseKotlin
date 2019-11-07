@@ -22,6 +22,12 @@ interface TradeDataSource {
         callback: OnResult<MutableList<User>>
     )
 
+    fun login1(
+        userType: String, userId: String, password: String,
+        checkCode: String, strNet2: String,
+        callback: OnResult<Boolean>
+    )
+
     fun loginSession(
         userType: String, userId: String, password: String,
         sessionId: String, strNet2: String,

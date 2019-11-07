@@ -11,11 +11,10 @@ import com.god.kotlin.data.entity.Deal
 import com.god.kotlin.util.inflate
 import kotlinx.android.synthetic.main.fragment_order.*
 
-class QueryDealFragment : Fragment() {
+class QueryDealFragment : Fragment() ,DealListView{
 
     private lateinit var queryAdapter: QueryDealAdapter
     private var list: MutableList<Deal> = mutableListOf()
-    private lateinit var viewModel: QueryViewModel
 
     companion object {
         fun newInstance(): QueryDealFragment {
@@ -37,24 +36,11 @@ class QueryDealFragment : Fragment() {
             queryAdapter = QueryDealAdapter(list, context!!)
             adapter = queryAdapter
         }
+    }
 
-        viewModel = (activity as QueryTradeActivity).obtainViewModel()
-
-        viewModel.dealList.observe(this, Observer {
-            (activity as QueryTradeActivity).dismissBusyDialog()
-
-            list.clear()
-            val iterator = it.iterator()
-            while(iterator.hasNext()){
-                val x = iterator.next()
-                if(x.matchtype != 0){
-                    iterator.remove()
-                }
-            }
-
-            list.addAll(it)
-            queryAdapter.notifyDataSetChanged()
-        })
-
+    override fun show(data: MutableList<Deal>) {
+        list.clear()
+        list.addAll(data)
+        queryAdapter.notifyDataSetChanged()
     }
 }

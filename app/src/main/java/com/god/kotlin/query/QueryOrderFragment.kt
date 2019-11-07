@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.god.kotlin.R
+import com.god.kotlin.data.entity.Deal
 import com.god.kotlin.data.entity.Order
 import com.god.kotlin.trade.order.OrderAdapter
 import com.god.kotlin.util.inflate
@@ -14,11 +15,10 @@ import kotlinx.android.synthetic.main.activity_information_change.*
 import kotlinx.android.synthetic.main.fragment_order.*
 import java.util.*
 
-class QueryOrderFragment : Fragment() {
+class QueryOrderFragment : Fragment(),OrderListView{
 
     private lateinit var orderAdapter: OrderAdapter
     private var list: MutableList<Order> = mutableListOf()
-    private lateinit var viewModel: QueryViewModel
 
     companion object {
         fun newInstance(): QueryOrderFragment {
@@ -40,16 +40,12 @@ class QueryOrderFragment : Fragment() {
             orderAdapter = OrderAdapter(list, context!!)
             adapter = orderAdapter
         }
-
-        viewModel = (activity as QueryTradeActivity).obtainViewModel()
-
-        viewModel.orderList.observe(this, Observer {
-            (activity as QueryTradeActivity).dismissBusyDialog()
-
-            list.clear()
-            list.addAll(it)
-            orderAdapter.notifyDataSetChanged()
-        })
-
     }
+
+    override fun show(data: MutableList<Order>) {
+        list.clear()
+        list.addAll(data)
+        orderAdapter.notifyDataSetChanged()
+    }
+
 }

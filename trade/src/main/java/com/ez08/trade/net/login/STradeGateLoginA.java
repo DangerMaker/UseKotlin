@@ -4,6 +4,7 @@ import android.util.Log;
 import com.ez08.trade.net.AbsResponse;
 import com.ez08.trade.net.NetUtil;
 
+import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;

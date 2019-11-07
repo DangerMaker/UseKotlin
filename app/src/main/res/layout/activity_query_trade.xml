@@ -43,27 +43,28 @@
                 android:textSize="15sp"/>
 
 
-        <View android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1"/>
+        <View android:layout_width="0dp"
+              android:layout_height="match_parent"
+              android:layout_weight="1"/>
 
         <Button
                 android:id="@+id/date_submit"
-                android:layout_width="60dp" android:layout_height="28dp"
+                android:layout_width="60dp"
+                android:layout_height="28dp"
                 android:text="查询"
                 android:textColor="@color/trade_white"
                 android:background="@color/trade_red"
                 android:textSize="14dp"
-                android:layout_marginRight="20dp"
-
-        />
+                android:layout_marginRight="20dp"/>
     </LinearLayout>
 
-    <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/trade_gray"/>
+    <View android:layout_width="match_parent"
+          android:layout_height="1dp"
+          android:background="@color/trade_gray"/>
 
     <FrameLayout
             android:id="@+id/container"
-            android:layout_width="match_parent" android:layout_height="match_parent"></FrameLayout>
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
 </LinearLayout>

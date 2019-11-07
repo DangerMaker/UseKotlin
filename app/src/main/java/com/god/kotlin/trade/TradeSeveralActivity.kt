@@ -2,14 +2,12 @@ package com.god.kotlin.trade
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
 import com.god.kotlin.BaseActivity
 import com.god.kotlin.R
 import com.god.kotlin.user.UserHelper
-import com.god.kotlin.util.Constant
-import com.god.kotlin.util.addFragment
-import com.god.kotlin.util.getEasyFragment
-import com.god.kotlin.util.obtainViewModel
+import com.god.kotlin.util.*
 import com.god.kotlin.widget.tablayout.EasyFragment
 import com.god.kotlin.widget.tablayout.FragmentAdapter
 import com.xuhao.didi.socket.common.interfaces.basic.AbsLoopThread
@@ -40,6 +38,22 @@ class TradeSeveralActivity : BaseActivity(),TradeParent {
             sliding_tabs.setViewPager(tab_pager)
             currentItem = _type
         }
+
+        obtainViewModel().loading.observe(this, Observer {
+            if(it){
+                showBusyDialog()
+            }else{
+                dismissBusyDialog()
+            }
+        })
+
+        obtainViewModel().serverealResult.observe(this, Observer {
+            showSimpleDialog(
+                context, it
+            )
+
+            obtainViewModel().getHandList(UserHelper.getUser().fundid)
+        })
 
         img_back.setOnClickListener { finish() }
         mReconnectTestingThread = CycleLoopThread()

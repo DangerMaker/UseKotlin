@@ -1,6 +1,8 @@
 package com.god.kotlin
 
 import android.os.Bundle
+import com.ez08.trade.exception.LoginErrorException
+import com.ez08.trade.exception.LogoutException
 import com.ez08.trade.net.Client
 import com.god.kotlin.login.LoginFragment
 import com.god.kotlin.login.LoginViewModel
@@ -26,7 +28,11 @@ class MainActivity : BaseActivity() {
     }
 
     override fun onDisConnect(e: Exception) {
-
+        if(e is LoginErrorException) {
+            Client.getInstance().connect()
+        }else if(e is LogoutException){
+            Client.getInstance().connect()
+        }
     }
 
     fun obtainViewModel(): LoginViewModel = obtainViewModel(LoginViewModel::class.java)

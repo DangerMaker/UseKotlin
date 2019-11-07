@@ -6,6 +6,7 @@ import android.util.Log
 import android.widget.Toast
 import com.ez08.trade.net.Client
 import com.ez08.trade.net.NetUtil
+import com.ez08.trade.net.callback.StringCallback
 import com.ez08.trade.net.hq.STradeHQQuery
 import com.ez08.trade.net.hq.STradeHQQueryA
 import com.ez08.trade.net.login.STradeGateLogin
@@ -101,6 +102,21 @@ class TradeRepository : TradeDataSource {
                 callback.onSucceed(list)
             } else {
                 callback.onFailure(handleError(gateLoginA.getSzErrMsg()))
+            }
+        }
+    }
+
+    //登录
+    override fun login1(
+        userType: String, userId: String, password: String, checkCode: String, strNet2: String,
+        callback: OnResult<Boolean>
+    ) {
+        Client.getInstance().setLoginPasswordPackage(userType,userId,password,checkCode,strNet2) {
+                success, data ->
+            if(success){
+                callback.onSucceed(true)
+            }else{
+                callback.onFailure(handleError(data))
             }
         }
     }
@@ -765,13 +781,14 @@ class TradeRepository : TradeDataSource {
         val list = mutableListOf<TradeHandEntity>()
         Client.getInstance().sendBiz(body) { success, data ->
             if (success) {
+                Log.e("410503",data)
                 val result = YCParser.parseArray(data)
                 for (i in result.indices) {
                     val entity = TradeHandEntity()
                     entity.stkcode = result[i]["stkcode"]
                     entity.stkname = result[i]["stkname"]
                     entity.market = result[i]["market"]
-                    entity.stkbal = result[i]["stkbal"].toIntOrZero()
+                    entity.stkbal = result[i]["stkqty"].toIntOrZero()
                     entity.stkavl = result[i]["stkavl"].toIntOrZero()
                     entity.costprice = result[i]["costprice"].toDoubleOrZero()
                     entity.mktval = result[i]["mktval"].toDoubleOrZero()

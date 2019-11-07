@@ -43,6 +43,10 @@ class TradeMarketView(context: Context?) : RelativeLayout(context), ITradeView {
         context!!.inflate(R.layout.view_trade_market, this)
         adapter = LevelAdapter(list, context)
         level_view.adapter = adapter
+        level_view.setOnItemClickListener { parent, view, position, id ->
+            val prices = list[position]
+            price.text = prices.fPrice.format2()
+        }
 
         input_code.setOnSearchListener {
             viewModel.search(it)
@@ -155,13 +159,16 @@ class TradeMarketView(context: Context?) : RelativeLayout(context), ITradeView {
         val user = UserHelper.getUserByMarket(data.market)
 
         data.let {
-            _data = data
+            _data = it
             input_code.setData(it.stkcode, it.stkname)
-//            price.text = it.fixprice.format2()
 
+            limit_up_price.text = it.maxrisevalue.format2()
+            limit_up_price.setTextColor(ContextCompat.getColorStateList(context, R.color.trade_red))
+            limit_down_price.text = it.maxdownvalue.format2()
+            limit_down_price.setTextColor(ContextCompat.getColorStateList(context, R.color.trade_green))
             viewModel.getAvailable(
                 data.market, user.secuid, user.fundid,
-                it.stkcode, it.fixprice, direction
+                it.stkcode, it.maxrisevalue, direction
             )
         }
     }
@@ -171,10 +178,6 @@ class TradeMarketView(context: Context?) : RelativeLayout(context), ITradeView {
             newest_price.text = it.fNewest.format2()
             newest_price.setTextColor(ContextCompat.getColorStateList(context, getPriceColor(it.fNewest, it.fOpen)))
             last_price.text = it.fLastClose.format2()
-            limit_up_price.text = (it.fLastClose * 1.1f).format2()
-            limit_up_price.setTextColor(ContextCompat.getColorStateList(context, R.color.trade_red))
-            limit_down_price.text = (it.fLastClose * 0.9f).format2()
-            limit_down_price.setTextColor(ContextCompat.getColorStateList(context, R.color.trade_green))
 
             list.clear()
 

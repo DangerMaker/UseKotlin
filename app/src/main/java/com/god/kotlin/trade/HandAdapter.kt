@@ -10,6 +10,7 @@ import com.ez08.trade.tools.MathUtils
 import com.god.kotlin.R
 import com.god.kotlin.data.entity.TradeHandEntity
 import com.god.kotlin.util.format2
+import com.god.kotlin.util.format3
 import com.god.kotlin.util.inflate
 import com.god.kotlin.util.setPriceColor
 
@@ -62,12 +63,12 @@ class HandAdapter(
         }
 
         with(rowView.findViewById<TextView>(R.id.stock_prime)) {
-            text = item.costprice.format2()
+            text = item.costprice.format3()
             setPriceColor(color)
         }
 
         with(rowView.findViewById<TextView>(R.id.stock_last)) {
-            text = item.lastprice.format2()
+            text = item.lastprice.format3()
             setPriceColor(color)
         }
 

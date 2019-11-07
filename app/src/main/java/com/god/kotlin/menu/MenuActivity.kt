@@ -1,7 +1,7 @@
 package com.god.kotlin.menu
 
 import android.os.Bundle
-import com.ez08.trade.exception.LoginException
+import com.ez08.trade.exception.LogoutException
 import com.ez08.trade.net.Client
 import com.god.kotlin.BaseActivity
 import com.god.kotlin.R
@@ -33,7 +33,7 @@ class MenuActivity : BaseActivity() {
     }
 
     override fun onDisConnect(e: Exception) {
-        if (e is LoginException) {
+        if (e is LogoutException) {
             finish()
             JumpActivity.start(context, "登录")
         }else if(e is SecurityException){

@@ -70,11 +70,7 @@ class LoginFragment : Fragment(), TradePhoneCheckWindows.OnPhoneCheckListener {
         }
 
         safe_code_iv.setOnClickListener {
-            if (Client.getInstance().state == Client.STATE.EXCHANGE ||
-                Client.getInstance().state == Client.STATE.DISCONNECT
-            ) {
-                Client.getInstance().connect()
-            }
+            resetVerifyCode()
         }
 
         viewModel = (activity as MainActivity).obtainViewModel()
@@ -85,14 +81,15 @@ class LoginFragment : Fragment(), TradePhoneCheckWindows.OnPhoneCheckListener {
             if (it) {
                 startActivity(Intent(context, MenuActivity::class.java))
                 activity?.finish()
-            } else {
-
             }
         })
 
         viewModel.checkSuccess.observe(this, Observer {
-            setMobile(context, defaultItem, username_edit.text.toString(), phoneNum)
-            login(checkNum)
+            if(it) {
+                setMobile(context, defaultItem, username_edit.text.toString(), phoneNum)
+                login(checkNum)
+            }else{
+            }
         })
 
         viewModel.bitmap.observe(this, Observer {
@@ -162,6 +159,10 @@ class LoginFragment : Fragment(), TradePhoneCheckWindows.OnPhoneCheckListener {
     override fun onCheckNum(phoneNum: String, code: String) {
         this.checkNum = code
         viewModel.checkSMS(phoneNum, code)
+    }
+
+    private fun resetVerifyCode(){
+        Client.getInstance().resetVerifyCode()
     }
 
 }

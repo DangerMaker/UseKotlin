@@ -69,6 +69,7 @@ class SellFragment : Fragment() {
             sell_recycler.adapter = handAdapter
             setOnItemClickListener { _, _, position, _ ->
                 (tradeView as ITradeView).setStockCode(list[position - 2].stkcode)
+                setSelection(0)
             }
         }
 

@@ -90,7 +90,6 @@ class TradeTransView(context: Context?) : RelativeLayout(context), ITradeView {
     }
 
     override fun initData(flag: Boolean, vm: SellViewModel) {
-        Log.e("TradeView", "initData")
         viewModel = vm
         direction = flag
 

@@ -16,6 +16,7 @@ import com.god.kotlin.trade.TradeView
 import com.god.kotlin.util.format2
 import com.god.kotlin.util.inflate
 import com.god.kotlin.util.obtainViewModel
+import com.god.kotlin.util.toIntOrZero
 import kotlinx.android.synthetic.main.fragment_sell.*
 
 class FundsFragment : Fragment() {
@@ -59,23 +60,25 @@ class FundsFragment : Fragment() {
             list.clear()
             list.addAll(it)
             handAdapter.notifyDataSetChanged()
-
-            income = 0.0
-            for (item in it) {
-                income += item.income
-                Log.e("income",item.income.toString())
-            }
-            fundsView.setIncome(income)
-
+            calculator()
         })
 
         fundsModel.funds.observe(this, Observer {
             fundsView.setData(it)
+            calculator()
         })
 
         fundsView.initViewModel(fundsModel)
         fundsModel.query(0)
+    }
 
+    private fun calculator(){
+        income = 0.0
+        for (item in list) {
+            if (item.moneyType.toIntOrZero() == fundsView.position)
+                income += item.income
+        }
+        fundsView.setIncome(income)
     }
 }
 

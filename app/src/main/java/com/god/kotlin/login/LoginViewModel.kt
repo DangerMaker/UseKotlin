@@ -18,11 +18,24 @@ class LoginViewModel(private val repository: TradeRepository) : ViewModel() {
 
     fun login(userType: String, userId: String, password: String, checkCode: String, strNet2: String) {
 
-        repository.login(userType, userId, password, checkCode, strNet2, object : OnResult<MutableList<User>> {
+//        repository.login(userType, userId, password, checkCode, strNet2, object : OnResult<MutableList<User>> {
+//
+//            override fun onSucceed(response: MutableList<User>) {
+//                success.value = true
+//                UserHelper.setUserList(response)
+//            }
+//
+//            override fun onFailure(error: Error) {
+//                success.value = false
+//                tips.value = error.szError
+//            }
+//
+//        })
 
-            override fun onSucceed(response: MutableList<User>) {
+        repository.login1(userType, userId, password, checkCode, strNet2, object : OnResult<Boolean> {
+
+            override fun onSucceed(response: Boolean) {
                 success.value = true
-                UserHelper.setUserList(response)
             }
 
             override fun onFailure(error: Error) {

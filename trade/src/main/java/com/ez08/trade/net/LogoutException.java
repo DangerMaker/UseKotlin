@@ -1,4 +1,6 @@
 package com.ez08.trade.net;
 
-public class LogoutException extends RuntimeException {
+import com.ez08.trade.exception.TradeException;
+
+public class LogoutException extends TradeException {
 }

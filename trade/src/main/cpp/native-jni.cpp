@@ -8,7 +8,7 @@
 
 
 #define LOGI(...) \
-  ((void)__android_log_print(ANDROID_LOG_INFO, "compass_trade::", __VA_ARGS__))
+  ((void)__android_log_print(ANDROID_LOG_INFO, "compass_trade_press::", __VA_ARGS__))
 
 
 //
@@ -46,8 +46,8 @@ jbyteArray Java_com_ez08_trade_net_OpensslHelper_unPress(JNIEnv *env, jclass typ
                                                           jint dwBodySize,
                                                           jint dwRawSize,
                                                           jbyteArray body) {
-    int body_length;
-    int out_length;
+    int body_length = 0;
+    int out_length = 0;
     unsigned char *body_buffer = jByteArray2UnsignedChar(env, body, body_length);
     unsigned char *press_buffer = unPress(dwBodySize, dwRawSize, body_buffer, out_length);
     return unsignedChar2JByteArray(env, press_buffer, out_length);
@@ -63,8 +63,6 @@ jbyteArray Java_com_ez08_trade_net_OpensslHelper_decrypt(JNIEnv *env, jclass typ
     BYTE* key_buffer = jByteArray2UnsignedChar(env,key,key_length);
     int body_length;
     BYTE* body_buffer = jByteArray2UnsignedChar(env,body,body_length);
-
-    LOGI("%d",dwEncRawSize);
     decrypt(key_buffer,dwEncRawSize,body_buffer);
     return unsignedChar2JByteArray(env,body_buffer,dwEncRawSize);
 }

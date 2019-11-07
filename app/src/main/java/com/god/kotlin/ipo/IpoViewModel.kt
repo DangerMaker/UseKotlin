@@ -48,9 +48,9 @@ class IpoViewModel(private val repository: TradeRepository) :
         })
     }
 
-    var total: Int = 0
-    var temp = 0
-    var collection: String = ""
+    private var total: Int = 0
+    private var temp = 0
+    private var collection: String = ""
     fun transaction(secuid: String, fundsId: String, list: MutableList<NewStock>) {
         total = list.size
         temp = 0
@@ -64,9 +64,8 @@ class IpoViewModel(private val repository: TradeRepository) :
                     }
 
                     override fun onFailure(error: Error) {
-
                         collect(
-                            "[" + stock.stkname +  "]" + "   申购失败" + "\n" +
+                            "[" + stock.stkname + "]" + "   申购失败" + "\n" +
                                     "原因：" + error.szError + "\n"
                         )
                     }
@@ -78,7 +77,7 @@ class IpoViewModel(private val repository: TradeRepository) :
         if (temp < total) {
             collection += str
             temp += 1
-            if(temp == total){
+            if (temp == total) {
                 result.value = collection
             }
         }

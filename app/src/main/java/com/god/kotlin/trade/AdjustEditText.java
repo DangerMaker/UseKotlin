@@ -73,6 +73,8 @@ public class AdjustEditText extends RelativeLayout implements View.OnClickListen
         edit.setHint(hint);
         edit.setTextSize(TypedValue.COMPLEX_UNIT_DIP,15);
         setColor(color);
+
+        setOnClickListener(this);
     }
 
     public void setColor(int color) {
@@ -114,6 +116,7 @@ public class AdjustEditText extends RelativeLayout implements View.OnClickListen
             double temp = Double.parseDouble(e1);
             temp = temp + unit;
             edit.setText(MathUtils.formatNum(temp, exp));
+            edit.clearFocus();
         } else if (v == reduce) {
             String e1 = edit.getText().toString();
             if (TextUtils.isEmpty(e1)) {
@@ -125,6 +128,15 @@ public class AdjustEditText extends RelativeLayout implements View.OnClickListen
                 temp = 0;
             }
             edit.setText(MathUtils.formatNum(temp, exp));
+            edit.clearFocus();
         }
+//        else if(v == this){
+//            edit.setFocusable(true);
+//            edit.setFocusableInTouchMode(true);
+//            edit.requestFocus();
+//            if(edit.getText() != null) {
+//                edit.setSelection(edit.getText().length());
+//            }
+//        }
     }
 }
