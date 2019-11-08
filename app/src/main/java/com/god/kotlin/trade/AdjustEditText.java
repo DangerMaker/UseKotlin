@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.EditText;
@@ -73,8 +74,6 @@ public class AdjustEditText extends RelativeLayout implements View.OnClickListen
         edit.setHint(hint);
         edit.setTextSize(TypedValue.COMPLEX_UNIT_DIP,15);
         setColor(color);
-
-        setOnClickListener(this);
     }
 
     public void setColor(int color) {
@@ -99,7 +98,6 @@ public class AdjustEditText extends RelativeLayout implements View.OnClickListen
             reduce.setClickable(true);
         }
         edit.setText(MathUtils.formatNum(Double.parseDouble(text), exp));
-        edit.clearFocus();
     }
 
     public String getText() {
@@ -130,9 +128,10 @@ public class AdjustEditText extends RelativeLayout implements View.OnClickListen
             edit.setText(MathUtils.formatNum(temp, exp));
             edit.clearFocus();
         }
+
 //        else if(v == this){
+//            edit.setClickable(true);
 //            edit.setFocusable(true);
-//            edit.setFocusableInTouchMode(true);
 //            edit.requestFocus();
 //            if(edit.getText() != null) {
 //                edit.setSelection(edit.getText().length());

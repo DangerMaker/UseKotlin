@@ -5,6 +5,7 @@
         android:id="@+id/sell_recycler"
         android:layout_width="match_parent"
         android:divider="@drawable/line_light_1px"
+        android:scrollbars="none"
         android:dividerHeight="1dp"
         android:layout_height="match_parent">
 </ListView>

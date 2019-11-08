@@ -3,6 +3,7 @@ package com.ez08.trade.net.login;
 import android.util.Log;
 import com.ez08.trade.net.AbsResponse;
 import com.ez08.trade.net.NetUtil;
+import com.xuhao.didi.core.utils.BytesUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
@@ -36,6 +37,9 @@ public class STradeGateLoginA extends AbsResponse {
     public STradeGateLoginA(byte[] head, byte[] originBody, byte[] aesKey) {
         super(head,originBody,aesKey);
 
+        Log.e("STradeBaseHead Login", BytesUtils.toHexStringForLog(body));
+
+
         ByteBuffer buffer = ByteBuffer.wrap(body);
         buffer.order(ByteOrder.LITTLE_ENDIAN);
         bLoginSucc = buffer.getInt();
@@ -49,7 +53,7 @@ public class STradeGateLoginA extends AbsResponse {
             list = new ArrayList<>();
             for (int i = 0; i < dwCount; i++) {
                 STradeGateLoginAItem item = new STradeGateLoginAItem(buffer);
-                Log.e("STradeGateLoginA", item.toString());
+//                Log.e("STradeGateLoginA", item.toString());
                 list.add(item);
                 if (i == 0) {
                     STradeGateUserInfo.getInstance().n64_custid = list.get(i).n64_custid;

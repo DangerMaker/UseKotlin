@@ -95,6 +95,7 @@
             android:id="@+id/funds"
             style="@style/trade_edit_content_custom"
             android:layout_marginLeft="20dp"
+            android:inputType="numberDecimal"
             android:layout_toRightOf="@id/title"
             android:hint="请输入转账金额" />
 

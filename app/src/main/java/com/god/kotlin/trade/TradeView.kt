@@ -17,6 +17,7 @@ import com.god.kotlin.data.entity.Avail
 import com.god.kotlin.data.entity.TradeStockEntity
 import com.god.kotlin.user.UserHelper
 import com.god.kotlin.util.*
+import com.god.kotlin.widget.level1.Level
 import com.tencent.bugly.crashreport.CrashReport
 import kotlinx.android.synthetic.main.view_top.view.*
 import kotlinx.android.synthetic.main.view_trade.*
@@ -26,20 +27,31 @@ import java.util.*
 
 class TradeView(context: Context?) : RelativeLayout(context), ITradeView {
     private var list = mutableListOf<TradeStockEntity.Dang>()
-    private var adapter: LevelAdapter
+    //    private var adapter: LevelAdapter
     private lateinit var viewModel: SellViewModel
     private var direction: Boolean = true
     private var _data: TradeStockEntity? = null
     private var maxValue: Int = 0
+    private val levelView: Level
 
     init {
         context!!.inflate(R.layout.view_trade, this)
-        adapter = LevelAdapter(list, context)
-        level_view.adapter = adapter
-        level_view.setOnItemClickListener { parent, view, position, id ->
-            val prices = list[position]
-            price.text = prices.fPrice.format2()
-        }
+//        adapter = LevelAdapter(list, context)
+//        level_view.adapter = adapter
+//        level_view.setOnItemClickListener { parent, view, position, id ->
+//            val prices = list[position]
+//            price.text = prices.fPrice.format2()
+//        }
+        levelView = (level_view as Level)
+        levelView.setOnItemClickListener(object : Level.OnItemClickListener {
+            override fun onClick(position: Int) {
+                if(position > list.size){
+                    return
+                }
+                val prices = list[position]
+                price.text = prices.fPrice.format2()
+            }
+        })
 
         input_code.setOnSearchListener {
             viewModel.search(it)
@@ -172,8 +184,11 @@ class TradeView(context: Context?) : RelativeLayout(context), ITradeView {
 
             list.addAll(temp)
             list.addAll(data.bid)
-            adapter.setOpenPrice(it.fOpen)
-            adapter.notifyDataSetChanged()
+
+//            adapter.setOpenPrice(it.fOpen)
+//            adapter.notifyDataSetChanged()
+            levelView.setOpenPrice(it.fOpen)
+            levelView.update(list)
 
             if (firstHq) {
                 price.text = newest_price.text.toString()

@@ -1,6 +1,7 @@
 package com.god.kotlin.menu
 
 import android.os.Bundle
+import com.ez08.trade.exception.LoginErrorException
 import com.ez08.trade.exception.LogoutException
 import com.ez08.trade.net.Client
 import com.god.kotlin.BaseActivity
@@ -36,7 +37,7 @@ class MenuActivity : BaseActivity() {
         if (e is LogoutException) {
             finish()
             JumpActivity.start(context, "登录")
-        }else if(e is SecurityException){
+        }else if(e is LoginErrorException){
             Client.getInstance().logout()
             finish()
             JumpActivity.start(context, "登录")

@@ -124,7 +124,7 @@ public class DefaultReconnectManager extends AbsReconnectionManager {
         /**
          * 延时连接时间
          */
-        private long mReconnectTimeDelay = 10 * 1000;
+        private long mReconnectTimeDelay = 3 * 1000;
 
         @Override
 

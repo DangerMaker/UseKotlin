@@ -6,6 +6,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.viewpager.widget.ViewPager
 import com.god.kotlin.BaseActivity
+import com.god.kotlin.EmptyFragment
 import com.god.kotlin.R
 import com.god.kotlin.trade.funds.FundsFragment
 import com.god.kotlin.trade.order.OrderFragment

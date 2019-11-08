@@ -168,6 +168,7 @@ public class TradeBank2SecurityActivity extends BaseActivity implements View.OnC
     String result;
 
     public void post() {
+        showBusyDialog();
         String body = "FUN=410605&TBL_IN=fundid,moneytype,fundpwd,bankcode,bankpwd,banktrantype,tranamt,pwdflag,extsno;" +
                 UserHelper.getUser().getFundid() + "," +
                 moneyTypeValue + "," +
@@ -180,6 +181,7 @@ public class TradeBank2SecurityActivity extends BaseActivity implements View.OnC
                 ";";
         Client.getInstance().sendBiz(body, (success, data) -> {
             Log.e("sendBiz", data);
+            dismissBusyDialog();
             if (success) {
                 Uri uri = Uri.parse(Constant.URI_DEFAULT_HELPER + data);
                 Set<String> pn = uri.getQueryParameterNames();

@@ -2,14 +2,7 @@ package com.god.kotlin.trade
 
 import android.content.Context
 import android.content.DialogInterface
-import android.text.Editable
-import android.text.TextWatcher
-import android.util.Log
-import android.view.View
-import android.view.ViewGroup
-import android.widget.BaseAdapter
 import android.widget.RelativeLayout
-import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.god.kotlin.R
 import com.god.kotlin.data.entity.Avail
@@ -17,15 +10,8 @@ import com.god.kotlin.data.entity.TradeStockEntity
 import com.god.kotlin.user.UserHelper
 import com.god.kotlin.util.*
 import kotlinx.android.synthetic.main.view_top.view.*
-import kotlinx.android.synthetic.main.view_trade.*
-import kotlinx.android.synthetic.main.view_trade.view.*
-import kotlinx.android.synthetic.main.view_trade.view.available_num
-import kotlinx.android.synthetic.main.view_trade.view.input_code
-import kotlinx.android.synthetic.main.view_trade.view.level_view
-import kotlinx.android.synthetic.main.view_trade.view.submit
-import kotlinx.android.synthetic.main.view_trade.view.total_num
-import kotlinx.android.synthetic.main.view_trade_market.view.*
 import kotlinx.android.synthetic.main.view_trade_ratio.view.*
+import kotlinx.android.synthetic.main.view_trade_trans.view.*
 
 class TradeTransView(context: Context?) : RelativeLayout(context), ITradeView {
     override fun updateHQ(data: TradeStockEntity) {
@@ -82,7 +68,7 @@ class TradeTransView(context: Context?) : RelativeLayout(context), ITradeView {
 
                 viewModel.transaction(
                     it.market, it.stkcode, user.secuid,user.fundid,
-                    price.text.toDouble(), total_num.text.toInt(), if (direction) "0B" else "0S"
+                    0.0, total_num.text.toInt(), if (direction) "0B" else "0S"
                 )
             }
         }
@@ -95,7 +81,7 @@ class TradeTransView(context: Context?) : RelativeLayout(context), ITradeView {
 
         input_code.setBackgroundResource(R.drawable.trade_input_bg)
         total_num.setColor(R.color.trade_red)
-        price.setColor(R.color.trade_red)
+//        price.setColor(R.color.trade_red)
         submit.setBackgroundResource(R.drawable.trade_red_corner_full)
         layout_quote.setBackgroundResource(R.drawable.trade_input_bg)
         submit.text = "确定"
@@ -118,7 +104,7 @@ class TradeTransView(context: Context?) : RelativeLayout(context), ITradeView {
         data.let {
             _data = data
             input_code.setData(it.stkcode, it.stkname)
-            price.text = it.fixprice.format2()
+//            price.text = it.fixprice.format2()
 
 //            viewModel.getAvailable(it.stkcode, it.fixprice, if (direction) "0B" else "0S")
 

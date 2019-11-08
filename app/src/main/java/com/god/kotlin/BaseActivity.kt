@@ -4,6 +4,8 @@ import android.app.ProgressDialog
 import android.content.Context
 import android.os.Bundle
 import android.os.Looper
+import android.view.MotionEvent
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.ez08.trade.exception.SessionLostException
 import com.ez08.trade.net.Client

@@ -114,6 +114,10 @@ class TradeRepository : TradeDataSource {
         Client.getInstance().setLoginPasswordPackage(userType,userId,password,checkCode,strNet2) {
                 success, data ->
             if(success){
+                Client.strNet2 = strNet2
+                Client.strUserType = userType
+                Client.userId = userId
+                Client.password = password
                 callback.onSucceed(true)
             }else{
                 callback.onFailure(handleError(data))

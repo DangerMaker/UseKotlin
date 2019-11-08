@@ -281,6 +281,7 @@ public class Client {
     public void sendBiz(String request, final StringCallback callback) {
 //        Log.e("Biz",request);
         if (Client.getInstance().state != STATE.LOGIN) {
+            callback.onResult(false,"网络连接失败，请稍后再试");
             return;
         }
 
@@ -336,11 +337,7 @@ public class Client {
     }
 
     public void logout() {
-        if (manager != null) {
-            sessionId = null;
-            STradeGateUserInfo.getInstance().clearUserInfo();
-            manager.disconnect();
-        }
+        throwException(new LogoutException());
     }
 
     public void resetVerifyCode(){
@@ -368,15 +365,7 @@ public class Client {
     private void setLoginSessionPackage() {
         STradeGateLogin tradeGateLogin = new STradeGateLogin();
         tradeGateLogin.setBody(Client.strUserType, Client.userId, Client.password, Client.sessionId, Client.strNet2);
-        Client.getInstance().send(tradeGateLogin, new Callback() {
-            @Override
-            public void onResult(boolean success, OriginalData data) {
-                STradeGateLoginA gateLoginA = new STradeGateLoginA(data.getHeadBytes(), data.getBodyBytes(), Client.getInstance().aesKey);
-                if (!gateLoginA.getbLoginSucc()) {
-                    logout();
-                }
-            }
-        });
+        Client.getInstance().manager.send(tradeGateLogin);
     }
 
     private void sendState(STATE state, Exception e) {
