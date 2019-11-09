@@ -9,10 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.god.kotlin.R
 import com.god.kotlin.data.entity.TradeHandEntity
-import com.god.kotlin.trade.HandAdapter
-import com.god.kotlin.trade.SellViewModel
-import com.god.kotlin.trade.TradeActivity
-import com.god.kotlin.trade.TradeView
+import com.god.kotlin.trade.*
 import com.god.kotlin.util.format2
 import com.god.kotlin.util.inflate
 import com.god.kotlin.util.obtainViewModel
@@ -21,7 +18,7 @@ import kotlinx.android.synthetic.main.fragment_sell.*
 
 class FundsFragment : Fragment() {
 
-    private lateinit var viewModel: SellViewModel
+    private lateinit var tradeParent: TradeParent
     private lateinit var fundsModel: FundsViewModel
     private lateinit var fundsView: FundsView
     private lateinit var handAdapter: HandAdapter
@@ -53,10 +50,10 @@ class FundsFragment : Fragment() {
 
 
         //data layer
-        viewModel = (activity as TradeActivity).obtainViewModel()
+        tradeParent = (activity as TradeParent)
         fundsModel = obtainViewModel(FundsViewModel::class.java)
 
-        viewModel.handStockList.observe(this, Observer {
+        tradeParent.getHand().observe(this, Observer {
             list.clear()
             list.addAll(it)
             handAdapter.notifyDataSetChanged()

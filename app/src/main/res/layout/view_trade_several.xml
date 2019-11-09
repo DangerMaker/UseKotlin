@@ -67,7 +67,10 @@
                     android:textColor="@color/trade_input_text"
                     android:textSize="13dp"/>
 
-            <include layout="@layout/view_trade_ratio"/>
+            <com.god.kotlin.widget.RatioView
+                    android:id="@+id/ratio_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
 
             <Button
                     android:id="@+id/submit"

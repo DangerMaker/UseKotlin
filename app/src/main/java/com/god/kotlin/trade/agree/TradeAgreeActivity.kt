@@ -15,7 +15,7 @@ import com.god.kotlin.widget.tablayout.EasyFragment
 import com.god.kotlin.widget.tablayout.FragmentAdapter
 import kotlinx.android.synthetic.main.activity_trade.*
 
-class TradeAgreeActivity : BaseActivity(), TradeParent {
+class TradeAgreeActivity : BaseActivity() {
 
     private val fragmentList: MutableList<EasyFragment> = mutableListOf()
     private lateinit var adapter: FragmentAdapter
@@ -55,7 +55,7 @@ class TradeAgreeActivity : BaseActivity(), TradeParent {
     }
 
 
-    override fun obtainViewModel(): SellViewModel = obtainViewModel(SellViewModel::class.java)
+    fun obtainViewModel(): SellViewModel = obtainViewModel(SellViewModel::class.java)
 
 }
 

@@ -1,5 +1,6 @@
 package com.god.kotlin.trade
 
+import android.view.View
 import com.god.kotlin.data.entity.Avail
 import com.god.kotlin.data.entity.TradeStockEntity
 
@@ -14,6 +15,8 @@ interface ITradeView {
     fun setData(data: TradeStockEntity)
 
     fun updateHQ(data: TradeStockEntity)
+
+    fun getView(): View
 }
 
 interface ITradeAction {

@@ -20,10 +20,10 @@ class SellViewModel(private val repository: TradeRepository) :
     val order = MutableLiveData<TradeResultEntity>()
     var serverealResult = MutableLiveData<String>()
 
-    val tips = MutableLiveData<String>()
+    val toast = MutableLiveData<String>()
     val loading = MutableLiveData<Boolean>()
 
-    val currentHQ = MutableLiveData<TradeStockEntity>()
+    val level = MutableLiveData<TradeStockEntity>()
 
     fun search(code: String) {
         loading.value = true
@@ -60,7 +60,7 @@ class SellViewModel(private val repository: TradeRepository) :
             }
 
             override fun onFailure(error: Error) {
-                tips.value = error.szError
+                toast.value = error.szError
             }
 
         })
@@ -75,10 +75,9 @@ class SellViewModel(private val repository: TradeRepository) :
             }
 
             override fun onFailure(error: Error) {
-                tips.value = error.szError
+                toast.value = error.szError
                 loading.value = false
             }
-
         })
     }
 
@@ -132,7 +131,7 @@ class SellViewModel(private val repository: TradeRepository) :
     fun getHQ(market: String,code: String){
         repository.getHQ(market,code,object :OnResult<TradeStockEntity>{
             override fun onSucceed(response: TradeStockEntity) {
-                currentHQ.value = response
+                level.value = response
             }
 
             override fun onFailure(error: Error) {

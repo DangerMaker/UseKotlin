@@ -12,7 +12,9 @@ import com.god.kotlin.ipo.query.IpoQueryViewModel
 import com.god.kotlin.profile.AccountListViewModel
 import com.god.kotlin.profile.RiskQueryViewModel
 import com.god.kotlin.query.QueryViewModel
+import com.god.kotlin.trade.HandViewModel
 import com.god.kotlin.trade.SellViewModel
+import com.god.kotlin.trade.TradeViewModel
 import com.god.kotlin.trade.funds.FundsViewModel
 import com.god.kotlin.trade.order.OrderViewModel
 import com.god.kotlin.transfer.TransferRecodViewModel
@@ -48,6 +50,8 @@ class ViewModelFactory private constructor(
                     IpoViewModel(tasksRepository)
                 isAssignableFrom(IpoQueryViewModel::class.java) ->
                     IpoQueryViewModel(tasksRepository)
+                isAssignableFrom(HandViewModel::class.java) ->
+                    HandViewModel(tasksRepository)
                 else ->
                     throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
             }

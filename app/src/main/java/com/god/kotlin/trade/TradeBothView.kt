@@ -2,6 +2,7 @@ package com.god.kotlin.trade
 
 import android.content.Context
 import android.util.Log
+import android.view.View
 import android.widget.RelativeLayout
 import androidx.core.content.ContextCompat
 import com.ez08.trade.tools.DialogUtils
@@ -23,6 +24,10 @@ import kotlinx.android.synthetic.main.view_trade_both.view.*
 import kotlinx.android.synthetic.main.view_trade_ratio.view.*
 
 class TradeBothView(context: Context?) : RelativeLayout(context), ITradeView {
+    override fun getView(): View {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     private var list = mutableListOf<TradeStockEntity.Dang>()
     private lateinit var viewModel: SellViewModel
     private var direction: Boolean = true

@@ -2,6 +2,7 @@ package com.god.kotlin.trade
 
 import android.content.Context
 import android.content.DialogInterface
+import android.view.View
 import android.widget.RelativeLayout
 import androidx.core.content.ContextCompat
 import com.god.kotlin.R
@@ -14,6 +15,10 @@ import kotlinx.android.synthetic.main.view_trade_ratio.view.*
 import kotlinx.android.synthetic.main.view_trade_trans.view.*
 
 class TradeTransView(context: Context?) : RelativeLayout(context), ITradeView {
+    override fun getView(): View {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     override fun updateHQ(data: TradeStockEntity) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
@@ -29,7 +34,7 @@ class TradeTransView(context: Context?) : RelativeLayout(context), ITradeView {
     init {
         context!!.inflate(R.layout.view_trade_trans, this)
         adapter = LevelAdapter(list, context)
-        level_view.adapter = adapter
+//        level_view.adapter = adapter
 
         input_code.setOnSearchListener {
             viewModel.search(it)
@@ -64,11 +69,16 @@ class TradeTransView(context: Context?) : RelativeLayout(context), ITradeView {
 
         submit.setOnClickListener {
             _data?.let {
-                val user =  UserHelper.getUserByMarket(it.market)
+                val user = UserHelper.getUserByMarket(it.market)
+                val postFlag = if (quoteType == "可转债转股") {
+                    "0G"
+                } else {
+                    "0H"
+                }
 
                 viewModel.transaction(
-                    it.market, it.stkcode, user.secuid,user.fundid,
-                    0.0, total_num.text.toInt(), if (direction) "0B" else "0S"
+                    it.market, it.stkcode, user.secuid, user.fundid,
+                    0.0, total_num.text.toInt(), postFlag
                 )
             }
         }

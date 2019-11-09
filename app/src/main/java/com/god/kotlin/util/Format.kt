@@ -16,6 +16,10 @@ fun Int.save100(): String {
     return (this / 100 * 100).toString()
 }
 
+fun Int.saveInt100(): Int {
+    return this / 100 * 100
+}
+
 fun String?.toIntOrZero(): Int {
     return try {
         this?.toInt() ?: 0

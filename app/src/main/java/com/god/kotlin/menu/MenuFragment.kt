@@ -49,7 +49,7 @@ class MenuFragment : Fragment() {
         dataV.add(StringMenu("预埋单"))
         dataV.add(StringMenu("预受要约"))
 //        dataV.add(StringMenu("网络投票"))
-//        dataV.add(StringMenu("转股回售"))
+        dataV.add(StringMenu("转股回售"))
         dataV.add(StringMenu("股东资料"))
         dataV.add(StringMenu("客户风险级别查询"))
 //        dataV.add(StringMenu("客户风险级别测评"))

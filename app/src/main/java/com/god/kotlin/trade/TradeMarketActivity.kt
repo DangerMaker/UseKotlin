@@ -2,10 +2,12 @@ package com.god.kotlin.trade
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
 import com.god.kotlin.BaseActivity
 import com.god.kotlin.R
+import com.god.kotlin.data.entity.TradeHandEntity
 import com.god.kotlin.trade.funds.FundsFragment
 import com.god.kotlin.trade.order.OrderFragment
 import com.god.kotlin.trade.order.OrderViewModel
@@ -21,6 +23,13 @@ import kotlinx.android.synthetic.main.activity_trade.*
 import java.lang.Exception
 
 class TradeMarketActivity : BaseActivity(), TradeParent {
+    override fun getHand(): LiveData<MutableList<TradeHandEntity>> {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun triggerHand() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
     private val fragmentList: MutableList<EasyFragment> = mutableListOf()
     private lateinit var adapter: FragmentAdapter
@@ -45,23 +54,6 @@ class TradeMarketActivity : BaseActivity(), TradeParent {
             sliding_tabs.setViewPager(tab_pager)
             currentItem = _type
         }
-
-        obtainViewModel().loading.observe(this, Observer {
-            if(it){
-                showBusyDialog()
-            }else{
-                dismissBusyDialog()
-            }
-        })
-
-        obtainViewModel().order.observe(this, Observer {
-            showSimpleDialog(
-                context, "委托成功" + "\n" +
-                        "委托序号：" + it.ordersno + "\n" +
-                        "合同序号：" + it.orderid + "\n" +
-                        "委托批号：" + it.ordergroup
-            )
-        })
 
         img_back.setOnClickListener { finish() }
         mReconnectTestingThread = CycleLoopThread()
@@ -115,7 +107,7 @@ class TradeMarketActivity : BaseActivity(), TradeParent {
 
     }
 
-    override fun obtainViewModel(): SellViewModel = obtainViewModel(SellViewModel::class.java)
+    fun obtainViewModel(): SellViewModel = obtainViewModel(SellViewModel::class.java)
 }
 
 

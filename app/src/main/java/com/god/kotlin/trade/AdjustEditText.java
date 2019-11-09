@@ -91,8 +91,7 @@ public class AdjustEditText extends RelativeLayout implements View.OnClickListen
 
     public void setText(String text) {
         if (Double.parseDouble(text) < unit) {
-            plus.setClickable(false);
-            reduce.setClickable(false);
+           text = "0";
         } else {
             plus.setClickable(true);
             reduce.setClickable(true);

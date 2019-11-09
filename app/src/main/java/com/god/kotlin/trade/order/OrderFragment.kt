@@ -10,10 +10,7 @@ import androidx.lifecycle.Observer
 import com.god.kotlin.R
 import com.god.kotlin.data.entity.Order
 import com.god.kotlin.trade.TradeActivity
-import com.god.kotlin.util.getBSStringByTag
-import com.god.kotlin.util.inflate
-import com.god.kotlin.util.showSimpleDialog
-import com.god.kotlin.util.showTwoButtonDialog
+import com.god.kotlin.util.*
 import kotlinx.android.synthetic.main.fragment_order.*
 
 class OrderFragment : Fragment() {
@@ -56,7 +53,7 @@ class OrderFragment : Fragment() {
             }
         }
 
-        viewModel = (activity as TradeActivity).obtainOrderModel()
+        viewModel = obtainViewModel(OrderViewModel::class.java)
         viewModel.orderList.observe(this, Observer {
             list.clear()
             list.addAll(it)

@@ -3,6 +3,7 @@ package com.god.kotlin.trade
 import android.content.Context
 import android.content.DialogInterface
 import android.text.TextUtils
+import android.view.View
 import android.widget.RelativeLayout
 import androidx.core.content.ContextCompat
 import com.ez08.trade.tools.DialogUtils
@@ -23,6 +24,9 @@ import kotlinx.android.synthetic.main.view_trade_market.view.total_num
 import kotlinx.android.synthetic.main.view_trade_ratio.view.*
 
 class TradeMarketView(context: Context?) : RelativeLayout(context), ITradeView {
+    override fun getView(): View {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
     private var list = mutableListOf<TradeStockEntity.Dang>()
 //    private var adapter: LevelAdapter
@@ -52,18 +56,7 @@ class TradeMarketView(context: Context?) : RelativeLayout(context), ITradeView {
             viewModel.search(it)
         }
 
-        layout_quote.setOnClickListener {
-            _data?.let {
-                val select: Array<String> = when (it.market) {
-                    "0" -> szQuoteType
-                    "1" -> shQuoteType
-                    else -> arrayOf()
-                }
-                showSelectDialog(context, select,
-                    DialogInterface.OnClickListener { _, which -> quote_way.text = select[which] })
-            } ?: "请输入代码".toast(context)
 
-        }
 
         full.setOnClickListener {
             total_num.text = maxValue.save100()

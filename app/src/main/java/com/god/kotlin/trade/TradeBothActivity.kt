@@ -1,8 +1,10 @@
 package com.god.kotlin.trade
 
 import android.os.Bundle
+import androidx.lifecycle.LiveData
 import com.god.kotlin.BaseActivity
 import com.god.kotlin.R
+import com.god.kotlin.data.entity.TradeHandEntity
 import com.god.kotlin.user.UserHelper
 import com.god.kotlin.util.Constant
 import com.god.kotlin.util.obtainViewModel
@@ -12,6 +14,13 @@ import kotlinx.android.synthetic.main.activity_trade_both.*
 import kotlinx.android.synthetic.main.toolbar_normal.*
 
 class TradeBothActivity : BaseActivity(), TradeParent {
+    override fun getHand(): LiveData<MutableList<TradeHandEntity>> {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun triggerHand() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
     private var _type = 0
 
@@ -66,7 +75,7 @@ class TradeBothActivity : BaseActivity(), TradeParent {
 
     }
 
-    override fun obtainViewModel(): SellViewModel = obtainViewModel(SellViewModel::class.java)
+     fun obtainViewModel(): SellViewModel = obtainViewModel(SellViewModel::class.java)
 }
 
 

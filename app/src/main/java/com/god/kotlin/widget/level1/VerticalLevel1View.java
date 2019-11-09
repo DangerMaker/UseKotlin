@@ -12,6 +12,7 @@ import com.god.kotlin.R;
 import com.god.kotlin.data.entity.TradeStockEntity;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class VerticalLevel1View extends LinearLayout implements Level, View.OnClickListener {
@@ -89,7 +90,8 @@ public class VerticalLevel1View extends LinearLayout implements Level, View.OnCl
 
     @Override
     public void update(@NotNull List<TradeStockEntity.Dang> list) {
-        this.list = list;
+        this.list.clear();
+        this.list.addAll(list);
         setItem(sellPrice5, sellVol5, 0);
         setItem(sellPrice4, sellVol4, 1);
         setItem(sellPrice3, sellVol3, 2);
@@ -102,13 +104,19 @@ public class VerticalLevel1View extends LinearLayout implements Level, View.OnCl
         setItem(buyPrice5, buyVol5, 9);
     }
 
-    List<TradeStockEntity.Dang> list;
+    List<TradeStockEntity.Dang> list = new ArrayList<>();
 
     private void setItem(TextView price, TextView volume, int position) {
         TradeStockEntity.Dang dang = list.get(position);
-        price.setText(MathUtils.format2Num(dang.fPrice));
-        price.setTextColor(dang.fPrice > openPrice ? ScreenUtil.setTextColor(getContext(), com.ez08.trade.R.color.trade_red) : ScreenUtil.setTextColor(getContext(), com.ez08.trade.R.color.trade_green));
-        volume.setText(MathUtils.getMost4Character(dang.fOrder / 100d));
+        if (dang.fOrder == 0.0) {
+            price.setText("- - ");
+            price.setTextColor(ScreenUtil.setTextColor(getContext(), R.color.trade_black));
+            volume.setText("- - ");
+        } else {
+            price.setText(MathUtils.format2Num(dang.fPrice));
+            price.setTextColor(dang.fPrice > openPrice ? ScreenUtil.setTextColor(getContext(), com.ez08.trade.R.color.trade_red) : ScreenUtil.setTextColor(getContext(), com.ez08.trade.R.color.trade_green));
+            volume.setText(MathUtils.getMost4Character(dang.fOrder / 100d));
+        }
     }
 
     Double openPrice;
@@ -120,30 +128,35 @@ public class VerticalLevel1View extends LinearLayout implements Level, View.OnCl
 
     @Override
     public void onClick(View v) {
-        if (listener == null) {
+        if (listener == null || list.isEmpty()) {
             return;
         }
-
         if (v.getId() == R.id.sell5_layout) {
-            listener.onClick(0);
+            invoke(0);
         } else if (v.getId() == R.id.sell4_layout) {
-            listener.onClick(1);
+            invoke(1);
         } else if (v.getId() == R.id.sell3_layout) {
-            listener.onClick(2);
+            invoke(2);
         } else if (v.getId() == R.id.sell2_layout) {
-            listener.onClick(3);
+            invoke(3);
         } else if (v.getId() == R.id.sell1_layout) {
-            listener.onClick(4);
+            invoke(4);
         } else if (v.getId() == R.id.buy1_layout) {
-            listener.onClick(5);
+            invoke(5);
         } else if (v.getId() == R.id.buy2_layout) {
-            listener.onClick(6);
+            invoke(6);
         } else if (v.getId() == R.id.buy3_layout) {
-            listener.onClick(7);
+            invoke(7);
         } else if (v.getId() == R.id.buy4_layout) {
-            listener.onClick(8);
+            invoke(8);
         } else if (v.getId() == R.id.buy5_layout) {
-            listener.onClick(9);
+            invoke(9);
+        }
+    }
+
+    private void invoke(int position) {
+        if (list.get(position).fOrder != 0.0) {
+            listener.onClick(position);
         }
     }
 }
