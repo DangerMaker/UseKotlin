@@ -60,6 +60,9 @@ class TradeActivity : BaseActivity(), TradeParent {
             3 -> {
                 fragmentList.add(getEasyFragment(SELL_TAG, "转股回售") { SellFragment.newInstance(true, 2) })
             }
+            4 ->{
+                fragmentList.add(getEasyFragment(SELL_TAG, "对买对卖") { SellFragment.newInstance(true, 3) })
+            }
         }
 
 
@@ -111,7 +114,7 @@ class TradeActivity : BaseActivity(), TradeParent {
         }
 
         override fun onPageSelected(position: Int) {
-            tab_pager.currentItem = position
+//            tab_pager.currentItem = position
         }
     }
 

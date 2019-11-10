@@ -65,7 +65,7 @@ class SellFragment : BaseFragment() {
                 0 -> TradeView1(context)
                 1 -> TradeMarketView1(context)
                 2 -> TradeTransView1(context)
-                3 -> TradeBothView(context)
+                3 -> TradeBothView1(context)
                 4 -> TradeSeveralView1(context)
                 else -> throw Exception()
             }

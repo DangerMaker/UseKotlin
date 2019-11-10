@@ -86,6 +86,14 @@ public class AdjustEditText extends RelativeLayout implements View.OnClickListen
         line6.setBackgroundColor(ContextCompat.getColor(getContext(), color));
         plus.setColorFilter(ContextCompat.getColor(getContext(), color));
         reduce.setColorFilter(ContextCompat.getColor(getContext(), color));
+
+        if(color == R.color.trade_red){
+            plus.setBackgroundColor(ContextCompat.getColor(getContext(),R.color.trade_trans_red));
+            reduce.setBackgroundColor(ContextCompat.getColor(getContext(),R.color.trade_trans_red));
+        }else if(color == R.color.trade_blue){
+            plus.setBackgroundColor(ContextCompat.getColor(getContext(),R.color.trade_trans_blue));
+            reduce.setBackgroundColor(ContextCompat.getColor(getContext(),R.color.trade_trans_blue));
+        }
     }
 
 

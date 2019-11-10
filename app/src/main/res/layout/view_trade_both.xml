@@ -8,16 +8,18 @@
 
     <com.god.kotlin.trade.InputCodeView
             android:layout_below="@id/top"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="10dp"
             android:layout_marginBottom="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:id="@+id/input_code"
             android:layout_width="match_parent"
             android:layout_height="40dp"
     />
 
-    <com.god.kotlin.widget.Level1HorizontalView
+    <com.god.kotlin.widget.level1.Level1HorizontalView
             android:layout_below="@id/input_code"
-            android:id="@+id/level1_horizontal"
+            android:id="@+id/level_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingLeft="10dp"
@@ -27,7 +29,7 @@
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/level1_horizontal"
+            android:layout_below="@id/level_view"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:orientation="horizontal">
@@ -63,7 +65,7 @@
                     android:layout_marginTop="10dp"/>
 
             <TextView
-                    android:id="@+id/available_num_buy"
+                    android:id="@+id/available_num"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="2dp"
@@ -71,7 +73,10 @@
                     android:textColor="@color/trade_input_text"
                     android:textSize="13dp"/>
 
-            <include layout="@layout/view_trade_ratio"/>
+            <com.god.kotlin.widget.RatioView
+                    android:id="@+id/ratio_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
 
             <Button
                     android:id="@+id/submit"
@@ -102,7 +107,7 @@
                     tools:layout_height="40dp"
                     app:hint="委托价格"
                     app:unit="0.01"
-                    app:ad_color="@color/trade_red"
+                    app:ad_color="@color/trade_blue"
                     android:layout_marginTop="10dp"/>
 
             <com.god.kotlin.trade.AdjustEditText
@@ -110,7 +115,7 @@
                     app:hint="委托数量"
                     app:unit="100"
                     tools:layout_height="40dp"
-                    app:ad_color="@color/trade_red"
+                    app:ad_color="@color/trade_blue"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"/>
@@ -124,16 +129,19 @@
                     android:textColor="@color/trade_input_text"
                     android:textSize="13dp"/>
 
-            <include layout="@layout/view_trade_ratio"/>
+            <com.god.kotlin.widget.RatioView
+                    android:id="@+id/ratio_view1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
 
             <Button
                     android:id="@+id/submit1"
                     android:layout_width="match_parent"
                     android:layout_height="35dp"
                     android:layout_marginTop="10dp"
-                    android:background="@drawable/trade_red_corner_full"
+                    android:background="@drawable/trade_blue_corner_full"
                     android:gravity="center"
-                    android:text="@string/trade_buy_action"
+                    android:text="@string/trade_sell_action"
                     android:textColor="@color/trade_white"
                     android:textSize="15dp"/>
         </LinearLayout>

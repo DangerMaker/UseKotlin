@@ -1,6 +1,7 @@
 package com.god.kotlin.trade
 
 import android.content.Context
+import android.text.TextUtils
 import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
@@ -12,12 +13,10 @@ import com.god.kotlin.data.entity.Avail
 import com.god.kotlin.data.entity.TradeStockEntity
 import com.god.kotlin.data.entity.User
 import com.god.kotlin.user.UserHelper
-import com.god.kotlin.util.format2
-import com.god.kotlin.util.getPriceColor
-import com.god.kotlin.util.inflate
-import com.god.kotlin.util.toast
+import com.god.kotlin.util.*
 import com.god.kotlin.widget.RatioView
 import com.god.kotlin.widget.level1.Level
+import kotlinx.android.synthetic.main.view_trade_market.view.*
 
 abstract class AbsTradeView(context: Context?) : RelativeLayout(context), ITradeView {
 
@@ -26,11 +25,13 @@ abstract class AbsTradeView(context: Context?) : RelativeLayout(context), ITrade
     protected var user: User? = null
     protected var direction: Boolean = true
     protected var _data: TradeStockEntity? = null
-    protected var maxValue: Int = 0
     protected var option = "买入"
+    protected var quoteType = "限价委托"
+    protected var postFlag = ""
 
     protected val levelView: Level
     protected var priceView: AdjustEditText? = null
+    protected var priceView1: AdjustEditText? = null
     protected var numView: AdjustEditText? = null
     protected var availView: TextView? = null
     protected var inputView: InputCodeView? = null
@@ -51,6 +52,7 @@ abstract class AbsTradeView(context: Context?) : RelativeLayout(context), ITrade
         context!!.inflate(inflate(), this)
 
         priceView = findViewById(R.id.price)
+        priceView1 = findViewById(R.id.price1)
         inputView = findViewById(R.id.input_code)
         ratioView = findViewById(R.id.ratio_view)
         numView = findViewById(R.id.total_num)
@@ -69,6 +71,7 @@ abstract class AbsTradeView(context: Context?) : RelativeLayout(context), ITrade
             override fun onClick(position: Int) {
                 val prices = list[position]
                 priceView?.text = prices.fPrice.format2()
+                priceView1?.text = prices.fPrice.format2()
             }
         })
 
@@ -91,12 +94,17 @@ abstract class AbsTradeView(context: Context?) : RelativeLayout(context), ITrade
                 return@setOnClickListener
             }
 
-            if(numView?.text == null){
+            if (numView?.text == null) {
                 "请选择数量".toast(context)
                 return@setOnClickListener
             }
 
-           submit()
+            postFlag = getFlagByQuoteName(direction, quoteType)
+            if(TextUtils.isEmpty(postFlag)){
+                "请选择正确的报价方式".toast(context)
+                return@setOnClickListener
+            }
+            submit()
         }
 
     }
@@ -127,20 +135,16 @@ abstract class AbsTradeView(context: Context?) : RelativeLayout(context), ITrade
     }
 
     override fun setAvailable(avail: Avail) {
-        if (avail.direction == direction) {
             if (avail.direction) {
-                maxValue = avail.num
                 ratioView?.setMax(avail.num)
-                availView?.text = "可买${maxValue}股"
+                availView?.text = "最大可买${ avail.num}股"
             } else {
-                maxValue = avail.num
                 ratioView?.setMax(avail.num)
-                availView?.text = "可卖${maxValue}股"
+                availView?.text = "最大可卖${avail.num}股"
             }
-        }
     }
 
-    private var firstHq = false
+    protected var firstHq = false
 
     override fun setData(data: TradeStockEntity) {
         data.let {
@@ -185,18 +189,35 @@ abstract class AbsTradeView(context: Context?) : RelativeLayout(context), ITrade
             if (firstHq) {
                 priceView?.text = newestPrice?.text.toString()
 
-                if(user == null){
+                if (user == null) {
                     return@let
                 }
 
+               val price = when (quoteType) {
+                   "限价委托" -> {
+                        it.fNewest
+                   }
+                   in szQuoteType -> {
+                        if(direction){
+                            _data?.maxrisevalue?:0.0
+                        }else{
+                            _data?.maxdownvalue?:0.0
+                        }
+                   }
+                   else -> {
+                        _data?.fixprice?:0.0
+                   }
+               }
+
                 viewModel.getAvailable(
                     _data!!.market, user!!.secuid, user!!.fundid,
-                    _data!!.stkcode, it.fNewest, direction
+                    _data!!.stkcode, price, direction
                 )
                 firstHq = false
             }
         }
     }
+
 
     override fun getView(): View {
         return this

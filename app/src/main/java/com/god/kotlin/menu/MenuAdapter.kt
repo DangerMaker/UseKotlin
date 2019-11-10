@@ -8,19 +8,16 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.ez08.trade.net.Client
-import com.ez08.trade.tools.JumpActivity
 import com.god.kotlin.R
-import com.god.kotlin.bank.TradeBankActivity
+import com.god.kotlin.bank.BankListActivity
 import com.god.kotlin.change.ChangeInformationActivity
 import com.god.kotlin.change.ChangePwdActivity
 import com.god.kotlin.ipo.IpoOrderActivity
-import com.god.kotlin.pre.PreActivity
 import com.god.kotlin.pre.TradeOrderActivity
 import com.god.kotlin.profile.*
 import com.god.kotlin.query.QueryMenuActivity
 import com.god.kotlin.trade.*
 import com.god.kotlin.trade.agree.TradeAgreeActivity
-import com.god.kotlin.transfer.TransferMenuActivity
 import com.god.kotlin.util.Constant
 import com.god.kotlin.util.inflate
 import com.god.kotlin.util.startActivity
@@ -63,7 +60,7 @@ class MenuAdapter(private val header: View, private val list: List<StringMenu>) 
                             "预埋单" -> view.startActivity(TradeOrderActivity::class.java)
 //                            "预埋单" -> view.startActivity(PreActivity::class.java)
 //                            "银行转账" -> view.startActivity(TransferMenuActivity::class.java)
-                            "银行转账" -> view.startActivity(TradeBankActivity::class.java)
+                            "银行转账" -> view.startActivity(BankListActivity::class.java)
                             "退出登录" -> logout()
                             else -> throw Exception("router err")
                         }
@@ -106,7 +103,7 @@ class MenuHorizontalAdapter(private val list: List<ImageMenu>) : RecyclerView.Ad
             .inflate(R.layout.trade_holder_options, parent, false)
         return ImageHolder(view).apply {
             itemView.setOnClickListener {
-                when (list[adapterPosition].name) { //tradeType 0限价 1市价 2批量 3可转债
+                when (list[adapterPosition].name) { //tradeType 0限价 1市价 2批量 3可转债 4对买
                     "买入" -> view.startActivity(TradeActivity::class.java) {
                         putExtra(Constant.TRADE_TYPE, 0)
                         putExtra(Constant.TRADE_MAIN_PAGE, 0)
@@ -127,7 +124,10 @@ class MenuHorizontalAdapter(private val list: List<ImageMenu>) : RecyclerView.Ad
                         putExtra(Constant.TRADE_TYPE, 1)
                         putExtra(Constant.TRADE_MAIN_PAGE, 0)
                     }
-                    "对买对卖" -> view.startActivity(TradeBothActivity::class.java)
+                    "对买对卖" -> view.startActivity(TradeActivity::class.java){
+                        putExtra(Constant.TRADE_TYPE, 4)
+                        putExtra(Constant.TRADE_MAIN_PAGE, 0)
+                    }
                     "批量委托" -> view.startActivity(TradeActivity::class.java){
                         putExtra(Constant.TRADE_TYPE, 2)
                         putExtra(Constant.TRADE_MAIN_PAGE, 0)

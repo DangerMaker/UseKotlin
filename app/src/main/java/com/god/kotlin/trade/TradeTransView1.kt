@@ -13,18 +13,18 @@ import kotlinx.android.synthetic.main.view_trade_trans.view.total_num
 
 class TradeTransView1(context: Context?) : AbsTradeView(context) {
 
-    private var quoteType = "可转债转股"
+    private var select: Array<String> = conversionType
 
     init {
+        quoteType = select[0]
+        quote_way.text = quoteType
+
         layout_quote.setOnClickListener {
             showSelectDialog(context, conversionType,
                 DialogInterface.OnClickListener { _, which ->
                     quoteType = conversionType[which]
                     quote_way.text = quoteType
-
-
                 })
-
         }
     }
 
@@ -42,10 +42,8 @@ class TradeTransView1(context: Context?) : AbsTradeView(context) {
     }
 
     override fun submit() {
-        val postFlag = getTagByQuoteName("", quote_way.text.toString())
-
         DialogUtils.showTwoButtonDialog(
-            context, option + "交易确认", "确定",
+            context,  "交易确认", "确定",
             "您确定要以股东代码${user!!.secuid}$quoteType'${_data!!.stkcode}${_data!!.stkname}'吗\n" +
                     "数量：${numView!!.text.toIntOrZero()}\r\n" +
                     "${quoteType}数量若大于最大可售，交易可能不会成功！"

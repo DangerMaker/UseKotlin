@@ -100,7 +100,7 @@
                     android:textSize="15dp"/>
         </LinearLayout>
 
-        <com.god.kotlin.widget.level1.VerticalLevel1View
+        <com.god.kotlin.widget.level1.Level1VerticalView
                 android:id="@+id/level_view"
                 android:layout_width="0dp"
                 android:layout_weight="4"

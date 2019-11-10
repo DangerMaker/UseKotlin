@@ -8,12 +8,12 @@ import android.view.View;
 import android.widget.*;
 import androidx.annotation.Nullable;
 import com.ez08.trade.Constant;
-import com.ez08.trade.R;
 import com.ez08.trade.net.Client;
 import com.ez08.trade.tools.DialogUtils;
 import com.ez08.trade.tools.YCParser;
 import com.ez08.trade.tools.YiChuangUtils;
 import com.ez08.trade.ui.BaseActivity;
+import com.god.kotlin.R;
 import com.god.kotlin.bank.entity.BankBaseEntity;
 import com.god.kotlin.user.UserHelper;
 
@@ -59,7 +59,7 @@ public class TradeBank2SecurityActivity extends BaseActivity implements View.OnC
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.trade_activity_bank2_security);
-        img_back = findViewById(R.id.img_back);
+        img_back = findViewById(R.id.toolbar_back);
         img_back.setOnClickListener(this);
         titleView = findViewById(R.id.title);
         submit = findViewById(R.id.submit);

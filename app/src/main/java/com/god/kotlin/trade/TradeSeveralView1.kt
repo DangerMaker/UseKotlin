@@ -12,13 +12,11 @@ import kotlinx.android.synthetic.main.view_trade_several.view.*
 class TradeSeveralView1(context: Context?) : AbsTradeView(context) {
 
     override fun inflate(): Int {
-       return R.layout.view_trade_several
+        return R.layout.view_trade_several
     }
 
     override fun initData(flag: Boolean, vm: SellViewModel) {
         super.initData(flag, vm)
-
-        Log.e("initData", "$flag")
         if (flag) {
             single_num.setColor(R.color.trade_red)
         } else {
@@ -27,12 +25,12 @@ class TradeSeveralView1(context: Context?) : AbsTradeView(context) {
     }
 
     override fun submit() {
-        if(TextUtils.isEmpty(single_num.text) || single_num.text.toIntOrZero() == 0){
+        if (TextUtils.isEmpty(single_num.text) || single_num.text.toIntOrZero() == 0) {
             "请输入有效数量".toast(context)
             return
         }
 
-        if(single_num.text.toIntOrZero() > total_num.text.toIntOrZero()){
+        if (single_num.text.toIntOrZero() > total_num.text.toIntOrZero()) {
             "总委托数量不得小于单笔数量".toast(context)
             return
         }
@@ -48,16 +46,14 @@ class TradeSeveralView1(context: Context?) : AbsTradeView(context) {
             context, option + "交易确认", "确定$option",
             "操作类型：" + option + "\n" +
                     "股票代码：" + _data!!.stkcode + "  " + _data!!.stkname + "\n" +
-                    "委托价格：" + price.text.toDouble() + "\n" +
-                    "委托数量：" + total_num.text.toInt() + "\n" +
+                    "委托价格：" + priceView!!.text.toDouble() + "\n" +
+                    "委托数量：" + numView!!.text.toInt() + "\n" +
                     "单笔数量：" + single + "\n" +
-                    "委托方式：" + "限价委托" + "\n" +
-                    "股东代码：" + user!!.secuid
-        ) { _, _ ->
-
+                    "委托方式：" + quoteType + "\n" +
+                    "股东代码：" + user!!.secuid) { _, _ ->
             viewModel.transactionSeveral(
                 _data!!.market, _data!!.stkcode, user!!.secuid, user!!.fundid,
-                price.text.toDouble(), single, if (direction) "0B" else "0S", times,remainder
+                priceView!!.text.toDouble(), single, postFlag, times, remainder
             )
         }
     }

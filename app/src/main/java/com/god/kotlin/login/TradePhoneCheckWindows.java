@@ -7,9 +7,11 @@ import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.TextView;
-import com.ez08.trade.tools.CommonUtils;
-import com.ez08.trade.ui.BasePopupWindows;
-import com.ez08.trade.ui.view.MyDelEditetext;
+import android.widget.Toast;
+import com.god.kotlin.R;
+import com.god.kotlin.util.UiKt;
+import com.god.kotlin.widget.BasePopupWindows;
+import com.god.kotlin.widget.MyDelEditetext;
 
 /**
  * 手机号登录校验
@@ -29,19 +31,19 @@ public class TradePhoneCheckWindows extends BasePopupWindows implements View.OnC
 
     @Override
     protected void onCreateView(View view) {
-        TextView btnLoginCancel = view.findViewById(com.ez08.trade.R.id.login_input_cancel);
+        TextView btnLoginCancel = view.findViewById(R.id.login_input_cancel);
         btnLoginCancel.setOnClickListener(this);
-        TextView btnLoginCommit = view.findViewById(com.ez08.trade.R.id.login_input_commit);
+        TextView btnLoginCommit = view.findViewById(R.id.login_input_commit);
         btnLoginCommit.setOnClickListener(this);
-        btnSendVeritify = view.findViewById(com.ez08.trade.R.id.btnSendVerfity);
+        btnSendVeritify = view.findViewById(R.id.btnSendVerfity);
         btnSendVeritify.setOnClickListener(this);
-        etInputPhoneNum = view.findViewById(com.ez08.trade.R.id.etInputPhoneNum);
-        etInputVertify = view.findViewById(com.ez08.trade.R.id.etInputVertify);
+        etInputPhoneNum = view.findViewById(R.id.etInputPhoneNum);
+        etInputVertify = view.findViewById(R.id.etInputVertify);
     }
 
     @Override
     protected int getLayoutResource() {
-        return com.ez08.trade.R.layout.trade_phone_login;
+        return R.layout.trade_phone_login;
     }
 
     @Override
@@ -61,7 +63,7 @@ public class TradePhoneCheckWindows extends BasePopupWindows implements View.OnC
 
     @Override
     public void onClick(View v) {
-        if (v.getId()== com.ez08.trade.R.id.btnSendVerfity){
+        if (v.getId()== R.id.btnSendVerfity){
             phoneNum = etInputPhoneNum.getText().toString().trim();
             if (!TextUtils.isEmpty(phoneNum)){
                 cdTimer.start();
@@ -70,7 +72,7 @@ public class TradePhoneCheckWindows extends BasePopupWindows implements View.OnC
                     phoneCheckListener.onSendNum(phoneNum);
                 }
             }
-        }else if (v.getId()== com.ez08.trade.R.id.login_input_commit){
+        }else if (v.getId()== R.id.login_input_commit){
             phoneNum = etInputPhoneNum.getText().toString().trim();
             String vertify = etInputVertify.getText().toString().trim();
           if (isInvalid(phoneNum,vertify)){
@@ -78,7 +80,7 @@ public class TradePhoneCheckWindows extends BasePopupWindows implements View.OnC
                   phoneCheckListener.onCheckNum(phoneNum,vertify);
               }
           }
-        }else if (v.getId()== com.ez08.trade.R.id.login_input_cancel){
+        }else if (v.getId()== R.id.login_input_cancel){
             dismiss();
         }
     }
@@ -98,16 +100,16 @@ public class TradePhoneCheckWindows extends BasePopupWindows implements View.OnC
         @Override
         public void onFinish() {
             btnSendVeritify.setClickable(true);
-            btnSendVeritify.setText(com.ez08.trade.R.string.trade_retry_verifity);
+            btnSendVeritify.setText(R.string.trade_retry_verifity);
         }
     };
     private boolean isInvalid(String num, String verity) {
         if ( TextUtils.isEmpty(num) ) {
-            CommonUtils.show(context, com.ez08.trade.R.string.trade_input_phoneNum);
+            UiKt.toast( "请输入手机号",context, Toast.LENGTH_SHORT);
             return false;
         }
         if ( TextUtils.isEmpty(verity)) {
-            CommonUtils.show(context, com.ez08.trade.R.string.trade_login_verity);
+            UiKt.toast( "请输入验证码",context, Toast.LENGTH_SHORT);
             return false;
         }
         return true;

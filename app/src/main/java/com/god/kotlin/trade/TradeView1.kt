@@ -15,14 +15,14 @@ class TradeView1(context: Context?) : AbsTradeView(context) {
             context, option + "交易确认", "确定$option",
             "操作类型：" + option + "\n" +
                     "股票代码：" + _data!!.stkcode + "  " + _data!!.stkname + "\n" +
-                    "委托价格：" + priceView?.text?.toDouble() + "\n" +
-                    "委托数量：" + numView?.text?.toInt() + "\n" +
-                    "委托方式：" + "限价委托" + "\n" +
-                    "股东代码：" + user?.secuid) { _, _ ->
+                    "委托价格：" + priceView!!.text.toDouble() + "\n" +
+                    "委托数量：" + numView!!.text.toInt() + "\n" +
+                    "委托方式：" + quoteType + "\n" +
+                    "股东代码：" + user!!.secuid) { _, _ ->
 
             viewModel.transaction(
                 _data!!.market, _data!!.stkcode, user!!.secuid, user!!.fundid,
-                priceView!!.text.toDouble(), numView!!.text.toInt(), if (direction) "0B" else "0S"
+                priceView!!.text.toDouble(), numView!!.text.toInt(), postFlag
             )
         }
     }

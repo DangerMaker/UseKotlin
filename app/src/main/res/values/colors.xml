@@ -18,6 +18,9 @@
     <color name="sdf">#FF0000</color>
     <color name="darkBlue">#3366FF</color>
     <color name="trade_blue">#3366FF</color>
+    <color name="trade_trans_blue">#103366FF</color>
+    <color name="trade_trans_red">#10FF0000</color>
+
     <color name="trade_input_bg">#f2f5f9</color>
     <color name="trade_item_text">@color/trade_black</color>
     <color name="trade_dan_yellow">#FFFACD</color>

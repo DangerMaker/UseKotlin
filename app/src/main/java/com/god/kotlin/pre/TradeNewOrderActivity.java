@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.*;
 import androidx.annotation.Nullable;
-import com.ez08.trade.R;
 import com.ez08.trade.net.Callback;
 import com.ez08.trade.net.Client;
 import com.ez08.trade.net.hq.STradeHQOrderItem;
@@ -17,7 +16,9 @@ import com.ez08.trade.net.hq.STradeHQQuery;
 import com.ez08.trade.net.hq.STradeHQQueryA;
 import com.ez08.trade.tools.*;
 import com.ez08.trade.ui.BaseActivity;
-import com.ez08.trade.ui.trade.entity.TradeStockEntity;
+import com.god.kotlin.R;
+import com.god.kotlin.data.entity.TradeStockEntity;
+import com.god.kotlin.util.UiKt;
 import com.xuhao.didi.core.pojo.OriginalData;
 
 import java.text.SimpleDateFormat;
@@ -60,9 +61,9 @@ public class TradeNewOrderActivity extends BaseActivity implements View.OnClickL
             orderEntity = (OrderEntity) getIntent().getSerializableExtra("entity");
         }
 
-        titleView = findViewById(R.id.title);
+        titleView = findViewById(R.id.toolbar_title);
         titleView.setText("新建预埋单");
-        backBtn = findViewById(R.id.img_back);
+        backBtn = findViewById(R.id.toolbar_back);
         backBtn.setOnClickListener(this);
         newestPrice = findViewById(R.id.newest_price);
         lastPrice = findViewById(R.id.last_price);
@@ -119,7 +120,7 @@ public class TradeNewOrderActivity extends BaseActivity implements View.OnClickL
             });
         } else if (v == quoteLayout) {
             if (stockEntity == null || stockEntity.market == null) {
-                CommonUtils.show(context, "请输入股票代码");
+                UiKt.toast( "请输入股票代码",context, Toast.LENGTH_SHORT);
                 return;
             }
             final String[] select;
@@ -193,7 +194,7 @@ public class TradeNewOrderActivity extends BaseActivity implements View.OnClickL
                 stockEntity.stopflag = result.get("stopflag");
                 stockEntity.maxqty = result.get("maxqty");
                 stockEntity.minqty = result.get("minqty");
-                stockEntity.fixprice = result.get("fixprice");
+                stockEntity.fixprice = Double.parseDouble(result.get("fixprice"));
                 getHQQuery(stockEntity);
             } else {
                 DialogUtils.showSimpleDialog(context, data);

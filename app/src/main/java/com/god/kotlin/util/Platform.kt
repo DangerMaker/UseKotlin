@@ -96,30 +96,30 @@ fun getMarketType(type: String): String {
     }
 }
 
-fun getResponseQuote(flag: String):String {
+fun getResponseQuote(flag: String): String {
     var result = ""
     when (flag) {
         "B" -> result = "买入"
         "S" -> result = "卖出"
-        "a" -> result = "对方最优价格买入"
-        "f" -> result = "对方最优价格卖出"
-        "b" -> result = "本方最优价格买入"
-        "g" -> result = "本方最优价格卖出"
-        "c" -> result = "即时成交剩余撤销买入"
-        "h" -> result = "即时成交剩余撤销卖出"
-        "d" -> result = "五档即成剩撤买入"
-        "i" -> result = "五档即成剩撤卖出"
-        "e" -> result = "全额成交或撤销买入"
-        "j" -> result = "全额成交或撤销卖出"
-        "q" -> result = "五档即成转限价买入"
-        "r" -> result = "五档即成转限价卖出"
+        "a" -> result = "对方买入"
+        "f" -> result = "对方卖出"
+        "b" -> result = "本方买入"
+        "g" -> result = "本方卖出"
+        "c" -> result = "即成买入"
+        "h" -> result = "即成卖出"
+        "d" -> result = "五档剩撤"
+        "i" -> result = "五档剩撤"
+        "e" -> result = "全额买入"
+        "j" -> result = "全额卖出"
+        "q" -> result = "五档限价"
+        "r" -> result = "五档限价"
     }
 
-   return result
+    return result
 }
 
 //0 红色 1蓝色
-fun getResponseColor(flag: String):Int {
+fun getResponseColor(flag: String): Int {
     var result = 0
     when (flag) {
         "B" -> result = 0
@@ -166,6 +166,32 @@ fun getTagByQuoteName(bsFlag: String, quoteType: String): String {
             "全额成交或撤销" -> result = if (type) "0e" else "0j"
             "五档即成转限价" -> result = if (type) "0q" else "0r"
         }
+    }
+    return result
+}
+
+fun getFlagByQuoteName(bsFlag: Boolean, quoteType: String): String {
+    if (TextUtils.isEmpty(quoteType)) {
+        return ""
+    }
+
+    if (quoteType == "可转债转股") {
+        return "0G"
+    }
+
+    if (quoteType == "债券回售") {
+        return "0H"
+    }
+
+    var result = ""
+    when (quoteType) {
+        "限价委托" -> result = if (bsFlag) "0B" else "0S"
+        "对方最优价格" -> result = if (bsFlag) "0a" else "0f"
+        "本方最优价格" -> result = if (bsFlag) "0b" else "0g"
+        "即时成交剩余撤销" -> result = if (bsFlag) "0c" else "0h"
+        "五档即成剩撤" -> result = if (bsFlag) "0d" else "0i"
+        "全额成交或撤销" -> result = if (bsFlag) "0e" else "0j"
+        "五档即成转限价" -> result = if (bsFlag) "0q" else "0r"
     }
     return result
 }

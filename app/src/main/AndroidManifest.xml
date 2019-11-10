@@ -49,7 +49,7 @@
         <activity android:name=".trade.TradeBothActivity"/>
         <activity android:name=".trade.TradeSeveralActivity"/>
 
-        <activity android:name=".bank.TradeBankActivity" />
+        <activity android:name=".bank.BankListActivity" />
         <activity android:name=".bank.TradeBank2SecurityActivity" />
         <activity android:name=".bank.TradeSecurity2BankActivity" />
 

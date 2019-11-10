@@ -16,15 +16,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.ez08.trade.R;
 import com.ez08.trade.net.Client;
 import com.ez08.trade.tools.DialogUtils;
 import com.ez08.trade.tools.YCParser;
 import com.ez08.trade.ui.BaseActivity;
-import com.ez08.trade.ui.view.LinearItemDecoration;
+import com.god.kotlin.R;
 import com.god.kotlin.data.entity.User;
 import com.god.kotlin.user.UserHelper;
 import com.god.kotlin.util.SharedPreferencesKt;
+import com.god.kotlin.widget.LinearItemDecoration;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -51,9 +51,9 @@ public class TradeOrderActivity extends BaseActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.trade_activity_order);
 
-        titleView = findViewById(R.id.title);
+        titleView = findViewById(R.id.toolbar_title);
         titleView.setText("预埋单");
-        backBtn = findViewById(R.id.img_back);
+        backBtn = findViewById(R.id.toolbar_back);
         backBtn.setOnClickListener(this);
         submmit = findViewById(R.id.submit);
         copy = findViewById(R.id.copy);

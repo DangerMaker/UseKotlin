@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import com.ez08.trade.ui.bank.entity.TransferEntity
 import com.god.kotlin.R
 import com.god.kotlin.data.entity.TransferRecord
 import com.god.kotlin.profile.AccountListActivity

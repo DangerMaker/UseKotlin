@@ -94,4 +94,18 @@
     <string name="trade_declare_id_code">收购人代码</string>
     <string name="trade_declare_num">预受数量</string>
 
+    <string name="trade_phoneNum">手机号</string>
+    <string name="trade_verifity">验证码</string>
+    <string name="trade_phone_check">手机号码验证</string>
+    <string name="trade_phone_send_success">发送成功</string>
+    <string name="trade_phone_send_failed">发送失败</string>
+
+    <string name="trade_input_phoneNum">请输入手机号</string>
+    <string name="trade_input_verifity">请输入验证码</string>
+    <string name="trade_send_verifity">获取验证码</string>
+    <string name="trade_retry_verifity">重新获取验证码</string>
+
+    <string name="trade_input_cancel">取消</string>
+    <string name="trade_input_commit">提交</string>
+
 </resources>
