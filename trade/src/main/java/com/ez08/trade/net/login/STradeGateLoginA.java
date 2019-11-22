@@ -37,9 +37,6 @@ public class STradeGateLoginA extends AbsResponse {
     public STradeGateLoginA(byte[] head, byte[] originBody, byte[] aesKey) {
         super(head,originBody,aesKey);
 
-        Log.e("STradeBaseHead Login", BytesUtils.toHexStringForLog(body));
-
-
         ByteBuffer buffer = ByteBuffer.wrap(body);
         buffer.order(ByteOrder.LITTLE_ENDIAN);
         bLoginSucc = buffer.getInt();

@@ -88,10 +88,12 @@ class QueryTradeActivity : BaseActivity() {
                 }
             }
 
+            it.reverse()
             (fragment as DealListView).show(it)
         })
 
         viewModel.orderList.observe(this, Observer {
+            it.reverse()
             (fragment as OrderListView).show(it)
         })
 

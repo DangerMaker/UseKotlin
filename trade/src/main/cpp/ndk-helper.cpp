@@ -14,6 +14,17 @@ unsigned char *jByteArray2UnsignedChar(JNIEnv *env, jbyteArray array, int &outle
     return buf;
 }
 
+char *jByteArray2Char(JNIEnv *env, jbyteArray array) {
+    char *chars = NULL;
+    jbyte *bytes = env->GetByteArrayElements(array, 0);
+    int chars_len = env->GetArrayLength(array);
+    chars = new char[chars_len + 1];
+    memset(chars, 0, chars_len + 1);
+    memcpy(chars, bytes, chars_len);
+    chars[chars_len] = 0;
+    env->ReleaseByteArrayElements(array, bytes, 0);
+    return chars;
+}
 
 
 jbyteArray unsignedChar2JByteArray(JNIEnv *env, unsigned char *buf, int len) {
@@ -38,7 +49,7 @@ BYTE *unPress(DWORD dwBodySize, DWORD dwRawSize, BYTE *body, int &outlength) {
     return buffer;
 }
 
-bool decrypt(BYTE *key,DWORD dwEncRawSize, BYTE *body) {
+bool decrypt(BYTE *key, DWORD dwEncRawSize, BYTE *body) {
     BYTE *pBody = body;
     AES_KEY aeskey;
     AES_set_decrypt_key(key, 128, &aeskey);

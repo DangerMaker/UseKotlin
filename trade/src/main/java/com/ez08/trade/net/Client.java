@@ -24,6 +24,7 @@ import com.ez08.trade.tools.SnFactory;
 import com.ez08.trade.user.TradeUser;
 import com.xuhao.didi.core.pojo.OriginalData;
 import com.xuhao.didi.core.protocol.IReaderProtocol;
+import com.xuhao.didi.core.utils.BytesUtils;
 import com.xuhao.didi.socket.client.impl.client.action.ActionDispatcher;
 import com.xuhao.didi.socket.client.sdk.OkSocket;
 import com.xuhao.didi.socket.client.sdk.client.ConnectionInfo;
@@ -79,50 +80,6 @@ public class Client {
         return instance;
     }
 
-    public void connect(OnConnectListener onConnectListener) {
-        disconnect();
-
-        mRequestTable.clear();
-        ConnectionInfo info = new ConnectionInfo(IP, BIZ_PORT);
-        manager = OkSocket.open(info);
-        OkSocketOptions options = manager.getOption();
-        //基于当前参配对象构建一个参配建造者类
-        OkSocketOptions.Builder builder = new OkSocketOptions.Builder(options);
-        builder.setReadByteOrder(ByteOrder.LITTLE_ENDIAN);
-        builder.setWriteByteOrder(ByteOrder.LITTLE_ENDIAN);
-        builder.setPulseFrequency(10 * 1000);
-        builder.setReaderProtocol(new IReaderProtocol() {
-            @Override
-            public int getHeaderLength() {
-                return Constant.BIZ_HEAD_SIZE;
-            }
-
-            @Override
-            public int getBodyLength(byte[] header, ByteOrder byteOrder) {
-                ByteBuffer buffer = ByteBuffer.wrap(header);
-                buffer.order(byteOrder);
-                STradeBaseHead head = new STradeBaseHead(buffer);
-//                Log.e("STradeBaseHead Response", head.toString());
-                return head.dwBodySize;
-            }
-        });
-
-        builder.setReconnectionManager(new DefaultReconnectManager());
-        final Handler handler = new Handler(Looper.getMainLooper());
-        builder.setCallbackThreadModeToken(new OkSocketOptions.ThreadModeToken() {
-            @Override
-            public void handleCallbackEvent(ActionDispatcher.ActionRunnable runnable) {
-                handler.post(runnable);
-            }
-        });
-        manager.option(builder.build());
-        //注册Socket行为监听器,SocketActionAdapter是回调的Simple类,其他回调方法请参阅类文档
-        mySocketActionAdapter = new MySocketActionAdapter();
-        manager.registerReceiver(mySocketActionAdapter);
-        //调用通道进行连接
-        manager.connect();
-    }
-
     public void connect() {
 //        disconnect();
         ConnectionInfo info = new ConnectionInfo(IP, BIZ_PORT);
@@ -169,7 +126,9 @@ public class Client {
         @Override
         public void onSocketConnectionSuccess(ConnectionInfo info, String action) {
             sendState(STATE.CONNECTED);
-            manager.send(new STradePacketKeyExchange());
+            STradePacketKeyExchange exchange = new STradePacketKeyExchange();
+            Log.e("STradePacketKeyRequest", exchange.toString());
+            manager.send(exchange);
             manager.getPulseManager().setPulseSendable(new STradeCommOK());
         }
 
@@ -224,9 +183,9 @@ public class Client {
             if (head.wPid == AbsSendable.PID_TRADE_KEY_EXCHANGE) {
                 sendState(STATE.EXCHANGE);
                 STradePacketKeyExchangeResp exchange = new STradePacketKeyExchangeResp(data.getBodyBytes());
-//              Log.e("STradePacketKeyExchange", exchange.toString());
+                Log.e("STradePacketKeyExchange", exchange.toString());
                 aesKey = OpensslHelper.genMD5(exchange.gy);
-//              Log.e("genMD5", BytesUtils.toHexStringForLog(aesKey));
+                Log.e("genMD5", BytesUtils.toHexStringForLog(aesKey));
                 if (sessionId != null) {
                     setLoginSessionPackage();
                 }
@@ -281,7 +240,7 @@ public class Client {
     public void sendBiz(String request, final StringCallback callback) {
 //        Log.e("Biz",request);
         if (Client.getInstance().state != STATE.LOGIN) {
-            callback.onResult(false,"网络连接失败，请稍后再试");
+            callback.onResult(false, "网络连接失败，请稍后再试");
             return;
         }
 
@@ -322,25 +281,12 @@ public class Client {
         }
     }
 
-    public boolean isConnect() {
-        if (manager != null) {
-            return manager.isConnect();
-        }
-        return false;
-    }
-
-    public void disconnect() {
-        if (manager != null && manager.isConnect()) {
-            manager.disconnect();
-            manager.unRegisterReceiver(mySocketActionAdapter);
-        }
-    }
 
     public void logout() {
         throwException(new LogoutException());
     }
 
-    public void resetVerifyCode(){
+    public void resetVerifyCode() {
         throwException(new LogoutException());
     }
 
@@ -369,7 +315,7 @@ public class Client {
     }
 
     private void sendState(STATE state, Exception e) {
-        if(e == null){
+        if (e == null) {
             e = new Exception();
         }
 

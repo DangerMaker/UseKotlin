@@ -20,32 +20,39 @@ static char *mx = NULL;
 extern "C" {
 
 jbyteArray Java_com_ez08_trade_net_OpensslHelper_genPublicKey(JNIEnv *env,
-                                                               jclass clazz) {
+                                                              jclass clazz) {
     char *gx = NULL;
     char *x = NULL;
     cGenerateKey = new CGenerateKey();
     cGenerateKey->CBN_CreateLocalKey(x, gx);
     mx = x;
-    int gxLength = (DWORD)strlen(gx);
+    int gxLength = (DWORD) strlen(gx);
     return unsignedChar2JByteArray(env, reinterpret_cast<unsigned char *>(gx), gxLength);
 
 }
 
 jbyteArray Java_com_ez08_trade_net_OpensslHelper_genMD5(JNIEnv *env,
-                                                         jclass clazz, jbyteArray arg2) {
+                                                        jclass clazz, jbyteArray arg2) {
+
+//    char *key = NULL;
+//    BYTE *result = new BYTE[16];
+//    int gy_length;
+//    unsigned char *gy = jByteArray2UnsignedChar(env, arg2, gy_length);
+//    cGenerateKey->CBN_CalcKey(reinterpret_cast<char *>(gy), mx, key);
+//    MD5((BYTE *) key, strlen(key), result);
+//    return unsignedChar2JByteArray(env, result, 16);
     char *key = NULL;
     BYTE *result = new BYTE[16];
-    int gy_length;
-    unsigned char *gy = jByteArray2UnsignedChar(env, arg2, gy_length);
-    cGenerateKey->CBN_CalcKey(reinterpret_cast<char *>(gy), mx, key);
+    char *gy = jByteArray2Char(env, arg2);
+    cGenerateKey->CBN_CalcKey(gy, mx, key);
     MD5((BYTE *) key, strlen(key), result);
     return unsignedChar2JByteArray(env, result, 16);
 }
 
 jbyteArray Java_com_ez08_trade_net_OpensslHelper_unPress(JNIEnv *env, jclass type,
-                                                          jint dwBodySize,
-                                                          jint dwRawSize,
-                                                          jbyteArray body) {
+                                                         jint dwBodySize,
+                                                         jint dwRawSize,
+                                                         jbyteArray body) {
     int body_length = 0;
     int out_length = 0;
     unsigned char *body_buffer = jByteArray2UnsignedChar(env, body, body_length);
@@ -55,25 +62,15 @@ jbyteArray Java_com_ez08_trade_net_OpensslHelper_unPress(JNIEnv *env, jclass typ
 
 
 jbyteArray Java_com_ez08_trade_net_OpensslHelper_decrypt(JNIEnv *env, jclass type,
-                                                          jbyteArray key,
-                                                          jbyteArray body,
-                                                          jint dwEncRawSize) {
+                                                         jbyteArray key,
+                                                         jbyteArray body,
+                                                         jint dwEncRawSize) {
 
-    int key_length;
-    BYTE* key_buffer = jByteArray2UnsignedChar(env,key,key_length);
-    int body_length;
-    BYTE* body_buffer = jByteArray2UnsignedChar(env,body,body_length);
-    decrypt(key_buffer,dwEncRawSize,body_buffer);
-    return unsignedChar2JByteArray(env,body_buffer,dwEncRawSize);
+    int key_length = 0;
+    BYTE *key_buffer = jByteArray2UnsignedChar(env, key, key_length);
+    int body_length = 0;
+    BYTE *body_buffer = jByteArray2UnsignedChar(env, body, body_length);
+    decrypt(key_buffer, dwEncRawSize, body_buffer);
+    return unsignedChar2JByteArray(env, body_buffer, dwEncRawSize);
 }
-
-jbyteArray Java_com_ez08_trade_net_OpensslHelper_ipConvert(JNIEnv *env, jclass type,
-                                                            jint ip){
-    char *paddress = inet_ntoa(*(in_addr*)ip);
-    return unsignedChar2JByteArray(env, reinterpret_cast<unsigned char *>(paddress), strlen(paddress));
-}
-
-
-
-
 }

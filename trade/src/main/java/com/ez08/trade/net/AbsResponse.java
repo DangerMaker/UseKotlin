@@ -2,6 +2,7 @@ package com.ez08.trade.net;
 
 import android.util.Log;
 import com.ez08.trade.net.head.STradeBaseHead;
+import com.xuhao.didi.core.utils.BytesUtils;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -24,8 +25,13 @@ public class AbsResponse {
             encryptBody = originBody;
         }
 
+        if(sTradeBaseHead.wPid == 2010){
+            Log.e("encryptBody",BytesUtils.toHexStringForLog(encryptBody));
+        }
+
+
         if (sTradeBaseHead.btCompressFlag == 2) {
-            //解压
+//            //解压
             body = OpensslHelper.unPress(encryptBody.length, sTradeBaseHead.dwRawSize, encryptBody);
         } else {
             body = encryptBody;

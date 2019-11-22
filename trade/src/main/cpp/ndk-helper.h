@@ -16,6 +16,7 @@
 #define BOOLEAN            int32_t
 
 unsigned char* jByteArray2UnsignedChar(JNIEnv *env, jbyteArray array,int &outlength);
+char* jByteArray2Char(JNIEnv *env, jbyteArray array);
 
 jbyteArray unsignedChar2JByteArray(JNIEnv *env, unsigned char* buf, int len);
 
